@@ -18,7 +18,7 @@
   const SHOP = {
     name: 'Havana Shop',
     slug: 'havana-shop',
-    whatsapp: '+229 97 00 00 00',
+    whatsapp: '+229 01 43 32 76 43', // Ton vrai numéro
     color: '#E91E63',
     colorSoft: '#FCE4EC',
     hours: '',
@@ -41,7 +41,6 @@
     video: {
       local: `
         <h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2>
-        
         <div class="lea-advice-card">
           <h3>Le trend du changement de tenue</h3>
           <p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p>
@@ -51,7 +50,6 @@
             <li>Utilise la fonction "Minuterie" pour te placer.</li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>Les 3 premières secondes</h3>
           <p>C'est ce qui décide si la personne reste ou scrolle. <strong>Ne perds pas de temps.</strong></p>
@@ -60,7 +58,6 @@
             <li>Ou pose une question choc : <em>"Tu cherches la tenue parfaite pour ce week-end ?"</em></li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>L'audio et le montage</h3>
           <p>Utilise un <strong>son tendance</strong> (repère la petite flèche en bas à droite sur TikTok).</p>
@@ -72,7 +69,6 @@
       `,
       import: `
         <h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2>
-        
         <div class="lea-advice-card">
           <h3>Filme le produit en action</h3>
           <p>Pour l'électroménager ou les sacs, une photo ne suffit pas. <strong>Montre-le en vrai.</strong></p>
@@ -81,7 +77,6 @@
             <li>Les gens veulent voir comment ça marche avant d'acheter.</li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>La preuve par le détail</h3>
           <p>Pour justifier le prix, <strong>montre les finitions de près.</strong></p>
@@ -90,7 +85,6 @@
             <li>Fais un test de résistance à l'écran (tire un peu sur la couture, etc.).</li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>Le Hook (Accroche) qui marche</h3>
           <p>Ne dis pas juste "Regardez ce sac". Crée la surprise.</p>
@@ -105,7 +99,6 @@
     whatsapp: {
       local: `
         <h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2>
-        
         <div class="lea-advice-card">
           <h3>La stratégie des statuts</h3>
           <p>Poste <strong>1 photo par jour</strong>, pas 10 d'un coup. C'est moins fatiguant pour tes contacts et tu restes visible.</p>
@@ -114,7 +107,6 @@
             <li>Ajoute un texte du genre : <em>"Réponds à ce statut pour commander"</em>.</li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>Le script de relance (Sans être lourde)</h3>
           <p>Ne dis jamais juste <em>"Alors ?"</em>. Utilise la technique de l'attention personnalisée.</p>
@@ -123,7 +115,6 @@
             "Coucou [Prénom], je viens de recevoir une nouvelle couleur de [Produit], je pensais à toi. Ça te dit que je te garde ta taille ?"
           </div>
         </div>
-
         <div class="lea-advice-card">
           <h3>La règle des 24h</h3>
           <p>Relance <strong>TOUJOURS</strong> un client qui a vu le statut mais n'a pas répondu.</p>
@@ -135,7 +126,6 @@
       `,
       import: `
         <h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2>
-        
         <div class="lea-advice-card">
           <h3>Rassurer sur la qualité</h3>
           <p>Pour l'import ou l'électroménager, le client a <strong>peur que ça casse.</strong> Ton rôle est de le rassurer.</p>
@@ -144,7 +134,6 @@
             "C'est du costaud, je l'utilise moi-même depuis 6 mois sans aucun problème. Tu peux y aller les yeux fermés."
           </div>
         </div>
-
         <div class="lea-advice-card">
           <h3>Le statut "Preuve Sociale"</h3>
           <p>Poste des captures d'écran de clients satisfaits ou des vidéos de toi en train d'utiliser le produit.</p>
@@ -153,7 +142,6 @@
             <li>Ajoute un texte : <em>"Encore une cliente satisfaite de son blender !"</em></li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>Gérer la garantie</h3>
           <p>Sois claire sur les conditions dès le départ. <strong>Pas de mauvaise surprise.</strong></p>
@@ -167,7 +155,6 @@
     photos: {
       local: `
         <h2 class="lea-content-title">📸 Prendre de belles photos</h2>
-        
         <div class="lea-advice-card">
           <h3>La lumière naturelle (Gratuit & Pro)</h3>
           <p>Ne mets <strong>JAMAIS</strong> le flash de ton téléphone. C'est le meilleur moyen de faire fuir les clientes.</p>
@@ -176,7 +163,6 @@
             <li>Le meilleur moment : entre <strong>15h et 17h</strong> pour une lumière douce.</li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>Le fond (Fais le vide)</h3>
           <p>Débarrasse ton lit ou ta chambre. <strong>Le désordre tue la vente.</strong></p>
@@ -185,20 +171,18 @@
             <li>Sinon, épingle un drap uni propre au mur.</li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>Les 3 angles obligatoires</h3>
           <p>Prends toujours 3 photos différentes pour que la cliente visualise bien le produit.</p>
           <ul>
             <li><strong>1. De face :</strong> Pour voir la coupe globale.</li>
             <li><strong>2. De dos :</strong> Pour montrer le dos du vêtement.</li>
-            <li><strong>3. De près :</strong> Pour montrer la qualité du tissu ou un détail (bouton, broderie).</li>
+            <li><strong>3. De près :</strong> Pour montrer la qualité du tissu ou un détail.</li>
           </ul>
         </div>
       `,
       import: `
         <h2 class="lea-content-title">📸 Prendre de belles photos</h2>
-        
         <div class="lea-advice-card">
           <h3>La mise en scène</h3>
           <p>Ne pose pas juste le produit par terre. <strong>Mets-le en contexte.</strong></p>
@@ -207,16 +191,14 @@
             <li>Pose le mixeur sur un plan de travail propre avec des fruits à côté.</li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>Les photos de détails</h3>
           <p>Ce qui rassure sur l'import, c'est le détail. <strong>Fais des gros plans.</strong></p>
           <ul>
             <li>La fermeture éclair du sac, le logo, les coutures.</li>
-            <li>Les accessoires inclus (les lames du blender, la télécommande du gadget).</li>
+            <li>Les accessoires inclus (les lames du blender, la télécommande).</li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>Montre l'échelle</h3>
           <p>Le client ne se rend pas compte de la taille sur une photo seule.</p>
@@ -230,7 +212,6 @@
     prix: {
       local: `
         <h2 class="lea-content-title">💰 Fixer ses prix & gérer clients</h2>
-        
         <div class="lea-advice-card">
           <h3>La formule magique</h3>
           <p>Ne fixe pas tes prix au hasard. Utilise cette règle simple :</p>
@@ -239,7 +220,6 @@
             Prix d'achat + Transport + Marge (40%) = Ton prix de vente.
           </div>
         </div>
-
         <div class="lea-advice-card">
           <h3>La règle d'or face à "C'est trop cher"</h3>
           <p>Ne baisse <strong>JAMAIS</strong> ton prix au premier "C'est trop cher". Propose plutôt une alternative.</p>
@@ -248,7 +228,6 @@
             "Je comprends. Si tu prends 2 pièces, je te fais une réduction de 1000 FCFA. Qu'est-ce que t'en dis ?"
           </div>
         </div>
-
         <div class="lea-advice-card">
           <h3>L'objection prix (Justifie la qualité)</h3>
           <p>Quand on te dit que c'est cher, c'est que la valeur n'est pas encore claire. <strong>Éduque ton client.</strong></p>
@@ -261,7 +240,6 @@
       `,
       import: `
         <h2 class="lea-content-title">💰 Fixer ses prix & gérer clients</h2>
-        
         <div class="lea-advice-card">
           <h3>Justifie par la durée de vie</h3>
           <p>Pour l'import, le client compare souvent avec le "moins cher" du marché. <strong>Change son calcul.</strong></p>
@@ -270,16 +248,14 @@
             "Ça te fera 2 ans minimum, alors qu'un modèle bas de gamme casse en 2 mois. Au final, tu économises."
           </div>
         </div>
-
         <div class="lea-advice-card">
           <h3>La technique du "Coût par utilisation"</h3>
           <p>Divise le prix par le nombre de fois où le client va l'utiliser.</p>
           <ul>
-            <li>"Un sac à 15 000 FCFA que tu portes tous les jours pendant 1 an, ça te fait 41 FCFA par jour. Moins qu'un sachet d'eau."</li>
+            <li>"Un sac à 15 000 FCFA que tu portes tous les jours pendant 1 an, ça te fait 41 FCFA par jour."</li>
             <li>Ça rend le prix psychologiquement très petit.</li>
           </ul>
         </div>
-
         <div class="lea-advice-card">
           <h3>Ne casse pas tes prix</h3>
           <p>Si tu baisses trop, le client pensera que la qualité est mauvaise.</p>
@@ -363,7 +339,6 @@
      5. AUTHENTIFICATION (Onboarding & Login)
      ============================================================ */
   
-  // Bascule entre les vues Login et Onboarding
   const goToLoginBtn = document.getElementById('goToLoginBtn');
   const goToOnboardingBtn = document.getElementById('goToOnboardingBtn');
   const viewLogin = document.getElementById('view-login');
@@ -389,7 +364,6 @@
     });
   }
 
-  // Bouton Se connecter (depuis l'écran de login)
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
   if (loginSubmitBtn) {
     loginSubmitBtn.addEventListener('click', async () => {
@@ -402,7 +376,6 @@
       }
 
       try {
-        // 1. Connexion Supabase
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
           email: email,
           password: password
@@ -410,7 +383,6 @@
 
         if (authError) throw authError;
 
-        // 2. Récupérer les infos du vendeur
         const { data: vendeurData, error: dbError } = await supabase
           .from('vendeurs')
           .select('*')
@@ -419,7 +391,6 @@
 
         if (dbError) throw dbError;
 
-        // 3. Mettre à jour l'objet SHOP
         SHOP.email = vendeurData.email;
         SHOP.name = vendeurData.nom_boutique;
         SHOP.slug = vendeurData.slug;
@@ -430,13 +401,11 @@
         SHOP.delivery = vendeurData.zone_livraison;
         SHOP.type = vendeurData.type_boutique;
 
-        // 4. Mettre à jour l'interface
         updateUIWithShopData();
 
         const nav = document.querySelector('.bottom-nav');
         if (nav) nav.style.display = 'flex';
         switchTab('dashboard');
-        
         showToast("Connexion réussie !");
 
       } catch (error) {
@@ -446,7 +415,6 @@
     });
   }
 
-  // Étape 1 -> Étape 2 (Validation)
   function goToStep(n) {
     const step1 = document.getElementById('obStep1');
     const step2 = document.getElementById('obStep2');
@@ -461,7 +429,6 @@
       const waEl   = document.getElementById('obWhatsapp');
       const typeEl = document.getElementById('obShopType');
 
-      // Validation des champs
       if (!emailEl.value.trim() || !passwordEl.value.trim()) {
         alert('Veuillez remplir l\'email et le mot de passe.');
         return;
@@ -471,7 +438,6 @@
         return;
       }
 
-      // Sauvegarde temporaire
       SHOP.email = emailEl.value.trim();
       SHOP.password = passwordEl.value.trim();
       if (nameEl) SHOP.name     = nameEl.value.trim() || SHOP.name;
@@ -491,7 +457,6 @@
     }
   }
 
-  // Création du compte réel avec Supabase
   async function createShop() {
     document.documentElement.style.setProperty('--accent', selectedColor.value);
     document.documentElement.style.setProperty('--accent-soft', selectedColor.soft);
@@ -504,7 +469,6 @@
     if (deliveryEl) SHOP.delivery = deliveryEl.value.trim();
 
     try {
-      // 1. Créer l'utilisateur dans Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: SHOP.email,
         password: SHOP.password
@@ -512,7 +476,6 @@
 
       if (authError) throw authError;
 
-      // 2. Insérer les infos dans la table vendeurs
       const { error: dbError } = await supabase
         .from('vendeurs')
         .insert([{
@@ -528,22 +491,20 @@
 
       if (dbError) throw dbError;
 
-      // 3. Mettre à jour l'interface
       updateUIWithShopData();
 
       const nav = document.querySelector('.bottom-nav');
       if (nav) nav.style.display = 'flex';
       switchTab('dashboard');
-      
       showToast("Compte créé avec succès !");
 
     } catch (error) {
-      console.error("Erreur d'inscription:", error.message);
-      alert("Erreur lors de la création du compte : " + error.message);
+      console.error("Erreur d'inscription:", error);
+      // Le message d'erreur détaillé qu'on veut voir
+      alert("Erreur détaillée : " + JSON.stringify(error, null, 2));
     }
   }
 
-  // Fonction centrale pour mettre à jour le design avec les données du SHOP
   function updateUIWithShopData() {
     const dashName = document.querySelector('#view-dashboard .shop-name');
     const dashLogo = document.querySelector('#view-dashboard .shop-logo');
@@ -635,7 +596,6 @@
   const dashAddBtn = document.querySelector('#view-dashboard .btn-primary');
   if (dashAddBtn) dashAddBtn.addEventListener('click', openProductOverlay);
 
-  // --- Générateur d'image catalogue ---
   const catalogBtn = document.getElementById('catalogBtn');
   const catalogOverlay = document.getElementById('catalog-image-overlay');
   const catalogCloseBtn = document.getElementById('catalogCloseBtn');

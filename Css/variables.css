@@ -1,0 +1,236 @@
+
+
+
+/* ============================================================
+   Shopina — variables.css
+   Palettes, thème clair / sombre, typographie et design tokens
+   ============================================================ */
+
+:root {
+  /* ---------------- PALETTES (8 couleurs) ---------------- */
+  --palette-rose:        #E91E63;
+  --palette-rose-soft:   #FCE4EC;
+
+  --palette-blue:        #2196F3;
+  --palette-blue-soft:   #E3F2FD;
+
+  --palette-green:       #4CAF50;
+  --palette-green-soft:  #E8F5E9;
+
+  --palette-purple:      #9C27B0;
+  --palette-purple-soft: #F3E5F5;
+
+  --palette-orange:      #FF9800;
+  --palette-orange-soft: #FFF3E0;
+
+  --palette-turquoise:   #00BCD4;
+  --palette-turquoise-soft: #E0F7FA;
+
+  --palette-red:         #F44336;
+  --palette-red-soft:    #FFEBEE;
+
+  --palette-indigo:      #3F51B5;
+  --palette-indigo-soft: #E8EAF6;
+
+  /* ---------------- ACCENT PAR DÉFAUT (Rose) ---------------- */
+  --accent:      var(--palette-rose);
+  --accent-soft: var(--palette-rose-soft);
+
+  /* ---------------- MODE CLAIR ---------------- */
+  --bg-main:      #FAFAFA;
+  --bg-card:      #FFFFFF;
+  --text-main:    #1A1A1A;
+  --text-muted:   #757575;
+  --border-color: #E0E0E0;
+  --danger:       #F44336;
+  --success:      #4CAF50;
+
+  /* ---------------- TYPOGRAPHIE ---------------- */
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+
+  /* ---------------- DESIGN ---------------- */
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08),
+            0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* ============================================================
+   MODE SOMBRE
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ---------------- SURFACES ---------------- */
+    --bg-main:      #121212;
+    --bg-card:      #1E1E1E;
+    --text-main:    #F5F5F5;
+    --text-muted:   #A0A0A0;
+    --border-color: #333333;
+
+    /* ---------------- SÉMANTIQUE ---------------- */
+    --danger:  #E57373;
+    --success: #81C784;
+
+    /* ---------------- OMBRES ---------------- */
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.40),
+              0 1px 2px rgba(0, 0, 0, 0.30);
+
+    /* ---------------- PALETTES ÉCLAIRCIES ----------------
+       Les couleurs de base sont adoucies pour ressortir sur fond
+       sombre, et les variantes "soft" deviennent des teintes
+       foncées teintées (utilisables comme surfaces d'accent).
+    ------------------------------------------------------- */
+    --palette-rose:           #F06292;
+    --palette-rose-soft:      #4A1F2C;
+
+    --palette-blue:           #64B5F6;
+    --palette-blue-soft:      #1A2E4A;
+
+    --palette-green:          #81C784;
+    --palette-green-soft:     #1E3A22;
+
+    --palette-purple:         #BA68C8;
+    --palette-purple-soft:    #38203E;
+
+    --palette-orange:         #FFB74D;
+    --palette-orange-soft:    #3E2A12;
+
+    --palette-turquoise:      #4DD0E1;
+    --palette-turquoise-soft: #103A40;
+
+    --palette-red:            #E57373;
+    --palette-red-soft:       #4A1E1E;
+
+    --palette-indigo:         #7986CB;
+    --palette-indigo-soft:    #1E2340;
+
+    /* Accent par défaut : Rose éclairci */
+    --accent:      var(--palette-rose);
+    --accent-soft: var(--palette-rose-soft);
+  }
+}
+/* ============================================================
+   Shopina — variables.css
+   Palettes (12), thème clair / sombre, typographie et design tokens
+   ============================================================ */
+
+:root {
+  /* ---------------- PALETTES (12 couleurs) ---------------- */
+  --palette-rose:        #E91E63;
+  --palette-rose-soft:   #FCE4EC;
+
+  --palette-blue:        #2196F3;
+  --palette-blue-soft:   #E3F2FD;
+
+  --palette-green:       #4CAF50;
+  --palette-green-soft:  #E8F5E9;
+
+  --palette-purple:      #9C27B0;
+  --palette-purple-soft: #F3E5F5;
+
+  --palette-orange:      #FF9800;
+  --palette-orange-soft: #FFF3E0;
+
+  --palette-turquoise:   #00BCD4;
+  --palette-turquoise-soft: #E0F7FA;
+
+  --palette-red:         #F44336;
+  --palette-red-soft:    #FFEBEE;
+
+  --palette-indigo:      #3F51B5;
+  --palette-indigo-soft: #E8EAF6;
+
+  /* --- Nouvelles palettes --- */
+  --palette-yellow:      #FFEB3B;
+  --palette-yellow-soft: #FFFDE7;
+
+  --palette-brown:       #795548;
+  --palette-brown-soft:  #EFEBE9;
+
+  --palette-cyan:        #00BCD4;
+  --palette-cyan-soft:   #E0F7FA;
+
+  --palette-gray:        #607D8B;
+  --palette-gray-soft:   #ECEFF1;
+
+  /* ---------------- ACCENT PAR DÉFAUT (Rose) ---------------- */
+  --accent:      var(--palette-rose);
+  --accent-soft: var(--palette-rose-soft);
+
+  /* ---------------- MODE CLAIR ---------------- */
+  --bg-main:      #FAFAFA;
+  --bg-card:      #FFFFFF;
+  --text-main:    #1A1A1A;
+  --text-muted:   #757575;
+  --border-color: #E0E0E0;
+  --danger:       #F44336;
+  --success:      #4CAF50;
+
+  /* ---------------- TYPOGRAPHIE ---------------- */
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+
+  /* ---------------- DESIGN ---------------- */
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08),
+            0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* ============================================================
+   MODE SOMBRE
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-main:      #121212;
+    --bg-card:      #1E1E1E;
+    --text-main:    #F5F5F5;
+    --text-muted:   #A0A0A0;
+    --border-color: #333333;
+
+    --danger:  #E57373;
+    --success: #81C784;
+
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.40),
+              0 1px 2px rgba(0, 0, 0, 0.30);
+
+    /* Palettes éclaircies */
+    --palette-rose:           #F06292;
+    --palette-rose-soft:      #4A1F2C;
+
+    --palette-blue:           #64B5F6;
+    --palette-blue-soft:      #1A2E4A;
+
+    --palette-green:          #81C784;
+    --palette-green-soft:     #1E3A22;
+
+    --palette-purple:         #BA68C8;
+    --palette-purple-soft:    #38203E;
+
+    --palette-orange:         #FFB74D;
+    --palette-orange-soft:    #3E2A12;
+
+    --palette-turquoise:      #4DD0E1;
+    --palette-turquoise-soft: #103A40;
+
+    --palette-red:            #E57373;
+    --palette-red-soft:       #4A1E1E;
+
+    --palette-indigo:         #7986CB;
+    --palette-indigo-soft:    #1E2340;
+
+    --palette-yellow:         #FFF176;
+    --palette-yellow-soft:    #3E3A1A;
+
+    --palette-brown:          #A1887F;
+    --palette-brown-soft:     #3A2E28;
+
+    --palette-cyan:           #4DD0E1;
+    --palette-cyan-soft:      #103A40;
+
+    --palette-gray:           #90A4AE;
+    --palette-gray-soft:      #263238;
+
+    --accent:      var(--palette-rose);
+    --accent-soft: var(--palette-rose-soft);
+  }
+}

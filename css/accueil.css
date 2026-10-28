@@ -1,0 +1,423 @@
+
+/* ============================================================
+   Shopina — accueil.css
+   Landing page publique (mobile-first)
+   ============================================================ */
+
+body {
+  background: var(--bg-main);
+}
+
+/* ---------------- HEADER ---------------- */
+.lp-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px 16px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+}
+
+.lp-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.lp-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.lp-brand-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.lp-brand-name {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.lp-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.lp-login-btn:active {
+  background: var(--bg-main);
+}
+
+/* ---------------- HERO ---------------- */
+.lp-hero {
+  padding: 32px 20px 28px;
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.lp-hero-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 5px 12px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+.lp-hero-title {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
+}
+
+.lp-hero-title span {
+  color: var(--accent);
+}
+
+.lp-hero-sub {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lp-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 340px;
+  min-height: 52px;
+  margin: 0 auto;
+  padding: 0 22px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.lp-cta:active {
+  transform: scale(0.98);
+  opacity: 0.92;
+}
+
+.lp-reassurance {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
+/* ---------------- SECTIONS ---------------- */
+.lp-section {
+  padding: 32px 20px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.lp-section-alt {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  max-width: none;
+  padding-left: max(20px, calc(50% - 300px));
+  padding-right: max(20px, calc(50% - 300px));
+}
+
+.lp-section-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.lp-section-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* ---------------- COMMENT ÇA MARCHE ---------------- */
+.lp-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lp-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.lp-step-num {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.lp-step-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 3px;
+}
+
+.lp-step-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ---------------- AVANTAGES ---------------- */
+.lp-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.lp-feature {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px 14px;
+}
+
+.lp-feature-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.lp-feature-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.lp-feature-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ---------------- TARIFS ---------------- */
+.lp-pricing {
+  background: var(--bg-card);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  text-align: center;
+  max-width: 380px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.lp-pricing-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lp-pricing-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px 0 4px;
+}
+
+.lp-pricing-amount {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -1px;
+}
+
+.lp-pricing-period {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.lp-pricing-then {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.lp-pricing-then strong {
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.lp-pricing-list {
+  list-style: none;
+  text-align: left;
+  padding: 16px 0;
+  margin-bottom: 16px;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.lp-pricing-list li {
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.6;
+  padding: 4px 0;
+}
+
+.lp-pricing-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+
+/* ---------------- CTA FINAL ---------------- */
+.lp-final-cta {
+  background: var(--accent);
+  color: #fff;
+  padding: 36px 20px;
+  text-align: center;
+  max-width: none;
+}
+
+.lp-final-cta h2 {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+
+.lp-final-cta p {
+  font-size: 14px;
+  opacity: 0.92;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lp-cta-inverse {
+  background: #fff;
+  color: var(--accent);
+}
+
+/* ---------------- FOOTER ---------------- */
+.lp-footer {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  padding: 24px 20px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  text-align: center;
+}
+
+.lp-footer-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.lp-footer-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.lp-footer-link:active {
+  opacity: 0.7;
+}
+
+/* ---------------- RESPONSIVE (tablette/desktop) ---------------- */
+@media (min-width: 600px) {
+  .lp-hero-title {
+    font-size: 34px;
+  }
+  .lp-section-title {
+    font-size: 26px;
+  }
+  .lp-features {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .lp-final-cta h2 {
+    font-size: 26px;
+  }
+}

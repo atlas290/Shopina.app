@@ -13,10 +13,10 @@
   const SHOP = {
     name: 'Havana Shop',
     slug: 'havana-shop',
-    whatsapp: '22997000000',
+    whatsapp: '22967020586',
     hours: 'Lun-Sam 9h-19h',
     delivery: 'Cotonou, Calavi',
-    momo: '+229 97 00 00 00'
+    momo: '+229 67 02 05 86'
   };
 
   const DELIVERY_FEES = {

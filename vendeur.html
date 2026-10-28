@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#222">
+  <title>Shopina — Espace vendeuse</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/vendeur.css">
+  <style>
+    @keyframes splashFade {
+      0%   { opacity: 1; }
+      70%  { opacity: 1; }
+      100% { opacity: 0; pointer-events: none; visibility: hidden; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ SPLASH SCREEN ============ -->
+  <div id="splash-screen" style="
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--accent);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 14px; color: #fff;
+    animation: splashFade 0.5s ease forwards;
+  ">
+    <div style="
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(255,255,255,0.22);
+      border: 2px solid rgba(255,255,255,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; font-weight: 800;
+    ">S</div>
+    <div style="font-size: 22px; font-weight: 800; letter-spacing: 1.5px;">Shopina</div>
+  </div>
+
+  <!-- ============ BANDEAU DÉMO ============ -->
+  <div class="demo-banner">Démo Shopina — Onboarding</div>
+
+  <!-- ============ ÉCRAN DE CONNEXION (Caché par défaut) ============ -->
+  <div id="view-login" class="app-view no-nav section" style="display: none;">
+    <div class="ob-header">
+      <div class="ob-logo-badge">S</div>
+      <h1>Bon retour !</h1>
+      <p>Connecte-toi pour gérer ta boutique</p>
+    </div>
+
+    <div class="ob-form">
+      <div class="ob-field">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" placeholder="ton@email.com" autocomplete="email">
+      </div>
+      
+      <div class="ob-field">
+        <label for="loginPassword">Mot de passe</label>
+        <input type="password" id="loginPassword" placeholder="Ton mot de passe" autocomplete="current-password">
+      </div>
+
+      <div class="ob-actions" style="margin-top: 24px;">
+        <button type="button" class="btn-primary" id="loginSubmitBtn">Se connecter</button>
+      </div>
+
+      <a href="#" id="goToOnboardingBtn" class="auth-switch-link">
+        Pas encore de compte ? Créer ma boutique
+      </a>
+    </div>
+  </div>
+
+  <!-- ============ ONBOARDING ============ -->
+  <div id="view-onboarding" class="app-view no-nav section active">
+    <div class="ob-header">
+      <div class="ob-logo-badge">S</div>
+      <h1>Bienvenue sur Shopina</h1>
+      <p>Créez votre boutique en ligne en 2 minutes</p>
+    </div>
+
+    <div class="ob-steps">
+      <div class="ob-step-dot active">1</div>
+      <div class="ob-step-dot">2</div>
+    </div>
+
+    <div class="ob-form">
+      <div id="obStep1">
+        <div class="ob-field">
+          <label for="obEmail">Email</label>
+          <input type="email" id="obEmail" placeholder="ton@email.com" autocomplete="email">
+        </div>
+        
+        <div class="ob-field">
+          <label for="obPassword">Mot de passe (6 caractères min)</label>
+          <input type="password" id="obPassword" placeholder="Créer un mot de passe" minlength="6" autocomplete="new-password">
+        </div>
+
+        <div class="ob-field">
+          <label for="obName">Nom de la boutique</label>
+          <input type="text" id="obName" value="Havana Shop" autocomplete="off">
+        </div>
+
+        <div class="ob-field">
+          <label for="obSlug">Lien de boutique</label>
+          <div class="slug-input-wrap">
+            <span class="slug-prefix">shopina.shop/</span>
+            <input type="text" id="obSlug" value="havana-shop" autocomplete="off">
+          </div>
+          <div class="slug-feedback error">✗ Ce lien est déjà pris</div>
+        </div>
+
+        <div class="ob-field">
+          <label for="obWhatsapp">Numéro WhatsApp</label>
+          <input type="tel" id="obWhatsapp" value="+229 97 00 00 00" autocomplete="off">
+        </div>
+
+        <div class="ob-field">
+          <label for="obShopType">Type de produits</label>
+          <select id="obShopType" class="ob-select">
+            <option value="mode_locale">Mode locale (Wax, pagne, couture)</option>
+            <option value="import_chine">Import Chine (Sacs, chaussures, gadgets)</option>
+            <option value="cosmetiques">Cosmétiques (Soins, maquillage, parfums)</option>
+            <option value="electromenager">Électroménager / Maison</option>
+          </select>
+        </div>
+
+        <div class="ob-actions">
+          <button type="button" class="btn-primary" id="obNextBtn">Suivant</button>
+        </div>
+
+        <a href="#" id="goToLoginBtn" class="auth-switch-link">
+          Déjà un compte ? Se connecter
+        </a>
+      </div>
+
+      <div id="obStep2" style="display:none">
+        <div class="ob-field">
+          <label>Logo (optionnel)</label>
+          <input type="file" id="obLogoInput" accept="image/*" style="display:none">
+          <div class="ob-logo-row">
+            <button type="button" class="btn-secondary" id="obLogoBtn">Choisir une image</button>
+            <div class="ob-logo-name" id="obLogoName"></div>
+          </div>
+        </div>
+        <div class="ob-field">
+          <label>Couleur d'accent</label>
+          <div class="color-picker" id="colorPicker">
+            <button type="button" class="color-swatch selected" data-color="#E91E63" data-soft="#FCE4EC" style="background:#E91E63; color:#E91E63" aria-label="Rose"></button>
+            <button type="button" class="color-swatch" data-color="#2196F3" data-soft="#E3F2FD" style="background:#2196F3; color:#2196F3" aria-label="Bleu"></button>
+            <button type="button" class="color-swatch" data-color="#4CAF50" data-soft="#E8F5E9" style="background:#4CAF50; color:#4CAF50" aria-label="Vert"></button>
+            <button type="button" class="color-swatch" data-color="#9C27B0" data-soft="#F3E5F5" style="background:#9C27B0; color:#9C27B0" aria-label="Violet"></button>
+            <button type="button" class="color-swatch" data-color="#FF9800" data-soft="#FFF3E0" style="background:#FF9800; color:#FF9800" aria-label="Orange"></button>
+            <button type="button" class="color-swatch" data-color="#00BCD4" data-soft="#E0F7FA" style="background:#00BCD4; color:#00BCD4" aria-label="Turquoise"></button>
+            <button type="button" class="color-swatch" data-color="#F44336" data-soft="#FFEBEE" style="background:#F44336; color:#F44336" aria-label="Rouge"></button>
+            <button type="button" class="color-swatch" data-color="#3F51B5" data-soft="#E8EAF6" style="background:#3F51B5; color:#3F51B5" aria-label="Indigo"></button>
+            <button type="button" class="color-swatch" data-color="#FFEB3B" data-soft="#FFFDE7" style="background:#FFEB3B; color:#FFEB3B" aria-label="Jaune"></button>
+            <button type="button" class="color-swatch" data-color="#795548" data-soft="#EFEBE9" style="background:#795548; color:#795548" aria-label="Marron"></button>
+            <button type="button" class="color-swatch" data-color="#00BCD4" data-soft="#E0F7FA" style="background:#00BCD4; color:#00BCD4" aria-label="Cyan"></button>
+            <button type="button" class="color-swatch" data-color="#607D8B" data-soft="#ECEFF1" style="background:#607D8B; color:#607D8B" aria-label="Gris"></button>
+          </div>
+        </div>
+        <div class="ob-field">
+          <label for="obHours">Horaires</label>
+          <input type="text" id="obHours" placeholder="Ex: Lun-Sam, 9h - 19h" autocomplete="off">
+        </div>
+        <div class="ob-field">
+          <label for="obDelivery">Zone de livraison</label>
+          <input type="text" id="obDelivery" placeholder="Ex: Cotonou, Calavi, Abomey" autocomplete="off">
+        </div>
+        <div class="ob-actions">
+          <button type="button" class="btn-secondary" id="obPrevBtn">Retour</button>
+          <button type="button" class="btn-primary" id="obCreateBtn">Créer ma boutique</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div id="view-dashboard" class="app-view section">
+    <div class="shop-header">
+      <div class="shop-logo">H</div>
+      <div>
+        <div class="shop-name">Havana Shop</div>
+        <div class="shop-slogan">Prêt-à-porter &amp; cosmétiques · Cotonou</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Votre lien de boutique</div>
+      <div class="link-block">
+        <div class="link-code">shopina.shop/havana-shop</div>
+        <div class="link-actions">
+          <button type="button" class="btn-secondary">Copier</button>
+          <button type="button" class="btn-secondary">Partager</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value">9</div>
+        <div class="stat-label">Produits actifs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Commandes (7j)</div>
+      </div>
+    </div>
+
+    <div class="dash-cta" style="display: flex; flex-direction: column; gap: 10px;">
+      <button type="button" class="btn-primary" id="dashAddBtn">+ Ajouter un produit</button>
+      <button type="button" class="btn-secondary" id="catalogBtn">📸 Créer une image pour mon statut</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Statut abonnement</div>
+      <div class="subscription-row">
+        <span>Essai gratuit (30 jours)</span>
+        <span style="color:var(--accent);">30 jours restants</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:100%"></div>
+      </div>
+      <p style="font-size:14px; font-weight:700; margin:10px 0 12px; color:var(--text-main);">
+        Ensuite : 2 000 FCFA / mois
+      </p>
+      <button type="button" class="btn-secondary">Voir les forfaits</button>
+    </div>
+  </div>
+
+  <!-- ============ PRODUITS ============ -->
+  <div id="view-produits" class="app-view section">
+    <div class="products-header">
+      <h2>Mes produits</h2>
+      <p>10 produits · 9 actifs</p>
+    </div>
+    <div class="products-grid">
+      <div class="product-card">
+        <div class="product-img" style="background:#F8BBD0">R<button type="button" class="more-btn" aria-label="Actions">⋯</button></div>
+        <div class="product-info"><div class="product-name">Robe wax imprimée</div><div class="product-price">15 000 FCFA</div></div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:#D1C4E9">C<button type="button" class="more-btn" aria-label="Actions">⋯</button></div>
+        <div class="product-info"><div class="product-name">Chemisier en dentelle</div><div class="product-price">8 500 FCFA</div></div>
+      </div>
+      <div class="product-card">
+        <div class="product-img" style="background:#FFCDD2">R<button type="button" class="more-btn" aria-label="Actions">⋯</button></div>
+        <div class="product-info"><div class="product-name">Rouge à lèvres mat</div><div class="product-price">3 500 FCFA</div></div>
+      </div>
+      <div class="product-card">
+        <div class="product-img soldout" style="background:#CFD8DC"><span class="soldout-badge">Épuisé</span>P<button type="button" class="more-btn" aria-label="Actions">⋯</button></div>
+        <div class="product-info"><div class="product-name">Palette fard à paupières</div><div class="product-price">7 800 FCFA</div></div>
+      </div>
+    </div>
+    <button type="button" class="fab" aria-label="Ajouter un produit">+</button>
+  </div>
+
+  <!-- ============ COMMANDES ============ -->
+  <div id="view-commandes" class="app-view section">
+    <div class="products-header">
+      <h2>Commandes</h2>
+    </div>
+    <div class="orders-banner">
+      Ces commandes arrivent directement dans votre WhatsApp. Shopina ne gère pas l'encaissement.
+    </div>
+    <div class="orders-list">
+      <div class="order-item">
+        <div class="order-dot status-nouvelle"></div>
+        <div class="order-info">
+          <div class="order-product">Robe wax imprimée</div>
+          <div class="order-variant">Taille M</div>
+          <div class="order-actions">
+            <select class="order-status-select">
+              <option value="nouvelle" selected>Nouvelle</option>
+              <option value="confirmee">Confirmée</option>
+              <option value="livree">Livrée</option>
+            </select>
+            <button type="button" class="btn-copy-confirm">Copier le message</button>
+          </div>
+        </div>
+        <div class="order-meta">
+          <div class="order-price">15 000 FCFA</div>
+          <div class="order-time">il y a 2h</div>
+        </div>
+      </div>
+
+      <div class="order-item">
+        <div class="order-dot status-confirmee"></div>
+        <div class="order-info">
+          <div class="order-product">Rouge à lèvres mat</div>
+          <div class="order-variant">Nude</div>
+          <div class="order-actions">
+            <select class="order-status-select">
+              <option value="nouvelle">Nouvelle</option>
+              <option value="confirmee" selected>Confirmée</option>
+              <option value="livree">Livrée</option>
+            </select>
+            <button type="button" class="btn-copy-confirm">Copier le message</button>
+          </div>
+        </div>
+        <div class="order-meta">
+          <div class="order-price">3 500 FCFA</div>
+          <div class="order-time">hier</div>
+        </div>
+      </div>
+
+      <div class="order-item">
+        <div class="order-dot status-livree"></div>
+        <div class="order-info">
+          <div class="order-product">Savon noir africain</div>
+          <div class="order-variant">Miel</div>
+          <div class="order-actions">
+            <select class="order-status-select">
+              <option value="nouvelle">Nouvelle</option>
+              <option value="confirmee">Confirmée</option>
+              <option value="livree" selected>Livrée</option>
+            </select>
+            <button type="button" class="btn-copy-confirm">Copier le message</button>
+          </div>
+        </div>
+        <div class="order-meta">
+          <div class="order-price">1 500 FCFA</div>
+          <div class="order-time">il y a 3 jours</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LÉA (Coach) ============ -->
+  <div id="view-lea" class="app-view section">
+    <div class="lea-header">
+      <div class="lea-avatar">L</div>
+      <div class="lea-intro">
+        <h2>Bonjour ! Je suis Léa</h2>
+        <p>Ta coach Shopina. Prête à exploser tes ventes ?</p>
+      </div>
+    </div>
+
+    <div id="lea-categories" class="lea-categories">
+      <button type="button" class="lea-category-card" data-cat="video">
+        <div class="lea-cat-icon">🎥</div>
+        <div class="lea-cat-text">
+          <span class="lea-cat-title">Faire une vidéo TikTok/Reels</span>
+          <span class="lea-cat-sub">Trends, audio et 3 premières secondes</span>
+        </div>
+        <div class="lea-cat-arrow">→</div>
+      </button>
+
+      <button type="button" class="lea-category-card" data-cat="whatsapp">
+        <div class="lea-cat-icon">📱</div>
+        <div class="lea-cat-text">
+          <span class="lea-cat-title">Vendre sur WhatsApp</span>
+          <span class="lea-cat-sub">Statuts, relances et règle des 24h</span>
+        </div>
+        <div class="lea-cat-arrow">→</div>
+      </button>
+
+      <button type="button" class="lea-category-card" data-cat="photos">
+        <div class="lea-cat-icon">📸</div>
+        <div class="lea-cat-text">
+          <span class="lea-cat-title">Prendre de belles photos</span>
+          <span class="lea-cat-sub">Lumière naturelle, fond et angles</span>
+        </div>
+        <div class="lea-cat-arrow">→</div>
+      </button>
+
+      <button type="button" class="lea-category-card" data-cat="prix">
+        <div class="lea-cat-icon">💰</div>
+        <div class="lea-cat-text">
+          <span class="lea-cat-title">Fixer ses prix & clients</span>
+          <span class="lea-cat-sub">Marges, objections et négociations</span>
+        </div>
+        <div class="lea-cat-arrow">→</div>
+      </button>
+    </div>
+
+    <div id="lea-content" class="lea-content" style="display: none;"></div>
+
+    <div class="lea-daily-tip" id="lea-daily-tip">
+      <div class="lea-tip-icon">💡</div>
+      <div class="lea-tip-text">
+        <strong>Astuce du jour</strong>
+        <p>La régularité bat le talent. Poste 1 statut par jour plutôt que 10 d'un coup le dimanche.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RÉGLAGES ============ -->
+  <div id="view-reglages" class="app-view section">
+    <div class="products-header">
+      <h2>Réglages</h2>
+    </div>
+    <div class="card">
+      <div class="card-title">Informations</div>
+      <div class="settings-row">
+        <span class="settings-label">Nom boutique</span>
+        <span class="settings-value" id="setName">Havana Shop</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Slug</span>
+        <span class="settings-value" id="setSlug">havana-shop</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">WhatsApp</span>
+        <span class="settings-value" id="setWhatsapp">+229 97 00 00 00</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Horaires</span>
+        <span class="settings-value" id="setHours">Lun-Sam, 9h - 19h</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Livraison</span>
+        <span class="settings-value" id="setDelivery">Cotonou, Calavi, Abomey</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Couleur actuelle</span>
+        <span class="settings-value">
+          <span class="color-dot" id="setColorDot" style="background:#E91E63"></span><span id="setColorHex">#E91E63</span>
+        </span>
+      </div>
+    </div>
+    <div class="settings-actions">
+      <button type="button" class="btn-secondary">Modifier mes informations</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Abonnement</div>
+      <div class="settings-row">
+        <span class="settings-label">Statut</span>
+        <span class="settings-value">Essai gratuit (30 jours)</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Forfait</span>
+        <span class="settings-value">Basique — 2 000 FCFA/mois</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Prochain paiement</span>
+        <span class="settings-value">2 000 FCFA</span>
+      </div>
+      <button type="button" class="btn-secondary" style="margin-top:12px;">Gérer l'abonnement</button>
+    </div>
+    <div class="settings-actions">
+      <button type="button" class="btn-danger">Se déconnecter</button>
+    </div>
+  </div>
+
+  <!-- ============ BOTTOM NAV ============ -->
+  <nav class="bottom-nav">
+    <button type="button" class="nav-btn active" data-tab="dashboard">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button type="button" class="nav-btn" data-tab="produits">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span>Produits</span>
+    </button>
+    <button type="button" class="nav-btn" data-tab="commandes">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      <span>Commandes</span>
+    </button>
+    <button type="button" class="nav-btn" data-tab="lea">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      <span>Léa</span>
+    </button>
+    <button type="button" class="nav-btn" data-tab="reglages">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Réglages</span>
+    </button>
+  </nav>
+
+  <!-- ============ FORMULAIRE PRODUIT ============ -->
+  <div id="product-form-overlay" class="overlay">
+    <div class="overlay-header">
+      <h2>Ajouter un produit</h2>
+      <button type="button" class="overlay-close" aria-label="Fermer">✕</button>
+    </div>
+    <div class="overlay-body">
+      <div class="photo-section">
+        <div class="photo-preview">Aucune photo</div>
+        <div class="photo-btns">
+          <button type="button">Prendre une photo</button>
+          <button type="button">Choisir dans la galerie</button>
+        </div>
+      </div>
+      <div class="form-field">
+        <label for="pName">Nom du produit</label>
+        <input type="text" id="pName" placeholder="Ex : Robe wax imprimée" autocomplete="off">
+      </div>
+      <div class="form-field">
+        <label for="pPrice">Prix (FCFA)</label>
+        <input type="number" id="pPrice" placeholder="Ex : 15000" inputmode="numeric">
+      </div>
+      <div class="form-field">
+        <label for="pDesc">Description courte</label>
+        <textarea id="pDesc" maxlength="140" placeholder="Une phrase qui décrit le produit..."></textarea>
+        <span class="char-count">0/140</span>
+      </div>
+      <div class="form-field">
+        <label>Catégorie</label>
+        <div class="radio-row">
+          <button type="button" class="radio-pill selected">Vêtement</button>
+          <button type="button" class="radio-pill">Cosmétique</button>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Variantes</label>
+        <div class="tags-list"></div>
+        <input class="tag-input" type="text" placeholder="Ajoutez une variante puis Entrée">
+      </div>
+      <div class="form-field">
+        <label>Disponibilité</label>
+        <div class="status-pills">
+          <button type="button" class="status-pill selected">Disponible</button>
+          <button type="button" class="status-pill">Épuisé</button>
+        </div>
+      </div>
+    </div>
+    <div class="overlay-footer">
+      <button type="button" class="btn-secondary">Annuler</button>
+      <button type="button" class="btn-primary">Enregistrer</button>
+    </div>
+  </div>
+
+  <!-- ============ OVERLAY CATALOGUE ============ -->
+  <div id="catalog-image-overlay" class="catalog-overlay">
+    <div class="catalog-card" id="catalog-card">
+      <h2 class="catalog-title">Havana Shop</h2>
+      <p class="catalog-subtitle">Prêt-à-porter & cosmétiques</p>
+      
+      <div class="catalog-products">
+        <div class="catalog-product">
+          <div class="catalog-product-img" style="background: #F8BBD0;">R</div>
+          <div class="catalog-product-name">Robe wax</div>
+          <div class="catalog-product-price">15 000 F</div>
+        </div>
+        <div class="catalog-product">
+          <div class="catalog-product-img" style="background: #FFCDD2;">R</div>
+          <div class="catalog-product-name">Rouge à lèvres</div>
+          <div class="catalog-product-price">3 500 F</div>
+        </div>
+      </div>
+
+      <div class="catalog-link" id="catalog-link">shopina.shop/havana-shop</div>
+    </div>
+    
+    <div class="catalog-actions">
+      <button type="button" class="btn-secondary" id="catalogCloseBtn">Fermer</button>
+      <button type="button" class="btn-primary" id="catalogDownloadBtn">Télécharger</button>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(function () {
+      var splash = document.getElementById('splash-screen');
+      if (splash) splash.remove();
+    }, 1000);
+  </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="js/vendeur.js"></script>
+</body>
+</html>

@@ -698,3 +698,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Empêche le prix de passer à la ligne */
+.product-price {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

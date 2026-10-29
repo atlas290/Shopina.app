@@ -1,11 +1,10 @@
 /* ============================================================
-   Shopina — client.js (Version Firebase)
+   Shopina — client.js (Version Finale)
    ============================================================ */
 
 (function () {
   'use strict';
 
-  // Configuration Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyCuge89Ct4HX-r4wUnaCqb3qdToL9H-3O0",
     authDomain: "shopina-6172d.firebaseapp.com",
@@ -17,9 +16,9 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  // Variables globales
   let SHOP = { name: 'Boutique', slug: '', whatsapp: '', color: '#E91E63' };
-  let products = []; // Les produits viendront de Firebase
+  let SHOP_ID = null; // On va stocker l'ID de la vendeuse ici
+  let products = [];
   let cart = [];
   let currentProduct = null;
   let selectedVariant = null;
@@ -45,94 +44,78 @@
   }
 
   /* ============================================================
-     1. INITIALISATION (Chargement de la boutique)
+     1. INITIALISATION
      ============================================================ */
   async function initBoutique() {
-    // 1. Récupérer le slug dans l'URL (ex: boutique.html?shop=sessi-shop)
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('shop');
 
     if (!slug) {
-      // Si pas de slug, on affiche un message d'erreur propre
-      document.querySelector('.grid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">Erreur : Aucune boutique spécifiée dans le lien.</div>';
+      $('.grid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">Erreur : Aucune boutique spécifiée.</div>';
       return;
     }
 
     try {
-      // 2. Chercher la vendeuse dans Firebase
       const vendeurSnapshot = await db.collection('vendeurs').where('slug', '==', slug).get();
       
       if (vendeurSnapshot.empty) {
-        document.querySelector('.grid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">Boutique introuvable.</div>';
+        $('.grid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">Boutique introuvable.</div>';
         return;
       }
 
-      const vendeurData = vendeurSnapshot.docs[0].data();
-      const vendeurId = vendeurSnapshot.docs[0].id;
+      const vendeurDoc = vendeurSnapshot.docs[0];
+      SHOP_ID = vendeurDoc.id;
+      const vendeurData = vendeurDoc.data();
       
-      // Mettre à jour les infos de la boutique
       SHOP.name = vendeurData.nom_boutique;
       SHOP.slug = vendeurData.slug;
       SHOP.whatsapp = vendeurData.numero_whatsapp;
       SHOP.color = vendeurData.couleur_accent;
 
-      // Mettre à jour le design (Header)
-      document.querySelector('.shop-name').textContent = SHOP.name;
-      document.querySelector('.shop-slogan').textContent = vendeurData.horaires ? `Horaires : ${vendeurData.horaires}` : 'Bienvenue !';
-      document.querySelector('.logo').textContent = SHOP.name.charAt(0).toUpperCase();
+      // Mettre à jour l'interface
+      $('.shop-name').textContent = SHOP.name;
+      $('.shop-slogan').textContent = vendeurData.horaires ? `Horaires : ${vendeurData.horaires}` : 'Bienvenue !';
+      $('.logo').textContent = SHOP.name.charAt(0).toUpperCase();
       document.documentElement.style.setProperty('--accent', SHOP.color);
       
-      // Mettre à jour le lien WhatsApp
-      const waBtn = document.querySelector('.wa-btn');
+      // Mettre à jour le lien affiché
+      const shopUrlEl = $('.shop-url');
+      if (shopUrlEl) shopUrlEl.textContent = `shopina.shop/${SHOP.slug}`;
+
+      const waBtn = $('.wa-btn');
       if (waBtn) waBtn.href = `https://wa.me/${SHOP.whatsapp.replace(/\s/g, '')}`;
 
-      // 3. Charger les produits de cette vendeuse
-      const produitsSnapshot = await db.collection('produits').where('vendeur_id', '==', vendeurId).get();
-      
+      // Charger les produits
+      const produitsSnapshot = await db.collection('produits').where('vendeur_id', '==', SHOP_ID).get();
       products = [];
       produitsSnapshot.forEach((doc) => {
         const p = doc.data();
-        products.push({
-          id: doc.id,
-          name: p.nom,
-          price: p.prix,
-          category: p.categorie,
-          description: p.description,
-          variants: p.variantes || [],
-          soldout: p.statut === 'Épuisé',
-          photo_url: p.photo_url,
-          bgColor: p.bgColor || '#F8BBD0'
-        });
+        products.push({ id: doc.id, name: p.nom, price: p.prix, category: p.categorie, description: p.description, variants: p.variantes || [], soldout: p.statut === 'Épuisé', photo_url: p.photo_url, bgColor: p.bgColor || '#F8BBD0' });
       });
 
-      // 4. Afficher la grille
       renderGrid();
       renderCart();
 
     } catch (error) {
-      console.error("Erreur de chargement:", error);
-      document.querySelector('.grid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">Erreur de connexion à la base de données.</div>';
+      console.error("Erreur:", error);
     }
   }
 
   /* ============================================================
-     2. AFFICHAGE DES PRODUITS
+     2. AFFICHAGE
      ============================================================ */
   function renderGrid() {
     const gridEl = $('.grid');
     const list = products.filter((p) => activeFilter === 'Tout' || p.category === activeFilter);
 
     if (list.length === 0) {
-      gridEl.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Aucun produit disponible pour le moment.</div>';
+      gridEl.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">Aucun produit disponible.</div>';
       return;
     }
 
     gridEl.innerHTML = list.map((p) => {
       const sold = !!p.soldout;
-      // Si on a une photo, on l'affiche, sinon on met la couleur de fond
-      const imgStyle = p.photo_url 
-        ? `background-image: url('${p.photo_url}'); background-size: cover; background-position: center;` 
-        : `background: ${p.bgColor};`;
+      const imgStyle = p.photo_url ? `background-image: url('${p.photo_url}'); background-size: cover; background-position: center;` : `background: ${p.bgColor};`;
 
       return `
         <article class="product-card${sold ? ' soldout' : ''}" data-id="${p.id}">
@@ -143,9 +126,7 @@
           <div class="product-body">
             <div class="product-name">${escapeHtml(p.name)}</div>
             <div class="product-price">${formatPrice(p.price)}</div>
-            ${sold
-              ? '<button class="add-btn" disabled>Épuisé</button>'
-              : '<button class="add-btn">Ajouter</button>'}
+            ${sold ? '<button class="add-btn" disabled>Épuisé</button>' : '<button class="add-btn">Ajouter</button>'}
           </div>
         </article>
       `;
@@ -153,34 +134,25 @@
   }
 
   /* ============================================================
-     3. FILTRES
+     3. PANIER & OVERLAY
      ============================================================ */
   const filtersEl = document.querySelector('.filters');
   if (filtersEl) {
     filtersEl.addEventListener('click', (e) => {
-      const btn = e.target.closest('.filter');
-      if (!btn) return;
+      const btn = e.target.closest('.filter'); if (!btn) return;
       activeFilter = btn.dataset.filter || 'Tout';
       $$('.filter').forEach((b) => b.classList.toggle('active', b === btn));
       renderGrid();
     });
   }
 
-  /* ============================================================
-     4. CLIC SUR UNE CARTE (Overlay)
-     ============================================================ */
   const gridEl = document.querySelector('.grid');
   if (gridEl) {
     gridEl.addEventListener('click', (e) => {
       const addBtn = e.target.closest('.add-btn');
       if (addBtn && !addBtn.disabled) {
-        e.stopPropagation();
-        const card = addBtn.closest('.product-card');
-        if (!card) return;
-        quickAdd(card.dataset.id);
-        return;
+        e.stopPropagation(); quickAdd(addBtn.closest('.product-card').dataset.id); return;
       }
-
       const card = e.target.closest('.product-card');
       if (!card || card.classList.contains('soldout')) return;
       openDetail(card.dataset.id);
@@ -188,116 +160,71 @@
   }
 
   function quickAdd(id) {
-    const p = products.find(item => item.id === id);
-    if (!p || p.soldout) return;
+    const p = products.find(item => item.id === id); if (!p || p.soldout) return;
     const variant = p.variants.length > 0 ? p.variants[0] : "";
-    const added = addToCart(p, variant);
-    if (added) {
-      bumpCartIcon();
-      showToast('✓ Ajouté !');
-      renderGrid(); // Met à jour le bouton +/-
-    } else {
-      showToast('Déjà dans le panier');
-    }
+    if (addToCart(p, variant)) { bumpCartIcon(); showToast('✓ Ajouté !'); renderGrid(); } 
+    else { showToast('Déjà dans le panier'); }
   }
 
-  /* ============================================================
-     5. GESTION DU PANIER
-     ============================================================ */
-  const overlayEl = document.getElementById('product-overlay');
-  const overlayImgEl = overlayEl ? overlayEl.querySelector('.overlay-img') : null;
-  const overlayBodyEl = overlayEl ? overlayEl.querySelector('.overlay-body') : null;
-  const overlayAddBtn = overlayEl ? overlayEl.querySelector('.btn-primary') : null;
-  const overlayBackBtn = overlayEl ? overlayEl.querySelector('.back-btn') : null;
-
   function openDetail(id) {
-    const p = products.find(item => item.id === id);
-    if (!p || p.soldout || !overlayEl) return;
-
-    currentProduct = p;
-    selectedVariant = null;
+    const p = products.find(item => item.id === id); if (!p || p.soldout) return;
+    currentProduct = p; selectedVariant = null;
+    
+    const overlayEl = document.getElementById('product-overlay');
+    const overlayImgEl = overlayEl.querySelector('.overlay-img');
+    const overlayBodyEl = overlayEl.querySelector('.overlay-body');
+    const overlayAddBtn = overlayEl.querySelector('.btn-primary');
 
     if (p.photo_url) {
-      overlayImgEl.style.backgroundImage = `url('${p.photo_url}')`;
-      overlayImgEl.style.backgroundSize = 'cover';
-      overlayImgEl.style.backgroundPosition = 'center';
-      const phName = overlayImgEl.querySelector('.ph-name'); if (phName) phName.textContent = '';
+      overlayImgEl.style.backgroundImage = `url('${p.photo_url}')`; overlayImgEl.style.backgroundSize = 'cover'; overlayImgEl.style.backgroundPosition = 'center';
+      overlayImgEl.querySelector('.ph-name').textContent = '';
     } else {
-      overlayImgEl.style.background = p.bgColor;
-      overlayImgEl.style.backgroundImage = 'none';
-      const phName = overlayImgEl.querySelector('.ph-name'); if (phName) phName.textContent = p.name;
+      overlayImgEl.style.background = p.bgColor; overlayImgEl.style.backgroundImage = 'none';
+      overlayImgEl.querySelector('.ph-name').textContent = p.name;
     }
 
     const hasVariants = p.variants.length > 0;
-
     overlayBodyEl.innerHTML = `
       <span class="detail-cat">${escapeHtml(p.category)}</span>
       <h2 class="detail-name">${escapeHtml(p.name)}</h2>
       <div class="detail-price">${formatPrice(p.price)}</div>
       <p class="detail-desc">${escapeHtml(p.description)}</p>
-      ${hasVariants ? `
-        <div class="variant-label">Variantes <span>— choisissez une option</span></div>
-        <div class="variants">
-          ${p.variants.map((v) => `
-            <button type="button" class="variant" data-variant="${escapeHtml(v)}">${escapeHtml(v)}</button>
-          `).join('')}
-        </div>
-      ` : ''}
+      ${hasVariants ? `<div class="variant-label">Variantes</div><div class="variants">${p.variants.map((v) => `<button type="button" class="variant" data-variant="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join('')}</div>` : ''}
     `;
 
-    overlayAddBtn.disabled = hasVariants;
-    overlayAddBtn.textContent = 'Ajouter au panier';
-
-    overlayEl.classList.add('open');
-    document.body.style.overflow = 'hidden';
+    overlayAddBtn.disabled = hasVariants; overlayAddBtn.textContent = 'Ajouter au panier';
+    overlayEl.classList.add('open'); document.body.style.overflow = 'hidden';
   }
 
-  function closeDetail() {
+  // Fermer l'overlay (code simplifié pour éviter les bugs)
+  document.addEventListener('click', (e) => {
+    const overlayEl = document.getElementById('product-overlay');
     if (!overlayEl) return;
-    overlayEl.classList.remove('open');
-    document.body.style.overflow = '';
-    currentProduct = null;
-    selectedVariant = null;
-  }
-
-  if (overlayBodyEl) {
-    overlayBodyEl.addEventListener('click', (e) => {
-      const btn = e.target.closest('.variant');
-      if (!btn) return;
-      $$('#product-overlay .variant').forEach((b) => b.classList.toggle('selected', b === btn));
-      selectedVariant = btn.dataset.variant;
-      if (overlayAddBtn) overlayAddBtn.disabled = false;
-    });
-  }
-
-  if (overlayAddBtn) {
-    overlayAddBtn.addEventListener('click', () => {
-      if (!currentProduct) return;
+    if (e.target.closest('.back-btn') || e.target === overlayEl) {
+      overlayEl.classList.remove('open'); document.body.style.overflow = '';
+    }
+    const variantBtn = e.target.closest('.variant');
+    if (variantBtn) {
+      $$('#product-overlay .variant').forEach((b) => b.classList.toggle('selected', b === variantBtn));
+      selectedVariant = variantBtn.dataset.variant;
+      overlayEl.querySelector('.btn-primary').disabled = false;
+    }
+    const addBtn = e.target.closest('#product-overlay .btn-primary');
+    if (addBtn && !addBtn.disabled && currentProduct) {
       const hasVariants = currentProduct.variants.length > 0;
       if (hasVariants && !selectedVariant) return;
-      const variant = hasVariants ? selectedVariant : "";
-      const added = addToCart(currentProduct, variant);
-      closeDetail();
-      if (added) {
-        bumpCartIcon();
-        showToast('✓ Ajouté !');
-        renderGrid();
-      }
-    });
-  }
+      addToCart(currentProduct, hasVariants ? selectedVariant : "");
+      overlayEl.classList.remove('open'); document.body.style.overflow = '';
+      bumpCartIcon(); showToast('✓ Ajouté !'); renderGrid();
+    }
+  });
 
-  if (overlayBackBtn) overlayBackBtn.addEventListener('click', closeDetail);
-  if (overlayEl) {
-    overlayEl.addEventListener('click', (e) => {
-      if (e.target === overlayEl) closeDetail();
-    });
-  }
-
-  // PANIER LOGIC
+  /* ============================================================
+     4. PANIER LOGIC & WHATSAPP (AVEC FIREBASE)
+     ============================================================ */
   const drawerEl = document.getElementById('cart-drawer');
   const drawerBodyEl = drawerEl ? drawerEl.querySelector('.drawer-body') : null;
   const drawerTotalEl = drawerEl ? drawerEl.querySelector('.total-row strong') : null;
-  const drawerCloseBtn = drawerEl ? drawerEl.querySelector('.drawer-head button') : null;
   const whatsappBtn = drawerEl ? drawerEl.querySelector('.btn-whatsapp') : null;
   const backdropEl = document.getElementById('cart-backdrop');
   const cartCountEl = document.querySelector('.cart-count');
@@ -305,32 +232,13 @@
   function addToCart(product, variant) {
     const existing = cart.find(item => item.id === product.id && item.variant === variant);
     if (existing) return false;
-    
-    cart.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      variant: variant,
-      bgColor: product.bgColor,
-      photo_url: product.photo_url
-    });
-    renderCart();
-    return true;
-  }
-
-  function removeFromCart(index) {
-    cart.splice(index, 1);
-    renderCart();
-    renderGrid();
+    cart.push({ id: product.id, name: product.name, price: product.price, variant: variant, bgColor: product.bgColor, photo_url: product.photo_url });
+    renderCart(); return true;
   }
 
   function renderCart() {
     const count = cart.length;
-    if (cartCountEl) {
-      cartCountEl.textContent = count;
-      cartCountEl.dataset.empty = count === 0 ? 'true' : 'false';
-    }
-
+    if (cartCountEl) { cartCountEl.textContent = count; cartCountEl.dataset.empty = count === 0 ? 'true' : 'false'; }
     if (!drawerBodyEl) return;
 
     if (count === 0) {
@@ -339,34 +247,9 @@
       drawerBodyEl.innerHTML = cart.map((item, idx) => {
         const p = products.find(prod => prod.id === item.id);
         const variants = p && p.variants ? p.variants : [];
-        
-        const swatchStyle = item.photo_url 
-          ? `background-image: url('${item.photo_url}'); background-size: cover; background-position: center;`
-          : `background: ${item.bgColor};`;
-
-        const variantsHtml = variants.length > 0
-          ? `<div class="ci-variants-wrap">
-               ${variants.map((v) => `
-                 <button type="button" class="ci-variant-btn${v === item.variant ? ' active' : ''}" data-idx="${idx}" data-variant="${escapeHtml(v)}">
-                   ${escapeHtml(v)}
-                 </button>
-               `).join('')}
-             </div>`
-          : '';
-
-        return `
-          <div class="cart-item">
-            <div class="ci-swatch" style="${swatchStyle}"></div>
-            <div class="ci-info">
-              <div class="ci-name">${escapeHtml(item.name)}</div>
-              ${variantsHtml}
-            </div>
-            <div class="ci-right">
-              <div class="ci-price">${formatPrice(item.price)}</div>
-              <button type="button" class="ci-remove" data-remove="${idx}">Retirer</button>
-            </div>
-          </div>
-        `;
+        const swatchStyle = item.photo_url ? `background-image: url('${item.photo_url}'); background-size: cover; background-position: center;` : `background: ${item.bgColor};`;
+        const variantsHtml = variants.length > 0 ? `<div class="ci-variants-wrap">${variants.map((v) => `<button type="button" class="ci-variant-btn${v === item.variant ? ' active' : ''}" data-idx="${idx}" data-variant="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join('')}</div>` : '';
+        return `<div class="cart-item"><div class="ci-swatch" style="${swatchStyle}"></div><div class="ci-info"><div class="ci-name">${escapeHtml(item.name)}</div>${variantsHtml}</div><div class="ci-right"><div class="ci-price">${formatPrice(item.price)}</div><button type="button" class="ci-remove" data-remove="${idx}">Retirer</button></div></div>`;
       }).join('');
     }
 
@@ -375,64 +258,72 @@
     if (whatsappBtn) whatsappBtn.disabled = count === 0;
   }
 
+  // Gérer le clic dans le panier
   if (drawerBodyEl) {
     drawerBodyEl.addEventListener('click', (e) => {
       const removeBtn = e.target.closest('[data-remove]');
-      if (removeBtn) {
-        removeFromCart(parseInt(removeBtn.dataset.remove, 10));
-        return;
-      }
+      if (removeBtn) { cart.splice(parseInt(removeBtn.dataset.remove, 10), 1); renderCart(); renderGrid(); return; }
       const variantBtn = e.target.closest('.ci-variant-btn');
-      if (variantBtn) {
-        e.stopPropagation();
-        const idx = parseInt(variantBtn.dataset.idx, 10);
-        const newVariant = variantBtn.dataset.variant;
-        if (cart[idx]) {
-          cart[idx].variant = newVariant;
-          renderCart();
-        }
-      }
+      if (variantBtn) { const idx = parseInt(variantBtn.dataset.idx, 10); if (cart[idx]) { cart[idx].variant = variantBtn.dataset.variant; renderCart(); } }
     });
   }
 
-  function openCart() {
-    if (!drawerEl || !backdropEl) return;
-    drawerEl.classList.add('open');
-    backdropEl.classList.open;
-    document.body.style.overflow = 'hidden';
-  }
-  function closeCart() {
-    if (!drawerEl || !backdropEl) return;
-    drawerEl.classList.remove('open');
-    backdropEl.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
+  // Ouvrir / Fermer le panier
   const cartBtn = document.querySelector('.cart-btn');
-  if (cartBtn) cartBtn.addEventListener('click', openCart);
-  if (backdropEl) backdropEl.addEventListener('click', closeCart);
-  if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeCart);
+  if (cartBtn) cartBtn.addEventListener('click', () => { drawerEl.classList.add('open'); if(backdropEl) backdropEl.classList.add('open'); document.body.style.overflow = 'hidden'; });
+  if (backdropEl) backdropEl.addEventListener('click', () => { drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = ''; });
+  if (drawerEl) { const closeBtn = drawerEl.querySelector('.drawer-head button'); if(closeBtn) closeBtn.addEventListener('click', () => { drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = ''; }); }
 
-  // WHATSAPP MESSAGE
+  // ENVOYER LA COMMANDE (Sauvegarde Firebase + Redirection WhatsApp)
   if (whatsappBtn) {
-    whatsappBtn.addEventListener('click', () => {
-      if (cart.length === 0) return;
+    whatsappBtn.addEventListener('click', async () => {
+      if (cart.length === 0 || !SHOP_ID) return;
       
-      const lines = [`Bonjour ${SHOP.name}, je veux commander :`];
-      cart.forEach((item) => {
-        const varPart = item.variant ? ` — ${item.variant}` : '';
-        lines.push(`• ${item.name}${varPart} — ${formatPrice(item.price)}`);
-      });
-      const total = cart.reduce((s, i) => s + i.price, 0);
-      lines.push(`TOTAL : ${formatPrice(total)}`);
-      
-      const message = encodeURIComponent(lines.join('\n'));
-      const phone = SHOP.whatsapp.replace(/\s/g, '');
-      window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+      whatsappBtn.textContent = "Enregistrement...";
+      whatsappBtn.disabled = true;
+
+      try {
+        // 1. Préparer le message WhatsApp
+        const lines = [`Bonjour ${SHOP.name}, je veux commander :`];
+        cart.forEach((item) => {
+          const varPart = item.variant ? ` — ${item.variant}` : '';
+          lines.push(`• ${item.name}${varPart} — ${formatPrice(item.price)}`);
+        });
+        const total = cart.reduce((s, i) => s + i.price, 0);
+        lines.push(`TOTAL : ${formatPrice(total)}`);
+        
+        // 2. Sauvegarder la commande dans Firebase
+        await db.collection('commandes').add({
+          vendeur_id: SHOP_ID,
+          articles: cart, // On sauvegarde tout le panier
+          total: total,
+          statut: 'nouvelle',
+          created_at: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // 3. Ouvrir WhatsApp
+        const message = encodeURIComponent(lines.join('\n'));
+        const phone = SHOP.whatsapp.replace(/\s/g, '');
+        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        
+        // 4. Vider le panier
+        cart = [];
+        renderCart();
+        renderGrid();
+        drawerEl.classList.remove('open');
+        if(backdropEl) backdropEl.classList.remove('open');
+        document.body.style.overflow = '';
+
+      } catch (error) {
+        console.error("Erreur commande:", error);
+        alert("Erreur lors de l'enregistrement de la commande.");
+      } finally {
+        whatsappBtn.textContent = "Envoyer la commande sur WhatsApp";
+        whatsappBtn.disabled = false;
+      }
     });
   }
 
   // LANCEMENT
   initBoutique();
-
 })();

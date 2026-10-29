@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — vendeur.js (Version Firebase)
+   Shopina — vendeur.js (Version Firebase + Livraison)
    ============================================================ */
 
 (function () {
@@ -27,11 +27,14 @@
   const SHOP = {
     name: 'Havana Shop',
     slug: 'havana-shop',
-    whatsapp: '+229 01 43 32 76 43', // Ton vrai numéro
+    whatsapp: '+229 67 02 05 86',
     color: '#E91E63',
     colorSoft: '#FCE4EC',
     hours: '',
     delivery: '',
+    deliveryPrice1: 0,
+    deliveryPrice2: 0,
+    deliveryPrice3: 0,
     type: 'mode_locale',
     email: '',
     password: ''
@@ -173,11 +176,11 @@
           </ul>
         </div>
         <div class="lea-advice-card">
-          <h3>Le fond (Fais leingle vide)</h3>
+          <h3>Le fond (Fais le vide)</h3>
           <p>Débarrasse ton lit ou ta chambre. <strong>Le désordre tue la vente.</strong></p>
- un          <ul>
+          <ul>
             <li>Le meilleur fond : un mur blanc.</li>
-            <li>Sinon, ép drap uni propre au mur.</li>
+            <li>Sinon, épingle un drap uni propre au mur.</li>
           </ul>
         </div>
         <div class="lea-advice-card">
@@ -345,9 +348,8 @@
   });
 
   /* ============================================================
-     5. AUTHENTIFICATION (Onboarding & Login)
+     5. AUTHENTIFICATION
      ============================================================ */
-  
   const goToLoginBtn = document.getElementById('goToLoginBtn');
   const goToOnboardingBtn = document.getElementById('goToOnboardingBtn');
   const viewLogin = document.getElementById('view-login');
@@ -385,15 +387,13 @@
       }
 
       try {
-        // 1. Connexion Firebase Auth
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         const user = userCredential.user;
 
-        // 2. Récupérer les infos du vendeur depuis Firestore
         const doc = await db.collection('vendeurs').doc(user.uid).get();
         
         if (!doc.exists) {
-          throw new Error("Profil vendeur introuvable dans la base de données.");
+          throw new Error("Profil vendeur introuvable.");
         }
 
         const vendeurData = doc.data();
@@ -406,6 +406,9 @@
         SHOP.hours = vendeurData.horaires;
         SHOP.delivery = vendeurData.zone_livraison;
         SHOP.type = vendeurData.type_boutique;
+        SHOP.deliveryPrice1 = vendeurData.deliveryPrice1 || 0;
+        SHOP.deliveryPrice2 = vendeurData.deliveryPrice2 || 0;
+        SHOP.deliveryPrice3 = vendeurData.deliveryPrice3 || 0;
 
         updateUIWithShopData();
 
@@ -471,15 +474,21 @@
 
     const hoursEl    = document.getElementById('obHours');
     const deliveryEl = document.getElementById('obDelivery');
+    const price1El   = document.getElementById('obDeliveryPrice1');
+    const price2El   = document.getElementById('obDeliveryPrice2');
+    const price3El   = document.getElementById('obDeliveryPrice3');
+
     if (hoursEl)    SHOP.hours    = hoursEl.value.trim();
     if (deliveryEl) SHOP.delivery = deliveryEl.value.trim();
+    
+    SHOP.deliveryPrice1 = price1El ? parseInt(price1El.value, 10) || 0 : 0;
+    SHOP.deliveryPrice2 = price2El ? parseInt(price2El.value, 10) || 0 : 0;
+    SHOP.deliveryPrice3 = price3El ? parseInt(price3El.value, 10) || 0 : 0;
 
     try {
-      // 1. Créer l'utilisateur dans Firebase Auth
       const userCredential = await auth.createUserWithEmailAndPassword(SHOP.email, SHOP.password);
       const user = userCredential.user;
 
-      // 2. Sauvegarder les infos dans Firestore (avec l'ID de l'utilisateur)
       await db.collection('vendeurs').doc(user.uid).set({
         email: SHOP.email,
         nom_boutique: SHOP.name,
@@ -488,6 +497,9 @@
         couleur_accent: SHOP.color,
         horaires: SHOP.hours,
         zone_livraison: SHOP.delivery,
+        deliveryPrice1: SHOP.deliveryPrice1,
+        deliveryPrice2: SHOP.deliveryPrice2,
+        deliveryPrice3: SHOP.deliveryPrice3,
         type_boutique: SHOP.type,
         created_at: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -501,8 +513,16 @@
 
     } catch (error) {
       console.error("Erreur d'inscription:", error);
-      // Le message d'erreur détaillé qu'on veut voir
-      alert("Erreur détaillée : " + JSON.stringify(error, null, 2));
+      
+      if (error.code === 'auth/email-already-in-use') {
+        alert("Cet email est déjà utilisé. Essayez de vous connecter ou utilisez un autre email.");
+      } else if (error.code === 'auth/weak-password') {
+        alert("Le mot de passe est trop faible (6 caractères minimum).");
+      } else if (error.code === 'auth/invalid-email') {
+        alert("Le format de l'email n'est pas valide.");
+      } else {
+        alert("Erreur : " + error.message);
+      }
     }
   }
 
@@ -523,6 +543,13 @@
     const setColorHex = document.getElementById('setColorHex');
     if (setColorDot) setColorDot.style.backgroundColor = SHOP.color;
     if (setColorHex) setColorHex.textContent           = SHOP.color.toUpperCase();
+
+    const setPrice1 = document.getElementById('setDeliveryPrice1');
+    const setPrice2 = document.getElementById('setDeliveryPrice2');
+    const setPrice3 = document.getElementById('setDeliveryPrice3');
+    if (setPrice1) setPrice1.textContent = SHOP.deliveryPrice1 ? SHOP.deliveryPrice1 + ' FCFA' : '—';
+    if (setPrice2) setPrice2.textContent = SHOP.deliveryPrice2 ? SHOP.deliveryPrice2 + ' FCFA' : '—';
+    if (setPrice3) setPrice3.textContent = SHOP.deliveryPrice3 ? SHOP.deliveryPrice3 + ' FCFA' : '—';
 
     document.documentElement.style.setProperty('--accent', SHOP.color);
     document.documentElement.style.setProperty('--accent-soft', SHOP.colorSoft);

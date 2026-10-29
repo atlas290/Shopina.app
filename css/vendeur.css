@@ -303,3 +303,19 @@ body {
 #loginSubmitBtn {
   margin-bottom: 80px;
 }
+
+/* ============================================================
+   CORRECTION FINALE : Espace pour le bouton de connexion
+   ============================================================ */
+
+/* On ajoute beaucoup d'espace en bas des formulaires d'inscription et de connexion */
+#view-onboarding .ob-form,
+#view-login .ob-form {
+  padding-bottom: 250px !important;
+}
+
+/* On cache la barre de navigation en bas pour ces deux écrans */
+#view-onboarding.active ~ .bottom-nav,
+#view-login.active ~ .bottom-nav {
+  display: none !important;
+}

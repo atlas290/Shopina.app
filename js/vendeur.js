@@ -5,13 +5,21 @@
 (function () {
   'use strict';
 
-  /* ============================================================
-     0. CONNEXION SUPABASE
-     ============================================================ */
-  const supabaseUrl = 'https://ityeavuyalvstsabmahmal.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0eWVhdnV5YWx2c3RzYWJobWFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxODAyMzUsImV4cCI6MjEwODc1NjIzNX0.UnQBEBDXRsM7UcY4Cy8_yQ1tu3OKFGyzO5lS-0sKfzk';
-  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+  /*// Configuration Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCuge89Ct4HX-r4wUnaCqb3qdToL9H-3O0",
+    authDomain: "shopina-6172d.firebaseapp.com",
+    projectId: "shopina-6172d",
+    storageBucket: "shopina-6172d.firebasestorage.app",
+    messagingSenderId: "1068229855736",
+    appId: "1:1068229855736:web:7583e82691e8a0eeb72e0d"
+  };
 
+  // Initialisation de Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  
   /* ============================================================
      1. DONNÉES
      ============================================================ */

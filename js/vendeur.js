@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — vendeur.js (Version Firebase + Livraison)
+   Shopina — vendeur.js (Version Firebase + Produits)
    ============================================================ */
 
 (function () {
@@ -348,7 +348,7 @@
   });
 
   /* ============================================================
-     5. AUTHENTIFICATION
+     5. AUTHENTIFICATION & CHARGEMENT DES PRODUITS
      ============================================================ */
   const goToLoginBtn = document.getElementById('goToLoginBtn');
   const goToOnboardingBtn = document.getElementById('goToOnboardingBtn');
@@ -373,6 +373,57 @@
       const banner = $('.demo-banner');
       if (banner) banner.textContent = 'Démo Shopina — Onboarding';
     });
+  }
+
+  // Fonction pour charger les produits depuis Firebase
+  async function loadProducts() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const grid = document.querySelector('#view-produits .products-grid');
+    if (!grid) return;
+
+    try {
+      const snapshot = await db.collection('produits')
+        .where('vendeur_id', '==', user.uid)
+        .get();
+
+      grid.innerHTML = ''; // On vide la grille
+
+      if (snapshot.empty) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 20px;">Aucun produit pour le moment. Cliquez sur le + pour ajouter.</div>';
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        const p = doc.data();
+        const isSoldout = p.statut === 'Épuisé';
+        
+        const card = `
+          <div class="product-card">
+            <div class="product-img ${isSoldout ? 'soldout' : ''}" style="background:${p.bgColor || '#F8BBD0'}">
+              ${p.nom.charAt(0).toUpperCase()}
+              ${isSoldout ? '<span class="soldout-badge">Épuisé</span>' : ''}
+              <button type="button" class="more-btn" aria-label="Actions">⋯</button>
+            </div>
+            <div class="product-info">
+              <div class="product-name">${escapeHtml(p.nom)}</div>
+              <div class="product-price">${p.prix} FCFA</div>
+            </div>
+          </div>
+        `;
+        grid.insertAdjacentHTML('beforeend', card);
+      });
+
+      // Mettre à jour le compteur
+      const countEl = document.querySelector('#view-produits .products-header p');
+      if (countEl) {
+        countEl.textContent = `${snapshot.size} produit${snapshot.size > 1 ? 's' : ''} enregistré${snapshot.size > 1 ? 's' : ''}`;
+      }
+
+    } catch (error) {
+      console.error("Erreur de chargement des produits:", error);
+    }
   }
 
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
@@ -411,6 +462,7 @@
         SHOP.deliveryPrice3 = vendeurData.deliveryPrice3 || 0;
 
         updateUIWithShopData();
+        await loadProducts(); // Charger les produits
 
         const nav = document.querySelector('.bottom-nav');
         if (nav) nav.style.display = 'flex';
@@ -505,6 +557,7 @@
       });
 
       updateUIWithShopData();
+      await loadProducts(); // Charger les produits (normalement vide au début)
 
       const nav = document.querySelector('.bottom-nav');
       if (nav) nav.style.display = 'flex';
@@ -681,11 +734,11 @@
   const overlayCancelBtn = document.querySelector('#product-form-overlay .overlay-footer .btn-secondary');
   if (overlayCancelBtn) overlayCancelBtn.addEventListener('click', closeProductOverlay);
 
-  const overlaySaveBtn = document.querySelector('#product-form-overlay .overlay-footer .btn-primary');
+  const overlaySaveBtn = document.getElementById('overlaySaveBtn');
   if (overlaySaveBtn) overlaySaveBtn.addEventListener('click', saveProduct);
 
   /* ============================================================
-     8. FORMULAIRE PRODUIT
+     8. FORMULAIRE PRODUIT (SAUVEGARDE FIREBASE)
      ============================================================ */
   function resetProductForm() {
     const nameEl   = document.getElementById('pName');
@@ -783,24 +836,62 @@
     });
   });
 
-  function saveProduct() {
+  async function saveProduct() {
+    const user = auth.currentUser;
+    if (!user) {
+      alert("Vous devez être connecté pour ajouter un produit.");
+      return;
+    }
+
     const nameEl  = document.getElementById('pName');
     const priceEl = document.getElementById('pPrice');
+    const descEl  = document.getElementById('pDesc');
+    
     if (!nameEl || !priceEl) return;
 
     const name  = nameEl.value.trim();
     const price = parseInt(priceEl.value, 10);
+    const desc  = descEl ? descEl.value.trim() : '';
 
     if (!name || !price || price <= 0) {
       alert('Veuillez renseigner un nom et un prix valide.');
       return;
     }
-    showToast('✓ Produit enregistré !');
-    closeProductOverlay();
+
+    // On prépare les données du produit
+    const newProduct = {
+      vendeur_id: user.uid,
+      nom: name,
+      prix: price,
+      description: desc,
+      categorie: selectedCat,
+      statut: selectedStatus === 'available' ? 'Disponible' : 'Épuisé',
+      variantes: currentTags,
+      bgColor: '#F8BBD0', // Couleur par défaut en attendant les vraies photos
+      created_at: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    try {
+      // Sauvegarde dans Firestore
+      await db.collection('produits').add(newProduct);
+      
+      showToast('✓ Produit enregistré !');
+      closeProductOverlay();
+      
+      // Recharger la grille de produits
+      await loadProducts();
+      
+      // Basculer sur l'onglet Produits pour voir le résultat
+      switchTab('produits');
+
+    } catch (error) {
+      console.error("Erreur d'ajout du produit:", error);
+      alert("Erreur lors de l'enregistrement : " + error.message);
+    }
   }
 
   /* ============================================================
-     9. COMMANDES
+     9. COMMANDES (Simulation pour l'instant)
      ============================================================ */
   $$('.order-status-select').forEach((select) => {
     select.addEventListener('change', function () {

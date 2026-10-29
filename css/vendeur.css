@@ -283,3 +283,23 @@
 .auth-switch-link:active {
   opacity: 0.7;
 }
+
+/* ============================================================
+   CORRECTION : Formulaire de connexion et barre Safari iPhone
+   ============================================================ */
+
+/* On s'assure que le formulaire de connexion a assez d'espace en bas */
+#view-login .ob-form {
+  padding-bottom: 120px; 
+}
+
+/* On s'assure que la zone défilante ne soit pas bloquée par le bas de l'écran */
+body {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* On remonte un peu le bouton dans l'écran pour qu'il soit bien cliquable */
+#loginSubmitBtn {
+  margin-bottom: 80px;
+}

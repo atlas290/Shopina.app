@@ -18,7 +18,7 @@
 </head>
 <body>
 
-  <!-- ============ SPLASH SCREEN ============ -->
+  <!-- SPLASH SCREEN -->
   <div id="splash-screen" style="
     position: fixed; inset: 0; z-index: 9999;
     background: var(--accent);
@@ -37,11 +37,10 @@
     <div style="font-size: 22px; font-weight: 800; letter-spacing: 1.5px;">Shopina</div>
   </div>
 
-  <!-- ============ BANDEAU DÉMO ============ -->
   <div class="demo-banner">Démo Shopina — Onboarding</div>
 
-  <!-- ============ ÉCRAN DE CONNEXION (Caché par défaut) ============ -->
-  <div id="view-login" class="app-view no-nav section" style="display: none;">
+  <!-- ÉCRAN DE CONNEXION -->
+  <div id="view-login" class="app-view no-nav section">
     <div class="ob-header">
       <div class="ob-logo-badge">S</div>
       <h1>Bon retour !</h1>
@@ -63,13 +62,13 @@
         <button type="button" class="btn-primary" id="loginSubmitBtn">Se connecter</button>
       </div>
 
-      <a href="#" id="goToOnboardingBtn" class="auth-switch-link">
+      <a href="#" id="goToOnboardingBtn" class="auth-switch-link" style="margin-bottom: 120px;">
         Pas encore de compte ? Créer ma boutique
       </a>
     </div>
   </div>
 
-  <!-- ============ ONBOARDING ============ -->
+  <!-- ONBOARDING -->
   <div id="view-onboarding" class="app-view no-nav section active">
     <div class="ob-header">
       <div class="ob-logo-badge">S</div>
@@ -110,7 +109,7 @@
 
         <div class="ob-field">
           <label for="obWhatsapp">Numéro WhatsApp</label>
-          <input type="tel" id="obWhatsapp" value="+229 97 00 00 00" autocomplete="off">
+          <input type="tel" id="obWhatsapp" value="+229 67 02 05 86" autocomplete="off">
         </div>
 
         <div class="ob-field">
@@ -128,7 +127,7 @@
           <button type="button" class="btn-primary" id="obNextBtn">Suivant</button>
         </div>
 
-        <a href="#" id="goToLoginBtn" class="auth-switch-link">
+        <a href="#" id="goToLoginBtn" class="auth-switch-link" style="margin-bottom: 120px;">
           Déjà un compte ? Se connecter
         </a>
       </div>
@@ -168,7 +167,6 @@
           <input type="text" id="obDelivery" placeholder="Ex: Cotonou, Calavi, Abomey" autocomplete="off">
         </div>
 
-        <!-- NOUVEAUX CHAMPS : FRAIS DE LIVRAISON -->
         <div class="ob-field">
           <label>Frais de livraison (FCFA)</label>
           <input type="number" id="obDeliveryPrice1" placeholder="Prix Livraison 1 (ex: 1000)" style="margin-bottom: 8px;">
@@ -184,7 +182,7 @@
     </div>
   </div>
 
-  <!-- ============ DASHBOARD ============ -->
+  <!-- DASHBOARD -->
   <div id="view-dashboard" class="app-view section">
     <div class="shop-header">
       <div class="shop-logo">H</div>
@@ -237,34 +235,17 @@
     </div>
   </div>
 
-  <!-- ============ PRODUITS ============ -->
+  <!-- PRODUITS -->
   <div id="view-produits" class="app-view section">
     <div class="products-header">
       <h2>Mes produits</h2>
-      <p>10 produits · 9 actifs</p>
+      <p>Chargement...</p>
     </div>
-    <div class="products-grid">
-      <div class="product-card">
-        <div class="product-img" style="background:#F8BBD0">R<button type="button" class="more-btn" aria-label="Actions">⋯</button></div>
-        <div class="product-info"><div class="product-name">Robe wax imprimée</div><div class="product-price">15 000 FCFA</div></div>
-      </div>
-      <div class="product-card">
-        <div class="product-img" style="background:#D1C4E9">C<button type="button" class="more-btn" aria-label="Actions">⋯</button></div>
-        <div class="product-info"><div class="product-name">Chemisier en dentelle</div><div class="product-price">8 500 FCFA</div></div>
-      </div>
-      <div class="product-card">
-        <div class="product-img" style="background:#FFCDD2">R<button type="button" class="more-btn" aria-label="Actions">⋯</button></div>
-        <div class="product-info"><div class="product-name">Rouge à lèvres mat</div><div class="product-price">3 500 FCFA</div></div>
-      </div>
-      <div class="product-card">
-        <div class="product-img soldout" style="background:#CFD8DC"><span class="soldout-badge">Épuisé</span>P<button type="button" class="more-btn" aria-label="Actions">⋯</button></div>
-        <div class="product-info"><div class="product-name">Palette fard à paupières</div><div class="product-price">7 800 FCFA</div></div>
-      </div>
-    </div>
+    <div class="products-grid"></div>
     <button type="button" class="fab" aria-label="Ajouter un produit">+</button>
   </div>
 
-  <!-- ============ COMMANDES ============ -->
+  <!-- COMMANDES -->
   <div id="view-commandes" class="app-view section">
     <div class="products-header">
       <h2>Commandes</h2>
@@ -272,70 +253,10 @@
     <div class="orders-banner">
       Ces commandes arrivent directement dans votre WhatsApp. Shopina ne gère pas l'encaissement.
     </div>
-    <div class="orders-list">
-      <div class="order-item">
-        <div class="order-dot status-nouvelle"></div>
-        <div class="order-info">
-          <div class="order-product">Robe wax imprimée</div>
-          <div class="order-variant">Taille M</div>
-          <div class="order-actions">
-            <select class="order-status-select">
-              <option value="nouvelle" selected>Nouvelle</option>
-              <option value="confirmee">Confirmée</option>
-              <option value="livree">Livrée</option>
-            </select>
-            <button type="button" class="btn-copy-confirm">Copier le message</button>
-          </div>
-        </div>
-        <div class="order-meta">
-          <div class="order-price">15 000 FCFA</div>
-          <div class="order-time">il y a 2h</div>
-        </div>
-      </div>
-
-      <div class="order-item">
-        <div class="order-dot status-confirmee"></div>
-        <div class="order-info">
-          <div class="order-product">Rouge à lèvres mat</div>
-          <div class="order-variant">Nude</div>
-          <div class="order-actions">
-            <select class="order-status-select">
-              <option value="nouvelle">Nouvelle</option>
-              <option value="confirmee" selected>Confirmée</option>
-              <option value="livree">Livrée</option>
-            </select>
-            <button type="button" class="btn-copy-confirm">Copier le message</button>
-          </div>
-        </div>
-        <div class="order-meta">
-          <div class="order-price">3 500 FCFA</div>
-          <div class="order-time">hier</div>
-        </div>
-      </div>
-
-      <div class="order-item">
-        <div class="order-dot status-livree"></div>
-        <div class="order-info">
-          <div class="order-product">Savon noir africain</div>
-          <div class="order-variant">Miel</div>
-          <div class="order-actions">
-            <select class="order-status-select">
-              <option value="nouvelle">Nouvelle</option>
-              <option value="confirmee">Confirmée</option>
-              <option value="livree" selected>Livrée</option>
-            </select>
-            <button type="button" class="btn-copy-confirm">Copier le message</button>
-          </div>
-        </div>
-        <div class="order-meta">
-          <div class="order-price">1 500 FCFA</div>
-          <div class="order-time">il y a 3 jours</div>
-        </div>
-      </div>
-    </div>
+    <div class="orders-list"></div>
   </div>
 
-  <!-- ============ LÉA (Coach) ============ -->
+  <!-- LÉA -->
   <div id="view-lea" class="app-view section">
     <div class="lea-header">
       <div class="lea-avatar">L</div>
@@ -354,7 +275,6 @@
         </div>
         <div class="lea-cat-arrow">→</div>
       </button>
-
       <button type="button" class="lea-category-card" data-cat="whatsapp">
         <div class="lea-cat-icon">📱</div>
         <div class="lea-cat-text">
@@ -363,7 +283,6 @@
         </div>
         <div class="lea-cat-arrow">→</div>
       </button>
-
       <button type="button" class="lea-category-card" data-cat="photos">
         <div class="lea-cat-icon">📸</div>
         <div class="lea-cat-text">
@@ -372,7 +291,6 @@
         </div>
         <div class="lea-cat-arrow">→</div>
       </button>
-
       <button type="button" class="lea-category-card" data-cat="prix">
         <div class="lea-cat-icon">💰</div>
         <div class="lea-cat-text">
@@ -382,9 +300,7 @@
         <div class="lea-cat-arrow">→</div>
       </button>
     </div>
-
     <div id="lea-content" class="lea-content" style="display: none;"></div>
-
     <div class="lea-daily-tip" id="lea-daily-tip">
       <div class="lea-tip-icon">💡</div>
       <div class="lea-tip-text">
@@ -394,56 +310,29 @@
     </div>
   </div>
 
-  <!-- ============ RÉGLAGES ============ -->
+  <!-- RÉGLAGES -->
   <div id="view-reglages" class="app-view section">
     <div class="products-header">
       <h2>Réglages</h2>
     </div>
     <div class="card">
       <div class="card-title">Informations</div>
-      <div class="settings-row">
-        <span class="settings-label">Nom boutique</span>
-        <span class="settings-value" id="setName">Havana Shop</span>
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">Slug</span>
-        <span class="settings-value" id="setSlug">havana-shop</span>
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">WhatsApp</span>
-        <span class="settings-value" id="setWhatsapp">+229 97 00 00 00</span>
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">Horaires</span>
-        <span class="settings-value" id="setHours">Lun-Sam, 9h - 19h</span>
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">Livraison</span>
-        <span class="settings-value" id="setDelivery">Cotonou, Calavi, Abomey</span>
-      </div>
+      <div class="settings-row"><span class="settings-label">Nom boutique</span><span class="settings-value" id="setName">—</span></div>
+      <div class="settings-row"><span class="settings-label">Slug</span><span class="settings-value" id="setSlug">—</span></div>
+      <div class="settings-row"><span class="settings-label">WhatsApp</span><span class="settings-value" id="setWhatsapp">—</span></div>
+      <div class="settings-row"><span class="settings-label">Horaires</span><span class="settings-value" id="setHours">—</span></div>
+      <div class="settings-row"><span class="settings-label">Livraison</span><span class="settings-value" id="setDelivery">—</span></div>
       <div class="settings-row">
         <span class="settings-label">Couleur actuelle</span>
-        <span class="settings-value">
-          <span class="color-dot" id="setColorDot" style="background:#E91E63"></span><span id="setColorHex">#E91E63</span>
-        </span>
+        <span class="settings-value"><span class="color-dot" id="setColorDot"></span><span id="setColorHex"></span></span>
       </div>
     </div>
 
-    <!-- NOUVELLE CARTE : FRAIS DE LIVRAISON -->
     <div class="card">
       <div class="card-title">Frais de livraison</div>
-      <div class="settings-row">
-        <span class="settings-label">Zone 1</span>
-        <span class="settings-value" id="setDeliveryPrice1">—</span>
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">Zone 2</span>
-        <span class="settings-value" id="setDeliveryPrice2">—</span>
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">Zone 3</span>
-        <span class="settings-value" id="setDeliveryPrice3">—</span>
-      </div>
+      <div class="settings-row"><span class="settings-label">Zone 1</span><span class="settings-value" id="setDeliveryPrice1">—</span></div>
+      <div class="settings-row"><span class="settings-label">Zone 2</span><span class="settings-value" id="setDeliveryPrice2">—</span></div>
+      <div class="settings-row"><span class="settings-label">Zone 3</span><span class="settings-value" id="setDeliveryPrice3">—</span></div>
     </div>
 
     <div class="settings-actions">
@@ -451,18 +340,8 @@
     </div>
     <div class="card">
       <div class="card-title">Abonnement</div>
-      <div class="settings-row">
-        <span class="settings-label">Statut</span>
-        <span class="settings-value">Essai gratuit (30 jours)</span>
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">Forfait</span>
-        <span class="settings-value">Basique — 2 000 FCFA/mois</span>
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">Prochain paiement</span>
-        <span class="settings-value">2 000 FCFA</span>
-      </div>
+      <div class="settings-row"><span class="settings-label">Statut</span><span class="settings-value">Essai gratuit (30 jours)</span></div>
+      <div class="settings-row"><span class="settings-label">Forfait</span><span class="settings-value">Basique — 2 000 FCFA/mois</span></div>
       <button type="button" class="btn-secondary" style="margin-top:12px;">Gérer l'abonnement</button>
     </div>
     <div class="settings-actions">
@@ -470,31 +349,31 @@
     </div>
   </div>
 
-  <!-- ============ BOTTOM NAV ============ -->
+  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button type="button" class="nav-btn active" data-tab="dashboard">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>Accueil</span>
     </button>
     <button type="button" class="nav-btn" data-tab="produits">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       <span>Produits</span>
     </button>
     <button type="button" class="nav-btn" data-tab="commandes">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       <span>Commandes</span>
     </button>
     <button type="button" class="nav-btn" data-tab="lea">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
       <span>Léa</span>
     </button>
     <button type="button" class="nav-btn" data-tab="reglages">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       <span>Réglages</span>
     </button>
   </nav>
 
-  <!-- ============ FORMULAIRE PRODUIT ============ -->
+  <!-- FORMULAIRE PRODUIT -->
   <div id="product-form-overlay" class="overlay">
     <div class="overlay-header">
       <h2>Ajouter un produit</h2>
@@ -543,16 +422,15 @@
     </div>
     <div class="overlay-footer">
       <button type="button" class="btn-secondary">Annuler</button>
-    <button type="button" class="btn-primary" id="overlaySaveBtn">Enregistrer</button>
+      <button type="button" class="btn-primary" id="overlaySaveBtn">Enregistrer</button>
     </div>
   </div>
 
-  <!-- ============ OVERLAY CATALOGUE ============ -->
+  <!-- OVERLAY CATALOGUE -->
   <div id="catalog-image-overlay" class="catalog-overlay">
     <div class="catalog-card" id="catalog-card">
       <h2 class="catalog-title">Havana Shop</h2>
       <p class="catalog-subtitle">Prêt-à-porter & cosmétiques</p>
-      
       <div class="catalog-products">
         <div class="catalog-product">
           <div class="catalog-product-img" style="background: #F8BBD0;">R</div>
@@ -565,10 +443,8 @@
           <div class="catalog-product-price">3 500 F</div>
         </div>
       </div>
-
       <div class="catalog-link" id="catalog-link">shopina.shop/havana-shop</div>
     </div>
-    
     <div class="catalog-actions">
       <button type="button" class="btn-secondary" id="catalogCloseBtn">Fermer</button>
       <button type="button" class="btn-primary" id="catalogDownloadBtn">Télécharger</button>
@@ -581,7 +457,9 @@
       if (splash) splash.remove();
     }, 1000);
   </script>
-
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/vendeur.js"></script>
 </body>
 </html>

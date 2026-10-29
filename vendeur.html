@@ -373,20 +373,27 @@
     </button>
   </nav>
 
-  <!-- FORMULAIRE PRODUIT -->
+  <!-- FORMULAIRE PRODUIT (AVEC LES INPUTS PHOTO) -->
   <div id="product-form-overlay" class="overlay">
     <div class="overlay-header">
       <h2>Ajouter un produit</h2>
       <button type="button" class="overlay-close" aria-label="Fermer">✕</button>
     </div>
     <div class="overlay-body">
+      
       <div class="photo-section">
-        <div class="photo-preview">Aucune photo</div>
+        <div class="photo-preview" id="photoPreview">Aucune photo</div>
+        
+        <!-- Inputs cachés pour déclencher les appareils -->
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+        <input type="file" id="galleryInput" accept="image/*" style="display:none;">
+        
         <div class="photo-btns">
-          <button type="button">Prendre une photo</button>
-          <button type="button">Choisir dans la galerie</button>
+          <button type="button" id="btnCamera">Prendre une photo</button>
+          <button type="button" id="btnGallery">Choisir dans la galerie</button>
         </div>
       </div>
+
       <div class="form-field">
         <label for="pName">Nom du produit</label>
         <input type="text" id="pName" placeholder="Ex : Robe wax imprimée" autocomplete="off">
@@ -457,9 +464,11 @@
       if (splash) splash.remove();
     }, 1000);
   </script>
+  <!-- Scripts Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   <script src="js/vendeur.js"></script>
 </body>
 </html>

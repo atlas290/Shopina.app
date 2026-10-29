@@ -1,11 +1,13 @@
 /* ============================================================
-   Shopina — vendeur.js (Version Finale Firebase)
+   Shopina — vendeur.js (Version Finale Cloudinary)
    ============================================================ */
 
 (function () {
   'use strict';
 
-  // Configuration Firebase
+  /* ============================================================
+     0. CONNEXION FIREBASE & CLOUDINARY
+     ============================================================ */
   const firebaseConfig = {
     apiKey: "AIzaSyCuge89Ct4HX-r4wUnaCqb3qdToL9H-3O0",
     authDomain: "shopina-6172d.firebaseapp.com",
@@ -18,30 +20,35 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // Données globales
-  const SHOP = {
-    name: 'Havana Shop', slug: 'havana-shop', whatsapp: '+229 67 02 05 86',
-    color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '',
-    deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0,
-    type: 'mode_locale', email: '', password: ''
-  };
+  // Configuration Cloudinary
+  const CLOUDINARY_CLOUD_NAME = 'jaifaim-app';
+  const CLOUDINARY_UPLOAD_PRESET = 'plats_resto';
 
+  /* ============================================================
+     1. DONNÉES
+     ============================================================ */
+  const SHOP = { name: 'Havana Shop', slug: 'havana-shop', whatsapp: '+229 67 02 05 86', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, type: 'mode_locale', email: '', password: '' };
   const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: 'Léa', reglages: 'Réglages' };
 
-  // Contenu de Léa
   const leaData = {
-    video: { local: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Le trend du changement de tenue</h3><p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p><ul><li>Filme verticalement (format 9:16).</li><li>Nettoie ton objectif avec un t-shirt propre avant de filmer.</li><li>Utilise la fonction "Minuterie" pour te placer.</li></ul></div><div class="lea-advice-card"><h3>Les 3 premières secondes</h3><p>C'est ce qui décide si la personne reste ou scrolle. <strong>Ne perds pas de temps.</strong></p><ul><li>Commence TOUJOURS par montrer le produit.</li><li>Ou pose une question choc : <em>"Tu cherches la tenue parfaite pour ce week-end ?"</em></li></ul></div>`, import: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Filme le produit en action</h3><p>Pour l'électroménager ou les sacs, une photo ne suffit pas. <strong>Montre-le en vrai.</strong></p><ul><li>Allume le mixeur, mets le sac au bras.</li><li>Les gens veulent voir comment ça marche.</li></ul></div>` },
-    whatsapp: { local: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>La stratégie des statuts</h3><p>Poste <strong>1 photo par jour</strong>, pas 10 d'un coup.</p><ul><li>Mets le prix VISIBLE sur l'image.</li><li>Ajoute : <em>"Réponds à ce statut pour commander"</em>.</li></ul></div><div class="lea-advice-card"><h3>Le script de relance</h3><div class="lea-script-box"><strong>Prêt à copier :</strong> "Coucou [Prénom], je viens de recevoir une nouvelle couleur de [Produit], je pensais à toi. Ça te dit que je te garde ta taille ?"</div></div>`, import: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>Rassurer sur la qualité</h3><div class="lea-script-box"><strong>Ce que tu dois dire :</strong> "C'est du costaud, je l'utilise moi-même depuis 6 mois sans aucun problème. Tu peux y aller les yeux fermés."</div></div>` },
-    photos: { local: `<h2 class="lea-content-title">📸 Prendre de belles photos</h2><div class="lea-advice-card"><h3>La lumière naturelle</h3><p>Ne mets <strong>JAMAIS</strong> le flash.</p><ul><li>Mets-toi face à une fenêtre ouverte.</li><li>Meilleur moment : entre <strong>15h et 17h</strong>.</li></ul></div><div class="lea-advice-card"><h3>Le fond</h3><p>Débarrasse ton lit. <strong>Le désordre tue la vente.</strong></p><ul><li>Meilleur fond : un mur blanc ou un drap uni.</li></ul></div>`, import: `<h2 class="lea-content-title">📸 Prendre de belles photos</h2><div class="lea-advice-card"><h3>La mise en scène</h3><p>Ne pose pas juste le produit par terre. <strong>Mets-le en contexte.</strong></p><ul><li>Porte le sac à ton bras.</li><li>Pose le mixeur sur un plan de travail propre.</li></ul></div>` },
-    prix: { local: `<h2 class="lea-content-title">💰 Fixer ses prix & gérer clients</h2><div class="lea-advice-card"><h3>La formule magique</h3><div class="lea-script-box"><strong>Calcul :</strong> Prix d'achat + Transport + Marge (40%) = Ton prix de vente.</div></div><div class="lea-advice-card"><h3>Face à "C'est trop cher"</h3><div class="lea-script-box"><strong>Ce que tu dois dire :</strong> "Je comprends. Si tu prends 2 pièces, je te fais une réduction de 1000 FCFA. Qu'est-ce que t'en dis ?"</div></div>`, import: `<h2 class="lea-content-title">💰 Fixer ses prix & gérer clients</h2><div class="lea-advice-card"><h3>Justifie par la durée de vie</h3><div class="lea-script-box"><strong>Ce que tu dois dire :</strong> "Ça te fera 2 ans minimum, alors qu'un modèle bas de gamme casse en 2 mois. Au final, tu économises."</div></div>` }
+    video: { local: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Le trend du changement de tenue</h3><p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p></div>`, import: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Filme le produit en action</h3><p>Pour l'électroménager ou les sacs, une photo ne suffit pas. <strong>Montre-le en vrai.</strong></p></div>` },
+    whatsapp: { local: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>La stratégie des statuts</h3><p>Poste <strong>1 photo par jour</strong>, pas 10 d'un coup.</p></div>`, import: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>Rassurer sur la qualité</h3><p>C'est du costaud, je l'utilise moi-même.</p></div>` },
+    photos: { local: `<h2 class="lea-content-title">📸 Prendre de belles photos</h2><div class="lea-advice-card"><h3>La lumière naturelle</h3><p>Ne mets <strong>JAMAIS</strong> le flash.</p></div>`, import: `<h2 class="lea-content-title">📸 Prendre de belles photos</h2><div class="lea-advice-card"><h3>La mise en scène</h3><p>Ne pose pas juste le produit par terre. <strong>Mets-le en contexte.</strong></p></div>` },
+    prix: { local: `<h2 class="lea-content-title">💰 Fixer ses prix</h2><div class="lea-advice-card"><h3>La formule magique</h3><p>Prix d'achat + Transport + Marge (40%) = Ton prix de vente.</p></div>`, import: `<h2 class="lea-content-title">💰 Fixer ses prix</h2><div class="lea-advice-card"><h3>Justifie par la durée de vie</h3><p>Ça te fera 2 ans minimum, alors qu'un modèle bas de gamme casse en 2 mois.</p></div>` }
   };
 
-  // État global
+  /* ============================================================
+     2. ÉTAT
+     ============================================================ */
   let currentTags = [];
   let selectedCat = 'Vêtement';
   let selectedStatus = 'available';
   let selectedColor = { value: '#E91E63', soft: '#FCE4EC' };
+  let currentImageBlob = null;
 
+  /* ============================================================
+     3. HELPERS
+     ============================================================ */
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
 
@@ -56,7 +63,9 @@
 
   function simulate() { alert('Simulation — Fonctionnalité à venir'); }
 
-  // Navigation
+  /* ============================================================
+     4. NAVIGATION
+     ============================================================ */
   function switchTab(tab) {
     $$('.app-view.section').forEach((s) => s.classList.remove('active'));
     const target = document.getElementById('view-' + tab);
@@ -65,13 +74,15 @@
     const banner = $('.demo-banner');
     if (banner) banner.textContent = 'Démo Shopina — ' + (TAB_NAMES[tab] || tab);
     if (tab === 'lea') { showLeaCategories(); }
-    if (tab === 'produits') { loadProducts(); } // Charge les produits quand on clique sur l'onglet
+    if (tab === 'produits') { loadProducts(); }
     window.scrollTo(0, 0);
   }
 
   $$('.nav-btn').forEach((btn) => { btn.addEventListener('click', () => switchTab(btn.dataset.tab)); });
 
-  // Auth Bascule
+  /* ============================================================
+     5. AUTHENTIFICATION & CHARGEMENT DES PRODUITS
+     ============================================================ */
   const goToLoginBtn = document.getElementById('goToLoginBtn');
   const goToOnboardingBtn = document.getElementById('goToOnboardingBtn');
   const viewLogin = document.getElementById('view-login');
@@ -90,7 +101,6 @@
     });
   }
 
-  // CHARGEMENT DES PRODUITS
   async function loadProducts() {
     const user = auth.currentUser;
     if (!user) return;
@@ -99,7 +109,7 @@
 
     try {
       const snapshot = await db.collection('produits').where('vendeur_id', '==', user.uid).get();
-      grid.innerHTML = ''; // Vide la grille
+      grid.innerHTML = '';
 
       if (snapshot.empty) {
         grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 20px;">Aucun produit pour le moment. Cliquez sur le + pour ajouter.</div>';
@@ -109,10 +119,12 @@
       snapshot.forEach((doc) => {
         const p = doc.data();
         const isSoldout = p.statut === 'Épuisé';
+        const imgStyle = p.photo_url ? `background-image: url('${p.photo_url}'); background-size: cover; background-position: center;` : `background: ${p.bgColor || '#F8BBD0'};`;
+        
         const card = `
           <div class="product-card">
-            <div class="product-img ${isSoldout ? 'soldout' : ''}" style="background:${p.bgColor || '#F8BBD0'}">
-              ${p.nom.charAt(0).toUpperCase()}
+            <div class="product-img ${isSoldout ? 'soldout' : ''}" style="${imgStyle}">
+              ${!p.photo_url ? p.nom.charAt(0).toUpperCase() : ''}
               ${isSoldout ? '<span class="soldout-badge">Épuisé</span>' : ''}
               <button type="button" class="more-btn" aria-label="Actions">⋯</button>
             </div>
@@ -129,7 +141,6 @@
     } catch (error) { console.error("Erreur de chargement des produits:", error); }
   }
 
-  // LOGIN
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
   if (loginSubmitBtn) {
     loginSubmitBtn.addEventListener('click', async () => {
@@ -162,7 +173,6 @@
     });
   }
 
-  // INSCRIPTION
   function goToStep(n) {
     const step1 = document.getElementById('obStep1');
     const step2 = document.getElementById('obStep2');
@@ -253,7 +263,9 @@
     });
   });
 
-  // DASHBOARD FONCTIONS
+  /* ============================================================
+     6. DASHBOARD
+     ============================================================ */
   function copyLink() {
     const link = 'shopina.shop/' + SHOP.slug; const done = () => showToast('Lien copié !');
     const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e) { done(); } };
@@ -280,7 +292,9 @@
   if (catalogCloseBtn) catalogCloseBtn.addEventListener('click', () => { catalogOverlay.classList.remove('open'); document.body.style.overflow = ''; });
   if (catalogDownloadBtn) catalogDownloadBtn.addEventListener('click', () => alert('Simulation : Image téléchargée'));
 
-  // OVERLAY PRODUIT
+  /* ============================================================
+     7. GESTION DES PHOTOS & OVERLAY PRODUIT
+     ============================================================ */
   function openProductOverlay() {
     const overlay = document.getElementById('product-form-overlay'); if (!overlay) return;
     resetProductForm(); overlay.classList.add('open'); document.body.style.overflow = 'hidden';
@@ -295,14 +309,80 @@
   const overlayCancelBtn = document.querySelector('#product-form-overlay .overlay-footer .btn-secondary'); if (overlayCancelBtn) overlayCancelBtn.addEventListener('click', closeProductOverlay);
   const overlaySaveBtn = document.getElementById('overlaySaveBtn'); if (overlaySaveBtn) overlaySaveBtn.addEventListener('click', saveProduct);
 
+  const btnCamera = document.getElementById('btnCamera'), btnGallery = document.getElementById('btnGallery');
+  const cameraInput = document.getElementById('cameraInput'), galleryInput = document.getElementById('galleryInput');
+
+  if(btnCamera && cameraInput) btnCamera.addEventListener('click', () => cameraInput.click());
+  if(btnGallery && galleryInput) btnGallery.addEventListener('click', () => galleryInput.click());
+
+  async function compresserImage(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob((blob) => {
+            resolve(blob);
+          }, 'image/jpeg', 0.7);
+        };
+      };
+    });
+  }
+
+  async function handleImageSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const previewEl = document.getElementById('photoPreview');
+    if (previewEl) previewEl.textContent = "Compression...";
+
+    try {
+      const compressedBlob = await compresserImage(file);
+      currentImageBlob = compressedBlob;
+      const imageUrl = URL.createObjectURL(compressedBlob);
+      if (previewEl) {
+        previewEl.style.backgroundImage = `url('${imageUrl}')`;
+        previewEl.textContent = '';
+      }
+    } catch (error) {
+      console.error("Erreur de compression:", error);
+      alert("Impossible de lire l'image.");
+    }
+  }
+
+  if(cameraInput) cameraInput.addEventListener('change', handleImageSelect);
+  if(galleryInput) galleryInput.addEventListener('change', handleImageSelect);
+
+  /* ============================================================
+     8. FORMULAIRE PRODUIT & UPLOAD CLOUDINARY
+     ============================================================ */
   function resetProductForm() {
     document.getElementById('pName').value = ''; document.getElementById('pPrice').value = ''; document.getElementById('pDesc').value = '';
     document.querySelector('#product-form-overlay .char-count').textContent = '0/140'; document.querySelector('#product-form-overlay .tag-input').value = '';
     document.querySelector('#product-form-overlay .tags-list').innerHTML = '';
-    currentTags = []; selectedCat = 'Vêtement'; selectedStatus = 'available';
+    currentTags = []; selectedCat = 'Vêtement'; selectedStatus = 'available'; currentImageBlob = null;
     $$('#product-form-overlay .radio-pill').forEach((b, i) => b.classList.toggle('selected', i === 0));
     $$('#product-form-overlay .status-pill').forEach((b, i) => b.classList.toggle('selected', i === 0));
     const photoPreview = document.querySelector('#product-form-overlay .photo-preview'); if (photoPreview) { photoPreview.textContent = 'Aucune photo'; photoPreview.style.backgroundImage = ''; }
+    if(document.getElementById('cameraInput')) document.getElementById('cameraInput').value = '';
+    if(document.getElementById('galleryInput')) document.getElementById('galleryInput').value = '';
   }
 
   document.getElementById('pDesc').addEventListener('input', function () { document.querySelector('#product-form-overlay .char-count').textContent = this.value.length + '/140'; });
@@ -333,12 +413,63 @@
     const user = auth.currentUser; if (!user) { alert("Vous devez être connecté."); return; }
     const name = document.getElementById('pName').value.trim(), price = parseInt(document.getElementById('pPrice').value, 10), desc = document.getElementById('pDesc').value.trim();
     if (!name || !price || price <= 0) { alert('Veuillez renseigner un nom et un prix valide.'); return; }
-    const newProduct = { vendeur_id: user.uid, nom: name, prix: price, description: desc, categorie: selectedCat, statut: selectedStatus === 'available' ? 'Disponible' : 'Épuisé', variantes: currentTags, bgColor: '#F8BBD0', created_at: firebase.firestore.FieldValue.serverTimestamp() };
-    try { await db.collection('produits').add(newProduct); showToast('✓ Produit enregistré !'); closeProductOverlay(); await loadProducts(); switchTab('produits'); }
-    catch (error) { console.error("Erreur d'ajout:", error); alert("Erreur : " + error.message); }
+
+    const saveBtn = document.getElementById('overlaySaveBtn');
+    if(saveBtn) { saveBtn.textContent = "Envoi en cours..."; saveBtn.disabled = true; }
+
+    try {
+      let photoUrl = null;
+
+      // 1. Upload vers Cloudinary si une photo est sélectionnée
+      if (currentImageBlob) {
+        const formData = new FormData();
+        formData.append('file', currentImageBlob);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const data = await response.json();
+        if (data.secure_url) {
+          photoUrl = data.secure_url;
+        } else {
+          throw new Error("Échec de l'upload de l'image sur Cloudinary.");
+        }
+      }
+
+      // 2. Sauvegarde des données du produit dans Firebase
+      const newProduct = { 
+        vendeur_id: user.uid, 
+        nom: name, 
+        prix: price, 
+        description: desc, 
+        categorie: selectedCat, 
+        statut: selectedStatus === 'available' ? 'Disponible' : 'Épuisé', 
+        variantes: currentTags, 
+        photo_url: photoUrl, 
+        bgColor: '#F8BBD0', 
+        created_at: firebase.firestore.FieldValue.serverTimestamp() 
+      };
+      
+      await db.collection('produits').add(newProduct); 
+      showToast('✓ Produit enregistré !'); 
+      closeProductOverlay(); 
+      await loadProducts(); 
+      switchTab('produits'); 
+
+    } catch (error) { 
+      console.error("Erreur d'ajout:", error); 
+      alert("Erreur : " + error.message); 
+    } finally {
+      if(saveBtn) { saveBtn.textContent = "Enregistrer"; saveBtn.disabled = false; }
+    }
   }
 
-  // COMMANDES (Simulé)
+  /* ============================================================
+     9. COMMANDES (Simulé)
+     ============================================================ */
   $$('.order-status-select').forEach((select) => {
     select.addEventListener('change', function () { const dot = this.closest('.order-item').querySelector('.order-dot'); if (dot) dot.className = 'order-dot status-' + this.value; showToast('Statut mis à jour'); });
   });
@@ -347,7 +478,9 @@
   });
   function fallbackCopy(text, callback) { try { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); callback(); } catch (e) { alert('Erreur copie'); } }
 
-  // LEA
+  /* ============================================================
+     10. LÉA
+     ============================================================ */
   const leaCategories = document.getElementById('lea-categories'), leaContent = document.getElementById('lea-content');
   function showLeaCategories() { if (leaCategories && leaContent) { leaCategories.style.display = 'flex'; leaContent.style.display = 'none'; leaContent.innerHTML = ''; } }
   function getAdviceGroup() { return (SHOP.type === 'import_chine' || SHOP.type === 'electromenager') ? 'import' : 'local'; }
@@ -359,17 +492,20 @@
   }
   $$('.lea-category-card').forEach((card) => { card.addEventListener('click', () => openLeaCategory(card.dataset.cat)); });
 
-  // REGLAGES SIMULES
+  /* ============================================================
+     11. RÉGLAGES SIMULÉS & RACCOURCIS
+     ============================================================ */
   $$('#view-reglages .btn-secondary, #view-reglages .btn-danger').forEach((btn) => { btn.addEventListener('click', simulate); });
 
-  // RACCOURCIS
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     const overlay = document.getElementById('product-form-overlay'); if (overlay && overlay.classList.contains('open')) { closeProductOverlay(); return; }
     if (catalogOverlay && catalogOverlay.classList.contains('open')) { catalogOverlay.classList.remove('open'); document.body.style.overflow = ''; }
   });
 
-  // INIT
+  /* ============================================================
+     12. INIT
+     ============================================================ */
   function init() {
     const nav = document.querySelector('.bottom-nav'); if (nav) nav.style.display = 'none';
     const banner = $('.demo-banner'); if (banner) banner.textContent = 'Démo Shopina — Onboarding';

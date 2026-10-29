@@ -304,7 +304,7 @@
         // 3. Ouvrir WhatsApp
         const message = encodeURIComponent(lines.join('\n'));
         const phone = SHOP.whatsapp.replace(/\s/g, '');
-        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        window.location.href = `https://wa.me/${phone}?text=${message}`;
         
         // 4. Vider le panier
         cart = [];

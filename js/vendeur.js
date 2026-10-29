@@ -186,7 +186,8 @@
         // On liste les articles
         let articlesHtml = '';
         order.articles.forEach(art => {
-          articlesHtml += `<div style="font-size: 12px; color: var(--text-muted);">${art.quantity}x ${art.name} ${art.variant ? '('+art.variant+')' : ''}</div>`;
+          const qty = art.quantity || 1; // Si la quantité n'existe pas, on met 1 par défaut
+articlesHtml += `<div style="font-size: 12px; color: var(--text-muted);">${qty}x ${art.name} ${art.variant ? '('+art.variant+')' : ''}</div>`;
         });
 
         // On affiche la commande

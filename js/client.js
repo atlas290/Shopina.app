@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — client.js (Version Finale)
+   Shopina — client.js (Version Finale + Quantités)
    ============================================================ */
 
 (function () {
@@ -17,9 +17,9 @@
   const db = firebase.firestore();
 
   let SHOP = { name: 'Boutique', slug: '', whatsapp: '', color: '#E91E63' };
-  let SHOP_ID = null; // On va stocker l'ID de la vendeuse ici
+  let SHOP_ID = null;
   let products = [];
-  let cart = [];
+  let cart = []; // Maintenant, chaque item aura une propriété "quantity"
   let currentProduct = null;
   let selectedVariant = null;
   let activeFilter = 'Tout';
@@ -72,20 +72,17 @@
       SHOP.whatsapp = vendeurData.numero_whatsapp;
       SHOP.color = vendeurData.couleur_accent;
 
-      // Mettre à jour l'interface
       $('.shop-name').textContent = SHOP.name;
       $('.shop-slogan').textContent = vendeurData.horaires ? `Horaires : ${vendeurData.horaires}` : 'Bienvenue !';
       $('.logo').textContent = SHOP.name.charAt(0).toUpperCase();
       document.documentElement.style.setProperty('--accent', SHOP.color);
       
-      // Mettre à jour le lien affiché
       const shopUrlEl = $('.shop-url');
       if (shopUrlEl) shopUrlEl.textContent = `shopina.shop/${SHOP.slug}`;
 
       const waBtn = $('.wa-btn');
       if (waBtn) waBtn.href = `https://wa.me/${SHOP.whatsapp.replace(/\s/g, '')}`;
 
-      // Charger les produits
       const produitsSnapshot = await db.collection('produits').where('vendeur_id', '==', SHOP_ID).get();
       products = [];
       produitsSnapshot.forEach((doc) => {
@@ -102,7 +99,7 @@
   }
 
   /* ============================================================
-     2. AFFICHAGE
+     2. AFFICHAGE & FILTRES
      ============================================================ */
   function renderGrid() {
     const gridEl = $('.grid');
@@ -133,9 +130,6 @@
     }).join('');
   }
 
-  /* ============================================================
-     3. PANIER & OVERLAY
-     ============================================================ */
   const filtersEl = document.querySelector('.filters');
   if (filtersEl) {
     filtersEl.addEventListener('click', (e) => {
@@ -146,6 +140,9 @@
     });
   }
 
+  /* ============================================================
+     3. OVERLAY & AJOUT AU PANIER
+     ============================================================ */
   const gridEl = document.querySelector('.grid');
   if (gridEl) {
     gridEl.addEventListener('click', (e) => {
@@ -162,8 +159,8 @@
   function quickAdd(id) {
     const p = products.find(item => item.id === id); if (!p || p.soldout) return;
     const variant = p.variants.length > 0 ? p.variants[0] : "";
-    if (addToCart(p, variant)) { bumpCartIcon(); showToast('✓ Ajouté !'); renderGrid(); } 
-    else { showToast('Déjà dans le panier'); }
+    addToCart(p, variant);
+    bumpCartIcon(); showToast('✓ Ajouté !');
   }
 
   function openDetail(id) {
@@ -196,7 +193,6 @@
     overlayEl.classList.add('open'); document.body.style.overflow = 'hidden';
   }
 
-  // Fermer l'overlay (code simplifié pour éviter les bugs)
   document.addEventListener('click', (e) => {
     const overlayEl = document.getElementById('product-overlay');
     if (!overlayEl) return;
@@ -215,12 +211,12 @@
       if (hasVariants && !selectedVariant) return;
       addToCart(currentProduct, hasVariants ? selectedVariant : "");
       overlayEl.classList.remove('open'); document.body.style.overflow = '';
-      bumpCartIcon(); showToast('✓ Ajouté !'); renderGrid();
+      bumpCartIcon(); showToast('✓ Ajouté !');
     }
   });
 
   /* ============================================================
-     4. PANIER LOGIC & WHATSAPP (AVEC FIREBASE)
+     4. PANIER (AVEC QUANTITÉS)
      ============================================================ */
   const drawerEl = document.getElementById('cart-drawer');
   const drawerBodyEl = drawerEl ? drawerEl.querySelector('.drawer-body') : null;
@@ -231,17 +227,33 @@
 
   function addToCart(product, variant) {
     const existing = cart.find(item => item.id === product.id && item.variant === variant);
-    if (existing) return false;
-    cart.push({ id: product.id, name: product.name, price: product.price, variant: variant, bgColor: product.bgColor, photo_url: product.photo_url });
-    renderCart(); return true;
+    
+    if (existing) {
+      // Si le produit est déjà là, on augmente la quantité
+      existing.quantity += 1;
+    } else {
+      // Sinon, on l'ajoute avec une quantité de 1
+      cart.push({ 
+        id: product.id, 
+        name: product.name, 
+        price: product.price, 
+        variant: variant, 
+        bgColor: product.bgColor, 
+        photo_url: product.photo_url,
+        quantity: 1
+      });
+    }
+    renderCart(); 
   }
 
   function renderCart() {
-    const count = cart.length;
-    if (cartCountEl) { cartCountEl.textContent = count; cartCountEl.dataset.empty = count === 0 ? 'true' : 'false'; }
+    let totalArticles = 0;
+    cart.forEach(item => totalArticles += item.quantity);
+
+    if (cartCountEl) { cartCountEl.textContent = totalArticles; cartCountEl.dataset.empty = totalArticles === 0 ? 'true' : 'false'; }
     if (!drawerBodyEl) return;
 
-    if (count === 0) {
+    if (cart.length === 0) {
       drawerBodyEl.innerHTML = '<div class="empty-cart">Votre panier est vide.</div>';
     } else {
       drawerBodyEl.innerHTML = cart.map((item, idx) => {
@@ -249,81 +261,103 @@
         const variants = p && p.variants ? p.variants : [];
         const swatchStyle = item.photo_url ? `background-image: url('${item.photo_url}'); background-size: cover; background-position: center;` : `background: ${item.bgColor};`;
         const variantsHtml = variants.length > 0 ? `<div class="ci-variants-wrap">${variants.map((v) => `<button type="button" class="ci-variant-btn${v === item.variant ? ' active' : ''}" data-idx="${idx}" data-variant="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join('')}</div>` : '';
-        return `<div class="cart-item"><div class="ci-swatch" style="${swatchStyle}"></div><div class="ci-info"><div class="ci-name">${escapeHtml(item.name)}</div>${variantsHtml}</div><div class="ci-right"><div class="ci-price">${formatPrice(item.price)}</div><button type="button" class="ci-remove" data-remove="${idx}">Retirer</button></div></div>`;
+        
+        return `
+          <div class="cart-item">
+            <div class="ci-swatch" style="${swatchStyle}"></div>
+            <div class="ci-info">
+              <div class="ci-name">${escapeHtml(item.name)}</div>
+              ${variantsHtml}
+            </div>
+            <div class="ci-right">
+              <div class="ci-price">${formatPrice(item.price * item.quantity)}</div>
+              
+              <!-- BOUTONS + ET - -->
+              <div class="ci-qty-controls">
+                <button type="button" class="ci-qty-btn" data-minus="${idx}">−</button>
+                <span class="ci-qty-val">${item.quantity}</span>
+                <button type="button" class="ci-qty-btn" data-plus="${idx}">+</button>
+              </div>
+
+              <button type="button" class="ci-remove" data-remove="${idx}">Retirer</button>
+            </div>
+          </div>
+        `;
       }).join('');
     }
 
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     if (drawerTotalEl) drawerTotalEl.textContent = formatPrice(total);
-    if (whatsappBtn) whatsappBtn.disabled = count === 0;
+    if (whatsappBtn) whatsappBtn.disabled = cart.length === 0;
   }
 
-  // Gérer le clic dans le panier
+  // Gérer les clics dans le panier (retirer, +, -)
   if (drawerBodyEl) {
     drawerBodyEl.addEventListener('click', (e) => {
       const removeBtn = e.target.closest('[data-remove]');
-      if (removeBtn) { cart.splice(parseInt(removeBtn.dataset.remove, 10), 1); renderCart(); renderGrid(); return; }
+      if (removeBtn) { cart.splice(parseInt(removeBtn.dataset.remove, 10), 1); renderCart(); return; }
+      
+      const minusBtn = e.target.closest('[data-minus]');
+      if (minusBtn) { 
+        const idx = parseInt(minusBtn.dataset.minus, 10);
+        if (cart[idx].quantity > 1) { cart[idx].quantity -= 1; } 
+        else { cart.splice(idx, 1); }
+        renderCart(); return; 
+      }
+      
+      const plusBtn = e.target.closest('[data-plus]');
+      if (plusBtn) { 
+        const idx = parseInt(plusBtn.dataset.plus, 10);
+        cart[idx].quantity += 1; 
+        renderCart(); return; 
+      }
+      
       const variantBtn = e.target.closest('.ci-variant-btn');
       if (variantBtn) { const idx = parseInt(variantBtn.dataset.idx, 10); if (cart[idx]) { cart[idx].variant = variantBtn.dataset.variant; renderCart(); } }
     });
   }
 
-  // Ouvrir / Fermer le panier
+  // Ouvrir / Fermer
   const cartBtn = document.querySelector('.cart-btn');
   if (cartBtn) cartBtn.addEventListener('click', () => { drawerEl.classList.add('open'); if(backdropEl) backdropEl.classList.add('open'); document.body.style.overflow = 'hidden'; });
   if (backdropEl) backdropEl.addEventListener('click', () => { drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = ''; });
   if (drawerEl) { const closeBtn = drawerEl.querySelector('.drawer-head button'); if(closeBtn) closeBtn.addEventListener('click', () => { drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = ''; }); }
 
-  // ENVOYER LA COMMANDE (Sauvegarde Firebase + Redirection WhatsApp)
+  // WhatsApp (Sauvegarde avec quantités)
   if (whatsappBtn) {
     whatsappBtn.addEventListener('click', async () => {
       if (cart.length === 0 || !SHOP_ID) return;
-      
-      whatsappBtn.textContent = "Enregistrement...";
-      whatsappBtn.disabled = true;
+      whatsappBtn.textContent = "Enregistrement..."; whatsappBtn.disabled = true;
 
       try {
-        // 1. Préparer le message WhatsApp
         const lines = [`Bonjour ${SHOP.name}, je veux commander :`];
         cart.forEach((item) => {
-          const varPart = item.variant ? ` — ${item.variant}` : '';
-          lines.push(`• ${item.name}${varPart} — ${formatPrice(item.price)}`);
+          const varPart = item.variant ? ` (${item.variant})` : '';
+          lines.push(`• ${item.quantity}x ${item.name}${varPart} — ${formatPrice(item.price * item.quantity)}`);
         });
-        const total = cart.reduce((s, i) => s + i.price, 0);
+        const total = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
         lines.push(`TOTAL : ${formatPrice(total)}`);
         
-        // 2. Sauvegarder la commande dans Firebase
         await db.collection('commandes').add({
           vendeur_id: SHOP_ID,
-          articles: cart, // On sauvegarde tout le panier
+          articles: cart, 
           total: total,
           statut: 'nouvelle',
           created_at: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        // 3. Ouvrir WhatsApp
-        const message = encodeURIComponent(lines.join('\n'));
-        const phone = SHOP.whatsapp.replace(/\s/g, '');
-        window.location.href = `https://wa.me/${phone}?text=${message}`;
+        window.location.href = `https://wa.me/${SHOP.whatsapp.replace(/\s/g, '')}?text=${encodeURIComponent(lines.join('\n'))}`;
         
-        // 4. Vider le panier
-        cart = [];
-        renderCart();
-        renderGrid();
-        drawerEl.classList.remove('open');
-        if(backdropEl) backdropEl.classList.remove('open');
-        document.body.style.overflow = '';
+        cart = []; renderCart();
+        drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = '';
 
       } catch (error) {
-        console.error("Erreur commande:", error);
-        alert("Erreur lors de l'enregistrement de la commande.");
+        console.error(error); alert("Erreur d'enregistrement.");
       } finally {
-        whatsappBtn.textContent = "Envoyer la commande sur WhatsApp";
-        whatsappBtn.disabled = false;
+        whatsappBtn.textContent = "Envoyer la commande sur WhatsApp"; whatsappBtn.disabled = false;
       }
     });
   }
 
-  // LANCEMENT
   initBoutique();
 })();

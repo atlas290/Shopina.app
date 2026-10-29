@@ -1,11 +1,13 @@
 /* ============================================================
-   Shopina — vendeur.js
+   Shopina — vendeur.js (Version Firebase)
    ============================================================ */
 
 (function () {
   'use strict';
 
-  /*// Configuration Firebase
+  /* ============================================================
+     0. CONNEXION FIREBASE
+     ============================================================ */
   const firebaseConfig = {
     apiKey: "AIzaSyCuge89Ct4HX-r4wUnaCqb3qdToL9H-3O0",
     authDomain: "shopina-6172d.firebaseapp.com",
@@ -15,11 +17,10 @@
     appId: "1:1068229855736:web:7583e82691e8a0eeb72e0d"
   };
 
-  // Initialisation de Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-  
+
   /* ============================================================
      1. DONNÉES
      ============================================================ */
@@ -172,11 +173,11 @@
           </ul>
         </div>
         <div class="lea-advice-card">
-          <h3>Le fond (Fais le vide)</h3>
+          <h3>Le fond (Fais leingle vide)</h3>
           <p>Débarrasse ton lit ou ta chambre. <strong>Le désordre tue la vente.</strong></p>
-          <ul>
+ un          <ul>
             <li>Le meilleur fond : un mur blanc.</li>
-            <li>Sinon, épingle un drap uni propre au mur.</li>
+            <li>Sinon, ép drap uni propre au mur.</li>
           </ul>
         </div>
         <div class="lea-advice-card">
@@ -384,21 +385,18 @@
       }
 
       try {
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
+        // 1. Connexion Firebase Auth
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
 
-        if (authError) throw authError;
+        // 2. Récupérer les infos du vendeur depuis Firestore
+        const doc = await db.collection('vendeurs').doc(user.uid).get();
+        
+        if (!doc.exists) {
+          throw new Error("Profil vendeur introuvable dans la base de données.");
+        }
 
-        const { data: vendeurData, error: dbError } = await supabase
-          .from('vendeurs')
-          .select('*')
-          .eq('email', email)
-          .single();
-
-        if (dbError) throw dbError;
-
+        const vendeurData = doc.data();
         SHOP.email = vendeurData.email;
         SHOP.name = vendeurData.nom_boutique;
         SHOP.slug = vendeurData.slug;
@@ -417,8 +415,8 @@
         showToast("Connexion réussie !");
 
       } catch (error) {
-        console.error("Erreur de connexion:", error.message);
-        alert('Email ou mot de passe incorrect.');
+        console.error("Erreur de connexion:", error);
+        alert('Erreur : ' + error.message);
       }
     });
   }
@@ -477,27 +475,22 @@
     if (deliveryEl) SHOP.delivery = deliveryEl.value.trim();
 
     try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      // 1. Créer l'utilisateur dans Firebase Auth
+      const userCredential = await auth.createUserWithEmailAndPassword(SHOP.email, SHOP.password);
+      const user = userCredential.user;
+
+      // 2. Sauvegarder les infos dans Firestore (avec l'ID de l'utilisateur)
+      await db.collection('vendeurs').doc(user.uid).set({
         email: SHOP.email,
-        password: SHOP.password
+        nom_boutique: SHOP.name,
+        slug: SHOP.slug,
+        numero_whatsapp: SHOP.whatsapp,
+        couleur_accent: SHOP.color,
+        horaires: SHOP.hours,
+        zone_livraison: SHOP.delivery,
+        type_boutique: SHOP.type,
+        created_at: firebase.firestore.FieldValue.serverTimestamp()
       });
-
-      if (authError) throw authError;
-
-      const { error: dbError } = await supabase
-        .from('vendeurs')
-        .insert([{
-          email: SHOP.email,
-          nom_boutique: SHOP.name,
-          slug: SHOP.slug,
-          numero_whatsapp: SHOP.whatsapp,
-          couleur_accent: SHOP.color,
-          horaires: SHOP.hours,
-          zone_livraison: SHOP.delivery,
-          type_boutique: SHOP.type
-        }]);
-
-      if (dbError) throw dbError;
 
       updateUIWithShopData();
 

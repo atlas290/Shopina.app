@@ -110,7 +110,7 @@
 
         <div class="ob-field">
           <label for="obWhatsapp">Numéro WhatsApp</label>
-          <input type="tel" id="obWhatsapp" value="+229 67 02 05 86" autocomplete="off">
+          <input type="tel" id="obWhatsapp" value="+229 97 00 00 00" autocomplete="off">
         </div>
 
         <div class="ob-field">
@@ -120,6 +120,7 @@
             <option value="import_chine">Import Chine (Sacs, chaussures, gadgets)</option>
             <option value="cosmetiques">Cosmétiques (Soins, maquillage, parfums)</option>
             <option value="electromenager">Électroménager / Maison</option>
+            <option value="autre">Autre (Nourriture, Sex-toys, Divers...)</option>
           </select>
         </div>
 
@@ -166,6 +167,15 @@
           <label for="obDelivery">Zone de livraison</label>
           <input type="text" id="obDelivery" placeholder="Ex: Cotonou, Calavi, Abomey" autocomplete="off">
         </div>
+
+        <!-- NOUVEAUX CHAMPS : FRAIS DE LIVRAISON -->
+        <div class="ob-field">
+          <label>Frais de livraison (FCFA)</label>
+          <input type="number" id="obDeliveryPrice1" placeholder="Prix Livraison 1 (ex: 1000)" style="margin-bottom: 8px;">
+          <input type="number" id="obDeliveryPrice2" placeholder="Prix Livraison 2 (ex: 1500)" style="margin-bottom: 8px;">
+          <input type="number" id="obDeliveryPrice3" placeholder="Prix Livraison 3 (ex: 2000)">
+        </div>
+
         <div class="ob-actions">
           <button type="button" class="btn-secondary" id="obPrevBtn">Retour</button>
           <button type="button" class="btn-primary" id="obCreateBtn">Créer ma boutique</button>
@@ -401,7 +411,7 @@
       </div>
       <div class="settings-row">
         <span class="settings-label">WhatsApp</span>
-        <span class="settings-value" id="setWhatsapp">+229 67 02 05 86</span>
+        <span class="settings-value" id="setWhatsapp">+229 97 00 00 00</span>
       </div>
       <div class="settings-row">
         <span class="settings-label">Horaires</span>
@@ -418,6 +428,24 @@
         </span>
       </div>
     </div>
+
+    <!-- NOUVELLE CARTE : FRAIS DE LIVRAISON -->
+    <div class="card">
+      <div class="card-title">Frais de livraison</div>
+      <div class="settings-row">
+        <span class="settings-label">Zone 1</span>
+        <span class="settings-value" id="setDeliveryPrice1">—</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Zone 2</span>
+        <span class="settings-value" id="setDeliveryPrice2">—</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Zone 3</span>
+        <span class="settings-value" id="setDeliveryPrice3">—</span>
+      </div>
+    </div>
+
     <div class="settings-actions">
       <button type="button" class="btn-secondary">Modifier mes informations</button>
     </div>
@@ -553,9 +581,6 @@
       if (splash) splash.remove();
     }, 1000);
   </script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <script src="js/vendeur.js"></script>
 </body>

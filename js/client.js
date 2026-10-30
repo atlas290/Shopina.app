@@ -212,7 +212,22 @@
   }
 
   function renderCart() {
-    let totalArticles = 0; cart.forEach(item => totalArticles += item.quantity);
+    let totalArticles = 0;
+    
+    // --- LOGIQUE DE LA BARRE EN BAS ---
+    const floatingBar = document.getElementById('floating-cart-bar');
+    if (floatingBar) {
+      if (cart.length > 0) {
+        let totalCheck = 0;
+        cart.forEach(item => totalCheck += (item.price * item.quantity));
+        floatingBar.querySelector('.floating-cart-count').textContent = `${cart.length} article${cart.length > 1 ? 's' : ''}`;
+        floatingBar.querySelector('.floating-cart-total').textContent = formatPrice(totalCheck);
+        floatingBar.classList.add('visible');
+      } else {
+        floatingBar.classList.remove('visible');
+      }
+    }
+    // ---------------------------------- cart.forEach(item => totalArticles += item.quantity);
     if (cartCountEl) { cartCountEl.textContent = totalArticles; cartCountEl.dataset.empty = totalArticles === 0 ? 'true' : 'false'; }
     if (!drawerBodyEl) return;
 

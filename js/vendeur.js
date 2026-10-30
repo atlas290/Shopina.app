@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — vendeur.js (Version Finale et Corrigée)
+   Shopina — vendeur.js (Version Finale - Réglages Modifiables)
    ============================================================ */
 
 (function () {
@@ -21,8 +21,7 @@
   const CLOUDINARY_UPLOAD_PRESET = 'plats_resto';
 
   const SHOP = { name: '', slug: '', whatsapp: '', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, categories: [], email: '', password: '' };
-  let currentShopCategories = [];
-
+  
   const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: 'Léa', reglages: 'Réglages' };
 
   const leaData = {
@@ -67,26 +66,31 @@
   $$('.nav-btn').forEach((btn) => { btn.addEventListener('click', () => switchTab(btn.dataset.tab)); });
 
   /* ============================================================
-     UI MISE À JOUR (CORRIGÉE ET SORTIE DE L'ÉCOUTEUR)
+     UI MISE À JOUR
      ============================================================ */
   function updateUIWithShopData() {
     document.querySelector('#view-dashboard .shop-name').textContent = SHOP.name;
     document.querySelector('#view-dashboard .shop-logo').textContent = (SHOP.name.charAt(0) || 'H').toUpperCase();
     
     const sloganEl = document.getElementById('dashSlogan');
-    if (sloganEl) {
-      const cats = SHOP.categories.length > 0 ? SHOP.categories.join(' · ') : 'Bienvenue sur ma boutique';
-      sloganEl.textContent = cats;
-    }
+    if (sloganEl) sloganEl.textContent = SHOP.categories.length > 0 ? SHOP.categories.join(' · ') : 'Bienvenue sur ma boutique';
 
     document.querySelector('#view-dashboard .link-code').textContent = 'shopina.shop/' + SHOP.slug;
-    document.getElementById('setName').textContent = SHOP.name; document.getElementById('setSlug').textContent = SHOP.slug; document.getElementById('setWhatsapp').textContent = SHOP.whatsapp;
-    document.getElementById('setHours').textContent = SHOP.hours || '—'; document.getElementById('setDelivery').textContent = SHOP.delivery || '—';
-    document.getElementById('setDeliveryPrice1').textContent = SHOP.deliveryPrice1 ? SHOP.deliveryPrice1 + ' FCFA' : '—';
-    document.getElementById('setDeliveryPrice2').textContent = SHOP.deliveryPrice2 ? SHOP.deliveryPrice2 + ' FCFA' : '—';
-    document.getElementById('setDeliveryPrice3').textContent = SHOP.deliveryPrice3 ? SHOP.deliveryPrice3 + ' FCFA' : '—';
-    document.getElementById('setColorDot').style.backgroundColor = SHOP.color; document.getElementById('setColorHex').textContent = SHOP.color.toUpperCase();
-    document.documentElement.style.setProperty('--accent', SHOP.color); document.documentElement.style.setProperty('--accent-soft', SHOP.colorSoft);
+    
+    // Remplir les champs modifiables dans Réglages
+    document.getElementById('setName').value = SHOP.name;
+    document.getElementById('setWhatsapp').value = SHOP.whatsapp;
+    document.getElementById('setHours').value = SHOP.hours || '';
+    document.getElementById('setDelivery').value = SHOP.delivery || '';
+    document.getElementById('setDeliveryPrice1').value = SHOP.deliveryPrice1 || '';
+    document.getElementById('setDeliveryPrice2').value = SHOP.deliveryPrice2 || '';
+    document.getElementById('setDeliveryPrice3').value = SHOP.deliveryPrice3 || '';
+    
+    document.getElementById('setSlug').textContent = SHOP.slug;
+    document.getElementById('setColorDot').style.backgroundColor = SHOP.color;
+    document.getElementById('setColorHex').textContent = SHOP.color.toUpperCase();
+    document.documentElement.style.setProperty('--accent', SHOP.color);
+    document.documentElement.style.setProperty('--accent-soft', SHOP.colorSoft);
   }
 
   /* ============================================================
@@ -225,7 +229,7 @@
   }
 
   /* ============================================================
-     ACTIONS DASHBOARD
+     ACTIONS DASHBOARD & RÉGLAGES
      ============================================================ */
   function copyLink() {
     const link = 'https://shopina.vercel.app/boutique.html?shop=' + SHOP.slug; 
@@ -243,6 +247,56 @@
 
   document.getElementById('btnCopyLink').addEventListener('click', copyLink);
   document.getElementById('btnShareLink').addEventListener('click', shareLink);
+
+  // SAUVEGARDE DES RÉGLAGES
+  document.getElementById('btnSaveSettings').addEventListener('click', async () => {
+    const user = auth.currentUser;
+    if (!user) return alert("Vous devez être connecté.");
+
+    const newName = document.getElementById('setName').value.trim();
+    const newWhatsapp = document.getElementById('setWhatsapp').value.trim();
+    const newHours = document.getElementById('setHours').value.trim();
+    const newDelivery = document.getElementById('setDelivery').value.trim();
+    const newPrice1 = parseInt(document.getElementById('setDeliveryPrice1').value, 10) || 0;
+    const newPrice2 = parseInt(document.getElementById('setDeliveryPrice2').value, 10) || 0;
+    const newPrice3 = parseInt(document.getElementById('setDeliveryPrice3').value, 10) || 0;
+
+    if (!newName || !newWhatsapp) return alert("Le nom et le numéro WhatsApp sont obligatoires.");
+
+    const btn = document.getElementById('btnSaveSettings');
+    btn.textContent = "Enregistrement...";
+    btn.disabled = true;
+
+    try {
+      await db.collection('vendeurs').doc(user.uid).update({
+        nom_boutique: newName,
+        numero_whatsapp: newWhatsapp,
+        horaires: newHours,
+        zone_livraison: newDelivery,
+        deliveryPrice1: newPrice1,
+        deliveryPrice2: newPrice2,
+        deliveryPrice3: newPrice3
+      });
+
+      // Mettre à jour l'objet local
+      SHOP.name = newName;
+      SHOP.whatsapp = newWhatsapp;
+      SHOP.hours = newHours;
+      SHOP.delivery = newDelivery;
+      SHOP.deliveryPrice1 = newPrice1;
+      SHOP.deliveryPrice2 = newPrice2;
+      SHOP.deliveryPrice3 = newPrice3;
+
+      updateUIWithShopData();
+      showToast('✓ Modifications enregistrées !');
+    } catch (error) {
+      console.error(error);
+      alert("Erreur : " + error.message);
+    } finally {
+      btn.textContent = "Enregistrer les modifications";
+      btn.disabled = false;
+    }
+  });
 
   /* ============================================================
      ONBOARDING
@@ -314,7 +368,6 @@
   }
   $$('.lea-category-card').forEach(card => card.addEventListener('click', () => openLeaCategory(card.dataset.cat)));
 
-  document.getElementById('btnEditInfo').addEventListener('click', simulate);
   document.getElementById('btnManageSub').addEventListener('click', simulate);
 
   function init() { document.querySelector('.bottom-nav').style.display = 'none'; }

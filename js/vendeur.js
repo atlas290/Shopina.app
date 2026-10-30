@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — vendeur.js (Version Finale - Finitions & Commandes)
+   Shopina — vendeur.js (Version Finale - Session Persistante)
    ============================================================ */
 
 (function () {
@@ -20,7 +20,7 @@
   const CLOUDINARY_CLOUD_NAME = 'jaifaim-app';
   const CLOUDINARY_UPLOAD_PRESET = 'plats_resto';
 
-  const SHOP = { name: 'Havana Shop', slug: 'havana-shop', whatsapp: '+229 67 02 05 86', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, type: 'mode_locale', email: '', password: '' };
+  const SHOP = { name: 'Havana Shop', slug: 'havana-shop', whatsapp: '', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, type: 'mode_locale', email: '', password: '' };
   const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: 'Léa', reglages: 'Réglages' };
 
   const leaData = {
@@ -65,34 +65,56 @@
   $$('.nav-btn').forEach((btn) => { btn.addEventListener('click', () => switchTab(btn.dataset.tab)); });
 
   /* ============================================================
-     AUTHENTIFICATION
+     AUTHENTIFICATION & SESSION
      ============================================================ */
   const goToLoginBtn = document.getElementById('goToLoginBtn'), goToOnboardingBtn = document.getElementById('goToOnboardingBtn');
   const viewLogin = document.getElementById('view-login'), viewOnboarding = document.getElementById('view-onboarding');
   if (goToLoginBtn) goToLoginBtn.addEventListener('click', (e) => { e.preventDefault(); viewOnboarding.classList.remove('active'); viewLogin.classList.add('active'); });
   if (goToOnboardingBtn) goToOnboardingBtn.addEventListener('click', (e) => { e.preventDefault(); viewLogin.classList.remove('active'); viewOnboarding.classList.add('active'); });
 
+  // Connexion
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
   if (loginSubmitBtn) {
     loginSubmitBtn.addEventListener('click', async () => {
       const email = document.getElementById('loginEmail').value.trim(), password = document.getElementById('loginPassword').value.trim();
       if (!email || !password) return alert('Remplissez tous les champs.');
       try {
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        const doc = await db.collection('vendeurs').doc(userCredential.user.uid).get();
-        if (!doc.exists) throw new Error("Profil introuvable.");
-        
-        const v = doc.data();
-        SHOP.email = v.email; SHOP.name = v.nom_boutique; SHOP.slug = v.slug; SHOP.whatsapp = v.numero_whatsapp;
-        SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
-        SHOP.type = v.type_boutique; SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
-
-        updateUIWithShopData();
-        document.querySelector('.bottom-nav').style.display = 'flex';
-        switchTab('dashboard'); showToast("Connexion réussie !");
-      } catch (error) { alert('Erreur : ' + error.message); }
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (error) { alert('Email ou mot de passe incorrect.'); }
     });
   }
+
+  // Déconnexion
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    auth.signOut().then(() => {
+      window.location.reload();
+    });
+  });
+
+  // LE MIRACLE : L'écouteur d'état d'authentification
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      // La vendeuse est connectée (ou vient de se connecter)
+      try {
+        const doc = await db.collection('vendeurs').doc(user.uid).get();
+        if (doc.exists) {
+          const v = doc.data();
+          SHOP.email = v.email; SHOP.name = v.nom_boutique; SHOP.slug = v.slug; SHOP.whatsapp = v.numero_whatsapp;
+          SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
+          SHOP.type = v.type_boutique; SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
+          
+          updateUIWithShopData();
+          document.querySelector('.bottom-nav').style.display = 'flex';
+          switchTab('dashboard');
+        }
+      } catch (error) { console.error("Erreur chargement session", error); }
+    } else {
+      // La vendeuse n'est pas connectée
+      document.querySelector('.bottom-nav').style.display = 'none';
+      viewLogin.classList.remove('active');
+      viewOnboarding.classList.add('active');
+    }
+  });
 
   /* ============================================================
      CHARGEMENT DES DONNÉES
@@ -130,7 +152,7 @@
         const date = order.created_at ? new Date(order.created_at.toMillis()).toLocaleDateString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'Date inconnue';
         let articlesHtml = '';
         order.articles.forEach(art => {
-          const qty = art.quantity || 1; // CORRECTION DU BUG UNDEFINED ICI
+          const qty = art.quantity || 1;
           articlesHtml += `<div style="font-size: 12px; color: var(--text-muted);">${qty}x ${art.name} ${art.variant ? '('+art.variant+')' : ''}</div>`;
         });
 
@@ -156,7 +178,6 @@
         `);
       });
 
-      // Événements sur les selects (changement de statut)
       list.querySelectorAll('.order-status-select').forEach(select => {
         select.addEventListener('change', async function() {
           const orderId = this.dataset.orderId, newStatus = this.value;
@@ -166,7 +187,6 @@
         });
       });
 
-      // Événements sur les boutons "Copier le message"
       list.querySelectorAll('.btn-copy-confirm').forEach(btn => {
         btn.addEventListener('click', function() {
           const message = `Bonjour, votre commande chez ${SHOP.name} est bien confirmée ! Elle sera livrée dès que possible. Merci pour votre confiance !`;
@@ -190,7 +210,7 @@
   }
 
   /* ============================================================
-     FORMULAIRES, UI & PARTAGE
+     UI & INSCRIPTION
      ============================================================ */
   function updateUIWithShopData() {
     document.querySelector('#view-dashboard .shop-name').textContent = SHOP.name;
@@ -205,79 +225,80 @@
     document.documentElement.style.setProperty('--accent', SHOP.color); document.documentElement.style.setProperty('--accent-soft', SHOP.colorSoft);
   }
 
-  // Bouton Copier le lien
   function copyLink() {
     const link = 'shopina.shop/' + SHOP.slug; const done = () => showToast('Lien copié !');
     const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e) { done(); } };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done).catch(fallback); else fallback();
   }
 
-  // Bouton Partager (Nouveau !)
   async function shareLink() {
     const link = 'shopina.shop/' + SHOP.slug;
     if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Ma boutique ' + SHOP.name,
-          text: 'Découvrez mes produits sur ma boutique en ligne !',
-          url: 'https://' + link
-        });
-      } catch (error) {
-        console.log('Partage annulé par l\'utilisateur');
-      }
+      try { await navigator.share({ title: 'Ma boutique ' + SHOP.name, text: 'Découvrez mes produits !', url: 'https://' + link }); } catch (error) {}
+    } else { copyLink(); showToast('Lien copié !'); }
+  }
+
+  document.getElementById('btnCopyLink').addEventListener('click', copyLink);
+  document.getElementById('btnShareLink').addEventListener('click', shareLink);
+
+  // Gestion Onboarding
+  function goToStep(n) {
+    const step1 = document.getElementById('obStep1'), step2 = document.getElementById('obStep2'), dots = $$('#view-onboarding .ob-step-dot');
+    if (n === 2) {
+      const emailEl = document.getElementById('obEmail'), passwordEl = document.getElementById('obPassword');
+      if (!emailEl.value.trim() || !passwordEl.value.trim()) { alert('Remplissez l\'email et le mot de passe.'); return; }
+      if (passwordEl.value.length < 6) { alert('Le mot de passe doit contenir au moins 6 caractères.'); return; }
+
+      SHOP.email = emailEl.value.trim(); SHOP.password = passwordEl.value.trim();
+      SHOP.name = document.getElementById('obName').value.trim() || 'Ma Boutique';
+      SHOP.slug = document.getElementById('obSlug').value.trim() || 'ma-boutique';
+      SHOP.whatsapp = document.getElementById('obWhatsapp').value.trim();
+      SHOP.type = document.getElementById('obShopType').value;
+
+      step1.style.display = 'none'; step2.style.display = '';
+      if (dots[0]) { dots[0].classList.remove('active'); dots[0].textContent = '✓'; }
+      if (dots[1]) dots[1].classList.add('active');
     } else {
-      // Si le téléphone ne supporte pas le partage natif, on copie
-      copyLink();
-      showToast('Lien copié (partage non supporté)');
+      step1.style.display = ''; step2.style.display = 'none';
+      if (dots[0]) { dots[0].classList.add('active'); dots[0].textContent = '1'; }
+      if (dots[1]) dots[1].classList.remove('active');
     }
   }
 
-  // Écouteurs sur les boutons du Dashboard
-  $$('#view-dashboard .btn-secondary').forEach((btn) => {
-    if (btn.textContent.trim() === 'Copier') btn.addEventListener('click', copyLink);
-    else if (btn.textContent.trim() === 'Partager') btn.addEventListener('click', shareLink);
-    else if (btn.id !== 'catalogBtn') btn.addEventListener('click', simulate);
+  document.getElementById('obNextBtn').addEventListener('click', () => goToStep(2));
+  document.getElementById('obPrevBtn').addEventListener('click', () => goToStep(1));
+
+  document.getElementById('obCreateBtn').addEventListener('click', async () => {
+    SHOP.hours = document.getElementById('obHours').value.trim();
+    SHOP.delivery = document.getElementById('obDelivery').value.trim();
+    SHOP.deliveryPrice1 = parseInt(document.getElementById('obDeliveryPrice1').value, 10) || 0;
+    SHOP.deliveryPrice2 = parseInt(document.getElementById('obDeliveryPrice2').value, 10) || 0;
+    SHOP.deliveryPrice3 = parseInt(document.getElementById('obDeliveryPrice3').value, 10) || 0;
+    SHOP.color = selectedColor.value; SHOP.colorSoft = selectedColor.soft;
+
+    try {
+      const userCredential = await auth.createUserWithEmailAndPassword(SHOP.email, SHOP.password);
+      await db.collection('vendeurs').doc(userCredential.user.uid).set({
+        email: SHOP.email, nom_boutique: SHOP.name, slug: SHOP.slug, numero_whatsapp: SHOP.whatsapp,
+        couleur_accent: SHOP.color, horaires: SHOP.hours, zone_livraison: SHOP.delivery,
+        deliveryPrice1: SHOP.deliveryPrice1, deliveryPrice2: SHOP.deliveryPrice2, deliveryPrice3: SHOP.deliveryPrice3,
+        type_boutique: SHOP.type, created_at: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast("Compte créé !");
+      // L'écouteur auth.onAuthStateChanged fera le reste automatiquement
+    } catch (error) {
+      if (error.code === 'auth/email-already-in-use') alert("Cet email est déjà utilisé.");
+      else alert("Erreur : " + error.message);
+    }
   });
 
-  // Reste du code (Photos, Produits...)
-  const btnCamera = document.getElementById('btnCamera'), btnGallery = document.getElementById('btnGallery');
-  const cameraInput = document.getElementById('cameraInput'), galleryInput = document.getElementById('galleryInput');
-  if(btnCamera) btnCamera.addEventListener('click', () => cameraInput.click());
-  if(btnGallery) btnGallery.addEventListener('click', () => galleryInput.click());
-  
-  async function compresserImage(file) { /* ... (même code que la dernière fois) ... */ return new Promise((resolve) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = (event) => { const img = new Image(); img.src = event.target.result; img.onload = () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; let width = img.width, height = img.height; if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; } canvas.width = width; canvas.height = height; canvas.getContext('2d').drawImage(img, 0, 0, width, height); canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7); }; }; }); }
-  async function handleImageSelect(event) { const file = event.target.files[0]; if (!file) return; const previewEl = document.getElementById('photoPreview'); if (previewEl) previewEl.textContent = "Compression..."; try { const compressedBlob = await compresserImage(file); currentImageBlob = compressedBlob; if (previewEl) { previewEl.style.backgroundImage = `url('${URL.createObjectURL(compressedBlob)}')`; previewEl.textContent = ''; } } catch (error) { alert("Impossible de lire l'image."); } }
-  if(cameraInput) cameraInput.addEventListener('change', handleImageSelect);
-  if(galleryInput) galleryInput.addEventListener('change', handleImageSelect);
-
-  function openProductOverlay() { document.getElementById('product-form-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; resetProductForm(); }
-  function closeProductOverlay() { document.getElementById('product-form-overlay').classList.remove('open'); document.body.style.overflow = ''; }
-  document.querySelectorAll('.fab, #dashAddBtn').forEach(btn => btn.addEventListener('click', openProductOverlay));
-  document.querySelector('#product-form-overlay .overlay-close').addEventListener('click', closeProductOverlay);
-  document.querySelector('#product-form-overlay .overlay-footer .btn-secondary').addEventListener('click', closeProductOverlay);
-
-  function resetProductForm() {
-    document.getElementById('pName').value = ''; document.getElementById('pPrice').value = ''; document.getElementById('pDesc').value = '';
-    document.querySelector('#product-form-overlay .char-count').textContent = '0/140'; document.querySelector('#product-form-overlay .tag-input').value = '';
-    document.querySelector('#product-form-overlay .tags-list').innerHTML = '';
-    currentTags = []; selectedCat = 'Vêtement'; selectedStatus = 'available'; currentImageBlob = null;
-    $$('#product-form-overlay .radio-pill').forEach((b, i) => b.classList.toggle('selected', i === 0));
-    $$('#product-form-overlay .status-pill').forEach((b, i) => b.classList.toggle('selected', i === 0));
-    const photoPreview = document.querySelector('#product-form-overlay .photo-preview'); if (photoPreview) { photoPreview.textContent = 'Aucune photo'; photoPreview.style.backgroundImage = ''; }
-    if(cameraInput) cameraInput.value = ''; if(galleryInput) galleryInput.value = '';
-  }
-
-  document.getElementById('overlaySaveBtn').addEventListener('click', async () => {
-    const user = auth.currentUser; if (!user) return alert("Connectez-vous.");
-    const name = document.getElementById('pName').value.trim(), price = parseInt(document.getElementById('pPrice').value, 10);
-    if (!name || !price || price <= 0) return alert('Nom et prix valides requis.');
-    const saveBtn = document.getElementById('overlaySaveBtn'); saveBtn.textContent = "Envoi..."; saveBtn.disabled = true;
-    try {
-      let photoUrl = null;
-      if (currentImageBlob) { const formData = new FormData(); formData.append('file', currentImageBlob); formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET); const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: formData }); const data = await res.json(); if (data.secure_url) photoUrl = data.secure_url; else throw new Error("Upload échoué"); }
-      await db.collection('produits').add({ vendeur_id: user.uid, nom: name, prix: price, description: document.getElementById('pDesc').value.trim(), categorie: selectedCat, statut: selectedStatus === 'available' ? 'Disponible' : 'Épuisé', variantes: currentTags, photo_url: photoUrl, bgColor: '#F8BBD0', created_at: firebase.firestore.FieldValue.serverTimestamp() });
-      showToast('✓ Produit enregistré !'); closeProductOverlay(); loadProducts(); switchTab('produits');
-    } catch (e) { alert("Erreur: " + e.message); } finally { saveBtn.textContent = "Enregistrer"; saveBtn.disabled = false; }
+  // Couleurs
+  $$('#colorPicker .color-swatch').forEach((sw) => {
+    sw.addEventListener('click', () => {
+      $$('#colorPicker .color-swatch').forEach((s) => s.classList.remove('selected'));
+      sw.classList.add('selected'); selectedColor = { value: sw.dataset.color, soft: sw.dataset.soft };
+      document.documentElement.style.setProperty('--accent', selectedColor.value); document.documentElement.style.setProperty('--accent-soft', selectedColor.soft);
+    });
   });
 
   // Léa
@@ -289,9 +310,10 @@
   }
   $$('.lea-category-card').forEach(card => card.addEventListener('click', () => openLeaCategory(card.dataset.cat)));
 
-  function init() {
-    const nav = document.querySelector('.bottom-nav'); if (nav) nav.style.display = 'none';
-    const banner = $('.demo-banner'); if (banner) banner.textContent = 'Démo Shopina — Onboarding';
-  }
+  // Placeholders pour les boutons de réglages (à venir)
+  document.getElementById('btnEditInfo').addEventListener('click', simulate);
+  document.getElementById('btnManageSub').addEventListener('click', simulate);
+
+  function init() { document.querySelector('.bottom-nav').style.display = 'none'; }
   init();
 })();

@@ -210,11 +210,11 @@
     if (existing) { existing.quantity += 1; } else { cart.push({ id: product.id, name: product.name, price: product.price, variant: variant, bgColor: product.bgColor, photo_url: product.photo_url, quantity: 1 }); }
     renderCart(); return true;
   }
-
-  function renderCart() {
+function renderCart() {
     let totalArticles = 0;
-    
-    // --- LOGIQUE DE LA BARRE EN BAS ---
+    cart.forEach(item => totalArticles += item.quantity);
+
+    // --- GESTION DE LA BARRE FIXE EN BAS ---
     const floatingBar = document.getElementById('floating-cart-bar');
     if (floatingBar) {
       if (cart.length > 0) {
@@ -227,18 +227,38 @@
         floatingBar.classList.remove('visible');
       }
     }
-    // ---------------------------------- cart.forEach(item => totalArticles += item.quantity);
+
+    // --- GESTION DU TIROIR (COMME AVANT) ---
     if (cartCountEl) { cartCountEl.textContent = totalArticles; cartCountEl.dataset.empty = totalArticles === 0 ? 'true' : 'false'; }
     if (!drawerBodyEl) return;
 
-    if (cart.length === 0) { drawerBodyEl.innerHTML = '<div class="empty-cart">Votre panier est vide.</div>'; } 
-    else {
+    if (cart.length === 0) {
+      drawerBodyEl.innerHTML = '<div class="empty-cart">Votre panier est vide.</div>';
+    } else {
       drawerBodyEl.innerHTML = cart.map((item, idx) => {
         const p = products.find(prod => prod.id === item.id);
         const variants = p && p.variants ? p.variants : [];
         const swatchStyle = item.photo_url ? `background-image: url('${item.photo_url}'); background-size: cover; background-position: center;` : `background: ${item.bgColor};`;
         const variantsHtml = variants.length > 0 ? `<div class="ci-variants-wrap">${variants.map((v) => `<button type="button" class="ci-variant-btn${v === item.variant ? ' active' : ''}" data-idx="${idx}" data-variant="${escapeHtml(v)}">${escapeHtml(v)}</button>`).join('')}</div>` : '';
-        return `<div class="cart-item"><div class="ci-swatch" style="${swatchStyle}"></div><div class="ci-info"><div class="ci-name">${escapeHtml(item.name)}</div>${variantsHtml}</div><div class="ci-right"><div class="ci-price">${formatPrice(item.price * item.quantity)}</div><div class="ci-qty-controls"><button type="button" class="ci-qty-btn" data-minus="${idx}">−</button><span class="ci-qty-val">${item.quantity}</span><button type="button" class="ci-qty-btn" data-plus="${idx}">+</button></div><button type="button" class="ci-remove" data-remove="${idx}">Retirer</button></div></div>`;
+        
+        return `
+          <div class="cart-item">
+            <div class="ci-swatch" style="${swatchStyle}"></div>
+            <div class="ci-info">
+              <div class="ci-name">${escapeHtml(item.name)}</div>
+              ${variantsHtml}
+            </div>
+            <div class="ci-right">
+              <div class="ci-price">${formatPrice(item.price * item.quantity)}</div>
+              <div class="ci-qty-controls">
+                <button type="button" class="ci-qty-btn" data-minus="${idx}">−</button>
+                <span class="ci-qty-val">${item.quantity}</span>
+                <button type="button" class="ci-qty-btn" data-plus="${idx}">+</button>
+              </div>
+              <button type="button" class="ci-remove" data-remove="${idx}">Retirer</button>
+            </div>
+          </div>
+        `;
       }).join('');
     }
 

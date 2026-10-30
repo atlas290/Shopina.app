@@ -32,6 +32,11 @@
   };
 
   let currentTags = [], selectedCat = '', selectedStatus = 'available', selectedColor = { value: '#E91E63', soft: '#FCE4EC' }, currentImageBlob = null;
+  
+  // AJOUT : Variable pour stocker l'ID du produit en cours de modification
+  let editingProductId = null;
+  // AJOUT : Variable pour garder l'ancienne photo si on n'en change pas
+  let existingPhotoUrl = null; 
 
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
@@ -159,12 +164,37 @@
       const snapshot = await db.collection('produits').where('vendeur_id', '==', user.uid).get();
       grid.innerHTML = '';
       if (snapshot.empty) { grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 20px;">Aucun produit.</div>'; return; }
+      
       snapshot.forEach((doc) => {
         const p = doc.data();
         const imgStyle = p.photo_url ? `background-image: url('${p.photo_url}'); background-size: cover; background-position: center;` : `background: ${p.bgColor || '#F8BBD0'};`;
-        grid.insertAdjacentHTML('beforeend', `<div class="product-card"><div class="product-img ${p.statut === 'Épuisé' ? 'soldout' : ''}" style="${imgStyle}">${!p.photo_url ? p.nom.charAt(0).toUpperCase() : ''}${p.statut === 'Épuisé' ? '<span class="soldout-badge">Épuisé</span>' : ''}</div><div class="product-info"><div class="product-name">${escapeHtml(p.nom)}</div><div class="product-price">${formatPrice(p.prix)}</div></div></div>`);
+        
+        // AJOUT : Le bouton "Modifier" a été ajouté ici
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="product-card">
+            <div class="product-img ${p.statut === 'Épuisé' ? 'soldout' : ''}" style="${imgStyle}">
+              ${!p.photo_url ? p.nom.charAt(0).toUpperCase() : ''}
+              ${p.statut === 'Épuisé' ? '<span class="soldout-badge">Épuisé</span>' : ''}
+            </div>
+            <div class="product-info">
+              <div class="product-name">${escapeHtml(p.nom)}</div>
+              <div class="product-price">${formatPrice(p.prix)}</div>
+              <button type="button" class="btn-edit" data-id="${doc.id}">Modifier</button>
+            </div>
+          </div>
+        `);
       });
+      
       document.querySelector('#view-produits .products-header p').textContent = `${snapshot.size} produit(s) enregistré(s)`;
+
+      // AJOUT : On écoute les clics sur "Modifier"
+      grid.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Évite de déclencher d'autres clics
+          openProductOverlay(btn.dataset.id);
+        });
+      });
+
     } catch (error) { console.error(error); }
   }
 
@@ -301,17 +331,70 @@
   /* ============================================================
      OVERLAY PRODUIT (PHOTOS, TAGS, CATÉGORIES)
      ============================================================ */
-  function openProductOverlay() { 
+  
+  // AJOUT : La fonction prend un id optionnel
+  function openProductOverlay(id = null) { 
+    editingProductId = id;
     document.getElementById('product-form-overlay').classList.add('open'); 
     document.body.style.overflow = 'hidden'; 
-    resetProductForm(); 
+    
+    const titleEl = document.getElementById('overlayTitle');
+    const saveBtn = document.getElementById('overlaySaveBtn');
+
+    if (id) {
+      // MODE MODIFICATION
+      titleEl.textContent = "Modifier le produit";
+      saveBtn.textContent = "Mettre à jour";
+      
+      db.collection('produits').doc(id).get().then(doc => {
+        if(doc.exists) {
+          const p = doc.data();
+          document.getElementById('pName').value = p.nom;
+          document.getElementById('pPrice').value = p.prix;
+          document.getElementById('pDesc').value = p.description || '';
+          document.querySelector('#product-form-overlay .char-count').textContent = (p.description || '').length + '/140';
+          
+          selectedCat = p.categorie;
+          document.querySelectorAll('#productCategoriesContainer .radio-pill').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.cat === selectedCat);
+          });
+
+          currentTags = p.variantes || [];
+          renderTags();
+
+          selectedStatus = p.statut === 'Épuisé' ? 'soldout' : 'available';
+          document.querySelectorAll('#product-form-overlay .status-pill').forEach((b, i) => {
+            b.classList.toggle('selected', (i === 0 && selectedStatus === 'available') || (i === 1 && selectedStatus === 'soldout'));
+          });
+
+          const photoPreview = document.getElementById('photoPreview');
+          if (p.photo_url) {
+            photoPreview.style.backgroundImage = `url('${p.photo_url}')`;
+            photoPreview.textContent = '';
+            existingPhotoUrl = p.photo_url; // On mémorise l'ancienne photo
+          } else {
+            photoPreview.style.backgroundImage = '';
+            photoPreview.textContent = 'Aucune photo';
+            existingPhotoUrl = null;
+          }
+        }
+      });
+
+    } else {
+      // MODE CRÉATION
+      titleEl.textContent = "Ajouter un produit";
+      saveBtn.textContent = "Enregistrer";
+      resetProductForm();
+    }
   }
+
   function closeProductOverlay() { 
     document.getElementById('product-form-overlay').classList.remove('open'); 
     document.body.style.overflow = ''; 
+    editingProductId = null;
   }
 
-  document.querySelectorAll('.fab, #dashAddBtn').forEach(btn => btn.addEventListener('click', openProductOverlay));
+  document.querySelectorAll('.fab, #dashAddBtn').forEach(btn => btn.addEventListener('click', () => openProductOverlay()));
   document.querySelector('#product-form-overlay .overlay-close').addEventListener('click', closeProductOverlay);
   document.querySelector('#product-form-overlay .overlay-footer .btn-secondary').addEventListener('click', closeProductOverlay);
 
@@ -325,6 +408,7 @@
     currentTags = []; 
     selectedStatus = 'available'; 
     currentImageBlob = null;
+    existingPhotoUrl = null;
     document.querySelectorAll('#product-form-overlay .status-pill').forEach((b, i) => b.classList.toggle('selected', i === 0));
     const photoPreview = document.querySelector('#product-form-overlay .photo-preview'); 
     if (photoPreview) { photoPreview.textContent = 'Aucune photo'; photoPreview.style.backgroundImage = ''; }
@@ -337,21 +421,23 @@
   if(btnCamera) btnCamera.addEventListener('click', () => cameraInput.click());
   if(btnGallery) btnGallery.addEventListener('click', () => galleryInput.click());
 
-  async function compresserImage(file) { 
+  async function compresserImage);(file) { 
     return new Promise((resolve) => { 
       const reader = new FileReader(); 
       reader.readAsDataURL(file); 
       reader.onload = (event) => { 
         const img = new Image(); 
         img.src = event.target.result; 
-        img.onload = () => { 
+        img.onload = } () => { 
           const canvas = document.createElement('canvas'); 
-          const MAX_WIDTH = 800; 
+          const 
+ MAX_WIDTH = 800; 
           let width = img.width, height = img.height; 
-          if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; } 
-          canvas.width = width; canvas.height = height; 
+          if (width > MAX_WIDTH) { height =  Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; } 
+          canvas.width = width; canvas.height = height; }
+ 
           canvas.getContext('2d').drawImage(img, 0, 0, width, height); 
-          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7); 
+          canvas.toBl ob((blob) => resolve(blob), 'image/jpeg', 0.7); 
         }; 
       }; 
     }); 
@@ -365,10 +451,9 @@
     try { 
       const compressedBlob = await compresserImage(file); 
       currentImageBlob = compressedBlob; 
+      existingPhotoUrl = null; // Si on choisit une nouvelle photo, on oublie l'ancienne
       if (previewEl) { previewEl.style.backgroundImage = `url('${URL.createObjectURL(compressedBlob)}')`; previewEl.textContent = ''; } 
-    } catch (error) { alert("Impossible de lire l'image."); } 
-  }
-  if(cameraInput) cameraInput.addEventListener('change', handleImageSelect);
+    } catch (error) { alert("Impossible de lire l'image." if(cameraInput) cameraInput.addEventListener('change', handleImageSelect);
   if(galleryInput) galleryInput.addEventListener('change', handleImageSelect);
 
   document.getElementById('pDesc').addEventListener('input', function () { document.querySelector('#product-form-overlay .char-count').textContent = this.value.length + '/140'; });
@@ -396,15 +481,22 @@
     });
   });
 
+  // AJOUT : La logique de sauvegarde gère l'ajout ET la modification
   document.getElementById('overlaySaveBtn').addEventListener('click', async () => {
     const user = auth.currentUser; if (!user) return alert("Connectez-vous.");
     const name = document.getElementById('pName').value.trim(), price = parseInt(document.getElementById('pPrice').value, 10);
     if (!name || !price || price <= 0) return alert('Nom et prix valides requis.');
     if (!selectedCat) selectedCat = SHOP.categories[0] || 'Divers';
 
-    const saveBtn = document.getElementById('overlaySaveBtn'); saveBtn.textContent = "Envoi..."; saveBtn.disabled = true;
+    const saveBtn = document.getElementById('overlaySaveBtn'); 
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = "Envoi..."; 
+    saveBtn.disabled = true;
+
     try {
       let photoUrl = null;
+      
+      // Si on a une NOUVELLE photo
       if (currentImageBlob) { 
         const formData = new FormData(); 
         formData.append('file', currentImageBlob); 
@@ -413,18 +505,34 @@
         const data = await res.json(); 
         if (data.secure_url) photoUrl = data.secure_url; 
         else throw new Error("Upload échoué"); 
+      } else if (existingPhotoUrl) {
+        // Si on modifie et qu'on n'a pas touché à la photo, on garde l'ancienne
+        photoUrl = existingPhotoUrl;
       }
-      await db.collection('produits').add({ 
+
+      const productData = { 
         vendeur_id: user.uid, nom: name, prix: price, description: document.getElementById('pDesc').value.trim(), 
         categorie: selectedCat, statut: selectedStatus === 'available' ? 'Disponible' : 'Épuisé', 
-        variantes: currentTags, photo_url: photoUrl, bgColor: '#F8BBD0', created_at: firebase.firestore.FieldValue.serverTimestamp() 
-      });
-      showToast('✓ Produit enregistré !'); 
+        variantes: currentTags, photo_url: photoUrl, bgColor: '#F8BBD0'
+      };
+
+      if (editingProductId) {
+        // MISE À JOUR
+        await db.collection('produits').doc(editingProductId).update(productData);
+        showToast('✓ Produit mis à jour !');
+      } else {
+        // CRÉATION
+        productData.created_at = firebase.firestore.FieldValue.serverTimestamp();
+        await db.collection('produits').add(productData);
+        showToast('✓ Produit enregistré !');
+      }
+
       closeProductOverlay(); 
       loadProducts(); 
       switchTab('produits');
+      
     } catch (e) { alert("Erreur: " + e.message); } 
-    finally { saveBtn.textContent = "Enregistrer"; saveBtn.disabled = false; }
+    finally { saveBtn.textContent = originalText; saveBtn.disabled = false; }
   });
 
   /* ============================================================

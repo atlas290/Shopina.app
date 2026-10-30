@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — vendeur.js (Version Finale - Réglages Modifiables)
+   Shopina — vendeur.js (Version Finale et Complète)
    ============================================================ */
 
 (function () {
@@ -77,7 +77,6 @@
 
     document.querySelector('#view-dashboard .link-code').textContent = 'shopina.shop/' + SHOP.slug;
     
-    // Remplir les champs modifiables dans Réglages
     document.getElementById('setName').value = SHOP.name;
     document.getElementById('setWhatsapp').value = SHOP.whatsapp;
     document.getElementById('setHours').value = SHOP.hours || '';
@@ -91,6 +90,21 @@
     document.getElementById('setColorHex').textContent = SHOP.color.toUpperCase();
     document.documentElement.style.setProperty('--accent', SHOP.color);
     document.documentElement.style.setProperty('--accent-soft', SHOP.colorSoft);
+
+    // Remplir les catégories dans le formulaire produit
+    const catContainer = document.getElementById('productCategoriesContainer');
+    if (catContainer && SHOP.categories.length > 0) {
+      catContainer.innerHTML = SHOP.categories.map((c, i) => `<button type="button" class="radio-pill ${i === 0 ? 'selected' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('');
+      selectedCat = SHOP.categories[0];
+      
+      catContainer.querySelectorAll('.radio-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          catContainer.querySelectorAll('.radio-pill').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedCat = btn.dataset.cat;
+        });
+      });
+    }
   }
 
   /* ============================================================
@@ -248,7 +262,6 @@
   document.getElementById('btnCopyLink').addEventListener('click', copyLink);
   document.getElementById('btnShareLink').addEventListener('click', shareLink);
 
-  // SAUVEGARDE DES RÉGLAGES
   document.getElementById('btnSaveSettings').addEventListener('click', async () => {
     const user = auth.currentUser;
     if (!user) return alert("Vous devez être connecté.");
@@ -269,37 +282,170 @@
 
     try {
       await db.collection('vendeurs').doc(user.uid).update({
-        nom_boutique: newName,
-        numero_whatsapp: newWhatsapp,
-        horaires: newHours,
-        zone_livraison: newDelivery,
-        deliveryPrice1: newPrice1,
-        deliveryPrice2: newPrice2,
-        deliveryPrice3: newPrice3
+        nom_boutique: newName, numero_whatsapp: newWhatsapp, horaires: newHours,
+        zone_livraison: newDelivery, deliveryPrice1: newPrice1, deliveryPrice2: newPrice2, deliveryPrice3: newPrice3
       });
 
-      // Mettre à jour l'objet local
-      SHOP.name = newName;
-      SHOP.whatsapp = newWhatsapp;
-      SHOP.hours = newHours;
-      SHOP.delivery = newDelivery;
-      SHOP.deliveryPrice1 = newPrice1;
-      SHOP.deliveryPrice2 = newPrice2;
-      SHOP.deliveryPrice3 = newPrice3;
+      SHOP.name = newName; SHOP.whatsapp = newWhatsapp; SHOP.hours = newHours;
+      SHOP.delivery = newDelivery; SHOP.deliveryPrice1 = newPrice1; SHOP.deliveryPrice2 = newPrice2; SHOP.deliveryPrice3 = newPrice3;
 
       updateUIWithShopData();
       showToast('✓ Modifications enregistrées !');
     } catch (error) {
-      console.error(error);
-      alert("Erreur : " + error.message);
+      console.error(error); alert("Erreur : " + error.message);
     } finally {
-      btn.textContent = "Enregistrer les modifications";
-      btn.disabled = false;
+      btn.textContent = "Enregistrer les modifications"; btn.disabled = false;
     }
   });
 
   /* ============================================================
-     ONBOARDING
+     OVERLAY PRODUIT (PHOTOS, TAGS, CATÉGORIES)
+     ============================================================ */
+  function openProductOverlay() { 
+    document.getElementById('product-form-overlay').classList.add('open'); 
+    document.body.style.overflow = 'hidden'; 
+    resetProductForm(); 
+  }
+  function closeProductOverlay() { 
+    document.getElementById('product-form-overlay').classList.remove('open'); 
+    document.body.style.overflow = ''; 
+  }
+
+  document.querySelectorAll('.fab, #dashAddBtn').forEach(btn => btn.addEventListener('click', openProductOverlay));
+  document.querySelector('#product-form-overlay .overlay-close').addEventListener('click', closeProductOverlay);
+  document.querySelector('#product-form-overlay .overlay-footer .btn-secondary').addEventListener('click', closeProductOverlay);
+
+  function resetProductForm() {
+    document.getElementById('pName').value = ''; 
+    document.getElementById('pPrice').value = ''; 
+    document.getElementById('pDesc').value = '';
+    document.querySelector('#product-form-overlay .char-count').textContent = '0/140'; 
+    document.querySelector('#product-form-overlay .tag-input').value = '';
+    document.querySelector('#product-form-overlay .tags-list').innerHTML = '';
+    currentTags = []; 
+    selectedStatus = 'available'; 
+    currentImageBlob = null;
+    document.querySelectorAll('#product-form-overlay .status-pill').forEach((b, i) => b.classList.toggle('selected', i === 0));
+    const photoPreview = document.querySelector('#product-form-overlay .photo-preview'); 
+    if (photoPreview) { photoPreview.textContent = 'Aucune photo'; photoPreview.style.backgroundImage = ''; }
+    if(cameraInput) cameraInput.value = ''; 
+    if(galleryInput) galleryInput.value = '';
+  }
+
+  const btnCamera = document.getElementById('btnCamera'), btnGallery = document.getElementById('btnGallery');
+  const cameraInput = document.getElementById('cameraInput'), galleryInput = document.getElementById('galleryInput');
+  if(btnCamera) btnCamera.addEventListener('click', () => cameraInput.click());
+  if(btnGallery) btnGallery.addEventListener('click', () => galleryInput.click());
+
+  async function compresserImage(file) { 
+    return new Promise((resolve) => { 
+      const reader = new FileReader(); 
+      reader.readAsDataURL(file); 
+      reader.onload = (event) => { 
+        const img = new Image(); 
+        img.src = event.target.result; 
+        img.onload = () => { 
+          const canvas = document.createElement('canvas'); 
+          const MAX_WIDTH = 800; 
+          let width = img.width, height = img.height; 
+          if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; } 
+          canvas.width = width; canvas.height = height; 
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height); 
+          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7); 
+        }; 
+      }; 
+    }); 
+  }
+
+  async function handleImageSelect(event) { 
+    const file = event.target.files[0]; 
+    if (!file) return; 
+    const previewEl = document.getElementById('photoPreview'); 
+    if (previewEl) previewEl.textContent = "Compression..."; 
+    try { 
+      const compressedBlob = await compresserImage(file); 
+      currentImageBlob = compressedBlob; 
+      if (previewEl) { previewEl.style.backgroundImage = `url('${URL.createObjectURL(compressedBlob)}')`; previewEl.textContent = ''; } 
+    } catch (error) { alert("Impossible de lire l'image."); } 
+  }
+  if(cameraInput) cameraInput.addEventListener('change', handleImageSelect);
+  if(galleryInput) galleryInput.addEventListener('change', handleImageSelect);
+
+  document.getElementById('pDesc').addEventListener('input', function () { document.querySelector('#product-form-overlay .char-count').textContent = this.value.length + '/140'; });
+
+  document.querySelector('#product-form-overlay .tag-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag(this.value); this.value = ''; }
+  });
+
+  function addTag(text) { text = text.trim(); if (!text || currentTags.indexOf(text) !== -1) return; currentTags.push(text); renderTags(); }
+  function renderTags() {
+    const tagsList = document.querySelector('#product-form-overlay .tags-list');
+    tagsList.innerHTML = currentTags.map((t, i) => `<span class="tag">${escapeHtml(t)}<button type="button" data-remove-tag="${i}" aria-label="Retirer">×</button></span>`).join('');
+  }
+
+  document.querySelector('#product-form-overlay .tags-list').addEventListener('click', function (e) {
+    const btn = e.target.closest('[data-remove-tag]'); if (!btn) return;
+    currentTags.splice(parseInt(btn.dataset.removeTag, 10), 1); renderTags();
+  });
+
+  document.querySelectorAll('#product-form-overlay .status-pill').forEach((btn) => {
+    btn.addEventListener('click', () => { 
+      document.querySelectorAll('#product-form-overlay .status-pill').forEach((b) => b.classList.remove('selected')); 
+      btn.classList.add('selected'); 
+      selectedStatus = btn.textContent.trim().toLowerCase() === 'disponible' ? 'available' : 'soldout'; 
+    });
+  });
+
+  document.getElementById('overlaySaveBtn').addEventListener('click', async () => {
+    const user = auth.currentUser; if (!user) return alert("Connectez-vous.");
+    const name = document.getElementById('pName').value.trim(), price = parseInt(document.getElementById('pPrice').value, 10);
+    if (!name || !price || price <= 0) return alert('Nom et prix valides requis.');
+    if (!selectedCat) selectedCat = SHOP.categories[0] || 'Divers';
+
+    const saveBtn = document.getElementById('overlaySaveBtn'); saveBtn.textContent = "Envoi..."; saveBtn.disabled = true;
+    try {
+      let photoUrl = null;
+      if (currentImageBlob) { 
+        const formData = new FormData(); 
+        formData.append('file', currentImageBlob); 
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET); 
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: formData }); 
+        const data = await res.json(); 
+        if (data.secure_url) photoUrl = data.secure_url; 
+        else throw new Error("Upload échoué"); 
+      }
+      await db.collection('produits').add({ 
+        vendeur_id: user.uid, nom: name, prix: price, description: document.getElementById('pDesc').value.trim(), 
+        categorie: selectedCat, statut: selectedStatus === 'available' ? 'Disponible' : 'Épuisé', 
+        variantes: currentTags, photo_url: photoUrl, bgColor: '#F8BBD0', created_at: firebase.firestore.FieldValue.serverTimestamp() 
+      });
+      showToast('✓ Produit enregistré !'); 
+      closeProductOverlay(); 
+      loadProducts(); 
+      switchTab('produits');
+    } catch (e) { alert("Erreur: " + e.message); } 
+    finally { saveBtn.textContent = "Enregistrer"; saveBtn.disabled = false; }
+  });
+
+  /* ============================================================
+     OVERLAY CATALOGUE
+     ============================================================ */
+  const catalogBtn = document.getElementById('catalogBtn');
+  const catalogOverlay = document.getElementById('catalog-image-overlay');
+  const catalogCloseBtn = document.getElementById('catalogCloseBtn');
+  
+  if (catalogBtn && catalogOverlay) {
+    catalogBtn.addEventListener('click', () => {
+      const cardName = catalogOverlay.querySelector('.catalog-title'); if (cardName) cardName.textContent = SHOP.name;
+      const cardLink = catalogOverlay.querySelector('.catalog-link'); if (cardLink) cardLink.textContent = 'shopina.shop/' + SHOP.slug;
+      catalogOverlay.classList.add('open'); document.body.style.overflow = 'hidden';
+    });
+  }
+  if (catalogCloseBtn) catalogCloseBtn.addEventListener('click', () => { catalogOverlay.classList.remove('open'); document.body.style.overflow = ''; });
+  document.getElementById('catalogDownloadBtn').addEventListener('click', () => alert('Simulation : Image téléchargée'));
+
+  /* ============================================================
+     ONBOARDING & LÉA
      ============================================================ */
   function goToStep(n) {
     const step1 = document.getElementById('obStep1'), step2 = document.getElementById('obStep2'), dots = $$('#view-onboarding .ob-step-dot');

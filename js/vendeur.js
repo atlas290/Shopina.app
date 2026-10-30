@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — vendeur.js (Version Finale - Session Persistante)
+   Shopina — vendeur.js (Version Dynamique & Pro)
    ============================================================ */
 
 (function () {
@@ -20,17 +20,21 @@
   const CLOUDINARY_CLOUD_NAME = 'jaifaim-app';
   const CLOUDINARY_UPLOAD_PRESET = 'plats_resto';
 
-  const SHOP = { name: 'Havana Shop', slug: 'havana-shop', whatsapp: '', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, type: 'mode_locale', email: '', password: '' };
+  // On ajoute "categories" pour stocker ce que la vendeuse a écrit
+  const SHOP = { name: '', slug: '', whatsapp: '', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, categories: [], email: '', password: '' };
+  let currentShopCategories = []; // Pour générer les boutons dans le formulaire produit
+
   const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: 'Léa', reglages: 'Réglages' };
 
+  // Léa reste généraliste
   const leaData = {
-    video: { local: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Le trend du changement de tenue</h3><p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p></div>`, import: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Filme le produit en action</h3><p>Pour l'électroménager ou les sacs, une photo ne suffit pas. <strong>Montre-le en vrai.</strong></p></div>` },
-    whatsapp: { local: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>La stratégie des statuts</h3><p>Poste <strong>1 photo par jour</strong>, pas 10 d'un coup.</p></div>`, import: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>Rassurer sur la qualité</h3><p>C'est du costaud, je l'utilise moi-même.</p></div>` },
-    photos: { local: `<h2 class="lea-content-title">📸 Prendre de belles photos</h2><div class="lea-advice-card"><h3>La lumière naturelle</h3><p>Ne mets <strong>JAMAIS</strong> le flash.</p></div>`, import: `<h2 class="lea-content-title">📸 Prendre de belles photos</h2><div class="lea-advice-card"><h3>La mise en scène</h3><p>Ne pose pas juste le produit par terre. <strong>Mets-le en contexte.</strong></p></div>` },
-    prix: { local: `<h2 class="lea-content-title">💰 Fixer ses prix</h2><div class="lea-advice-card"><h3>La formule magique</h3><p>Prix d'achat + Transport + Marge (40%) = Ton prix de vente.</p></div>`, import: `<h2 class="lea-content-title">💰 Fixer ses prix</h2><div class="lea-advice-card"><h3>Justifie par la durée de vie</h3><p>Ça te fera 2 ans minimum, alors qu'un modèle bas de gamme casse en 2 mois.</p></div>` }
+    video: { local: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Le trend du changement de tenue</h3><p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p></div>` },
+    whatsapp: { local: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>La stratégie des statuts</h3><p>Poste <strong>1 photo par jour</strong>, pas 10 d'un coup.</p></div>` },
+    photos: { local: `<h2 class="lea-content-title">📸 Prendre de belles photos</h2><div class="lea-advice-card"><h3>La lumière naturelle</h3><p>Ne mets <strong>JAMAIS</strong> le flash.</p></div>` },
+    prix: { local: `<h2 class="lea-content-title">💰 Fixer ses prix</h2><div class="lea-advice-card"><h3>La formule magique</h3><p>Prix d'achat + Transport + Marge (40%) = Ton prix de vente.</p></div>` }
   };
 
-  let currentTags = [], selectedCat = 'Vêtement', selectedStatus = 'available', selectedColor = { value: '#E91E63', soft: '#FCE4EC' }, currentImageBlob = null;
+  let currentTags = [], selectedCat = '', selectedStatus = 'available', selectedColor = { value: '#E91E63', soft: '#FCE4EC' }, currentImageBlob = null;
 
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
@@ -72,36 +76,28 @@
   if (goToLoginBtn) goToLoginBtn.addEventListener('click', (e) => { e.preventDefault(); viewOnboarding.classList.remove('active'); viewLogin.classList.add('active'); });
   if (goToOnboardingBtn) goToOnboardingBtn.addEventListener('click', (e) => { e.preventDefault(); viewLogin.classList.remove('active'); viewOnboarding.classList.add('active'); });
 
-  // Connexion
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
   if (loginSubmitBtn) {
     loginSubmitBtn.addEventListener('click', async () => {
       const email = document.getElementById('loginEmail').value.trim(), password = document.getElementById('loginPassword').value.trim();
       if (!email || !password) return alert('Remplissez tous les champs.');
-      try {
-        await auth.signInWithEmailAndPassword(email, password);
-      } catch (error) { alert('Email ou mot de passe incorrect.'); }
+      try { await auth.signInWithEmailAndPassword(email, password); } catch (error) { alert('Email ou mot de passe incorrect.'); }
     });
   }
 
-  // Déconnexion
-  document.getElementById('btnLogout').addEventListener('click', () => {
-    auth.signOut().then(() => {
-      window.location.reload();
-    });
-  });
+  document.getElementById('btnLogout').addEventListener('click', () => { auth.signOut().then(() => { window.location.reload(); }); });
 
-  // LE MIRACLE : L'écouteur d'état d'authentification
   auth.onAuthStateChanged(async (user) => {
     if (user) {
-      // La vendeuse est connectée (ou vient de se connecter)
       try {
         const doc = await db.collection('vendeurs').doc(user.uid).get();
         if (doc.exists) {
           const v = doc.data();
           SHOP.email = v.email; SHOP.name = v.nom_boutique; SHOP.slug = v.slug; SHOP.whatsapp = v.numero_whatsapp;
           SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
-          SHOP.type = v.type_boutique; SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
+          SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
+          // On récupère les catégories personnalisées
+          SHOP.categories = v.categories || ['Divers']; 
           
           updateUIWithShopData();
           document.querySelector('.bottom-nav').style.display = 'flex';
@@ -109,7 +105,6 @@
         }
       } catch (error) { console.error("Erreur chargement session", error); }
     } else {
-      // La vendeuse n'est pas connectée
       document.querySelector('.bottom-nav').style.display = 'none';
       viewLogin.classList.remove('active');
       viewOnboarding.classList.add('active');
@@ -226,7 +221,6 @@
   }
 
   function copyLink() {
-    // On utilise le vrai lien Vercel pour l'instant
     const link = 'https://shopina.vercel.app/boutique.html?shop=' + SHOP.slug; 
     const done = () => showToast('Lien copié !');
     const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e) { done(); } };
@@ -236,17 +230,8 @@
   async function shareLink() {
     const link = 'https://shopina.vercel.app/boutique.html?shop=' + SHOP.slug;
     if (navigator.share) {
-      try { 
-        await navigator.share({ 
-          title: 'Découvrez ' + SHOP.name + ' sur Shopina', 
-          text: 'Retrouvez tous mes produits en ligne et commandez directement sur WhatsApp !', 
-          url: link 
-        }); 
-      } catch (error) {}
-    } else { 
-      copyLink(); 
-      showToast('Lien copié !'); 
-    }
+      try { await navigator.share({ title: 'Découvrez ' + SHOP.name + ' sur Shopina', text: 'Retrouvez tous mes produits en ligne et commandez directement sur WhatsApp !', url: link }); } catch (error) {}
+    } else { copyLink(); showToast('Lien copié !'); }
   }
 
   document.getElementById('btnCopyLink').addEventListener('click', copyLink);
@@ -264,7 +249,11 @@
       SHOP.name = document.getElementById('obName').value.trim() || 'Ma Boutique';
       SHOP.slug = document.getElementById('obSlug').value.trim() || 'ma-boutique';
       SHOP.whatsapp = document.getElementById('obWhatsapp').value.trim();
-      SHOP.type = document.getElementById('obShopType').value;
+      
+      // On récupère les catégories écrites par la vendeuse
+      const catsInput = document.getElementById('obCategories').value;
+      SHOP.categories = catsInput.split(',').map(c => c.trim()).filter(c => c.length > 0);
+      if (SHOP.categories.length === 0) SHOP.categories = ['Divers']; // Fallback
 
       step1.style.display = 'none'; step2.style.display = '';
       if (dots[0]) { dots[0].classList.remove('active'); dots[0].textContent = '✓'; }
@@ -293,10 +282,10 @@
         email: SHOP.email, nom_boutique: SHOP.name, slug: SHOP.slug, numero_whatsapp: SHOP.whatsapp,
         couleur_accent: SHOP.color, horaires: SHOP.hours, zone_livraison: SHOP.delivery,
         deliveryPrice1: SHOP.deliveryPrice1, deliveryPrice2: SHOP.deliveryPrice2, deliveryPrice3: SHOP.deliveryPrice3,
-        type_boutique: SHOP.type, created_at: firebase.firestore.FieldValue.serverTimestamp()
+        categories: SHOP.categories, // ON SAUVEGARDE LES CATÉGORIES ICI
+        created_at: firebase.firestore.FieldValue.serverTimestamp()
       });
       showToast("Compte créé !");
-      // L'écouteur auth.onAuthStateChanged fera le reste automatiquement
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') alert("Cet email est déjà utilisé.");
       else alert("Erreur : " + error.message);
@@ -315,13 +304,11 @@
   // Léa
   function showLeaCategories() { document.getElementById('lea-categories').style.display = 'flex'; document.getElementById('lea-content').style.display = 'none'; }
   function openLeaCategory(catKey) {
-    const group = (SHOP.type === 'import_chine' || SHOP.type === 'electromenager') ? 'import' : 'local';
     document.getElementById('lea-categories').style.display = 'none'; document.getElementById('lea-content').style.display = 'block';
-    document.getElementById('lea-content').innerHTML = `<button type="button" class="lea-back-btn" onclick="document.getElementById('lea-categories').style.display='flex';document.getElementById('lea-content').style.display='none';">← Retour</button>${leaData[catKey][group]}`;
+    document.getElementById('lea-content').innerHTML = `<button type="button" class="lea-back-btn" onclick="document.getElementById('lea-categories').style.display='flex';document.getElementById('lea-content').style.display='none';">← Retour</button>${leaData[catKey].local}`;
   }
   $$('.lea-category-card').forEach(card => card.addEventListener('click', () => openLeaCategory(card.dataset.cat)));
 
-  // Placeholders pour les boutons de réglages (à venir)
   document.getElementById('btnEditInfo').addEventListener('click', simulate);
   document.getElementById('btnManageSub').addEventListener('click', simulate);
 

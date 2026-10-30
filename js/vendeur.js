@@ -1,13 +1,10 @@
 /* ============================================================
-   Shopina — vendeur.js (Version Finale avec Commandes Réelles)
+   Shopina — vendeur.js (Version Finale - Finitions & Commandes)
    ============================================================ */
 
 (function () {
   'use strict';
 
-  /* ============================================================
-     0. CONNEXION FIREBASE & CLOUDINARY
-     ============================================================ */
   const firebaseConfig = {
     apiKey: "AIzaSyCuge89Ct4HX-r4wUnaCqb3qdToL9H-3O0",
     authDomain: "shopina-6172d.firebaseapp.com",
@@ -23,9 +20,6 @@
   const CLOUDINARY_CLOUD_NAME = 'jaifaim-app';
   const CLOUDINARY_UPLOAD_PRESET = 'plats_resto';
 
-  /* ============================================================
-     1. DONNÉES
-     ============================================================ */
   const SHOP = { name: 'Havana Shop', slug: 'havana-shop', whatsapp: '+229 67 02 05 86', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, type: 'mode_locale', email: '', password: '' };
   const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: 'Léa', reglages: 'Réglages' };
 
@@ -36,15 +30,10 @@
     prix: { local: `<h2 class="lea-content-title">💰 Fixer ses prix</h2><div class="lea-advice-card"><h3>La formule magique</h3><p>Prix d'achat + Transport + Marge (40%) = Ton prix de vente.</p></div>`, import: `<h2 class="lea-content-title">💰 Fixer ses prix</h2><div class="lea-advice-card"><h3>Justifie par la durée de vie</h3><p>Ça te fera 2 ans minimum, alors qu'un modèle bas de gamme casse en 2 mois.</p></div>` }
   };
 
-  let currentTags = [];
-  let selectedCat = 'Vêtement';
-  let selectedStatus = 'available';
-  let selectedColor = { value: '#E91E63', soft: '#FCE4EC' };
-  let currentImageBlob = null;
+  let currentTags = [], selectedCat = 'Vêtement', selectedStatus = 'available', selectedColor = { value: '#E91E63', soft: '#FCE4EC' }, currentImageBlob = null;
 
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
-
   function escapeHtml(str) { return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
   function formatPrice(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' FCFA'; }
 
@@ -54,105 +43,71 @@
     toastEl.textContent = message; void toastEl.offsetWidth; toastEl.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2000);
   }
-
   function simulate() { alert('Simulation — Fonctionnalité à venir'); }
+  function fallbackCopy(text, callback) { try { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); callback(); } catch (e) { alert('Erreur copie'); } }
 
   /* ============================================================
-     2. NAVIGATION & CHARGEMENTS
+     NAVIGATION
      ============================================================ */
   function switchTab(tab) {
     $$('.app-view.section').forEach((s) => s.classList.remove('active'));
     const target = document.getElementById('view-' + tab);
     if (target) target.classList.add('active');
     $$('.nav-btn').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
-    const banner = $('.demo-banner');
-    if (banner) banner.textContent = 'Démo Shopina — ' + (TAB_NAMES[tab] || tab);
+    const banner = $('.demo-banner'); if (banner) banner.textContent = 'Démo Shopina — ' + (TAB_NAMES[tab] || tab);
     
     if (tab === 'lea') { showLeaCategories(); }
     if (tab === 'produits') { loadProducts(); }
-    if (tab === 'commandes') { loadOrders(); } // On charge les commandes quand on clique sur l'onglet
-    if (tab === 'dashboard') { loadDashboardStats(); } // On met à jour les stats
-    
+    if (tab === 'commandes') { loadOrders(); }
+    if (tab === 'dashboard') { loadDashboardStats(); }
     window.scrollTo(0, 0);
   }
-
   $$('.nav-btn').forEach((btn) => { btn.addEventListener('click', () => switchTab(btn.dataset.tab)); });
 
   /* ============================================================
-     3. AUTHENTIFICATION
+     AUTHENTIFICATION
      ============================================================ */
-  const goToLoginBtn = document.getElementById('goToLoginBtn');
-  const goToOnboardingBtn = document.getElementById('goToOnboardingBtn');
-  const viewLogin = document.getElementById('view-login');
-  const viewOnboarding = document.getElementById('view-onboarding');
-  
-  if (goToLoginBtn && viewLogin && viewOnboarding) {
-    goToLoginBtn.addEventListener('click', (e) => { e.preventDefault(); viewOnboarding.classList.remove('active'); viewLogin.classList.add('active'); });
-  }
-  if (goToOnboardingBtn && viewLogin && viewOnboarding) {
-    goToOnboardingBtn.addEventListener('click', (e) => { e.preventDefault(); viewLogin.classList.remove('active'); viewOnboarding.classList.add('active'); });
-  }
+  const goToLoginBtn = document.getElementById('goToLoginBtn'), goToOnboardingBtn = document.getElementById('goToOnboardingBtn');
+  const viewLogin = document.getElementById('view-login'), viewOnboarding = document.getElementById('view-onboarding');
+  if (goToLoginBtn) goToLoginBtn.addEventListener('click', (e) => { e.preventDefault(); viewOnboarding.classList.remove('active'); viewLogin.classList.add('active'); });
+  if (goToOnboardingBtn) goToOnboardingBtn.addEventListener('click', (e) => { e.preventDefault(); viewLogin.classList.remove('active'); viewOnboarding.classList.add('active'); });
 
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
   if (loginSubmitBtn) {
     loginSubmitBtn.addEventListener('click', async () => {
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-      if (!email || !password) { alert('Veuillez remplir tous les champs.'); return; }
-
+      const email = document.getElementById('loginEmail').value.trim(), password = document.getElementById('loginPassword').value.trim();
+      if (!email || !password) return alert('Remplissez tous les champs.');
       try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-        const doc = await db.collection('vendeurs').doc(user.uid).get();
+        const doc = await db.collection('vendeurs').doc(userCredential.user.uid).get();
+        if (!doc.exists) throw new Error("Profil introuvable.");
         
-        if (!doc.exists) throw new Error("Profil vendeur introuvable.");
-        const vendeurData = doc.data();
-        
-        SHOP.email = vendeurData.email; SHOP.name = vendeurData.nom_boutique; SHOP.slug = vendeurData.slug;
-        SHOP.whatsapp = vendeurData.numero_whatsapp; SHOP.color = vendeurData.couleur_accent;
-        SHOP.colorSoft = '#FCE4EC'; SHOP.hours = vendeurData.horaires; SHOP.delivery = vendeurData.zone_livraison;
-        SHOP.type = vendeurData.type_boutique; SHOP.deliveryPrice1 = vendeurData.deliveryPrice1 || 0;
-        SHOP.deliveryPrice2 = vendeurData.deliveryPrice2 || 0; SHOP.deliveryPrice3 = vendeurData.deliveryPrice3 || 0;
+        const v = doc.data();
+        SHOP.email = v.email; SHOP.name = v.nom_boutique; SHOP.slug = v.slug; SHOP.whatsapp = v.numero_whatsapp;
+        SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
+        SHOP.type = v.type_boutique; SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
 
         updateUIWithShopData();
-        const nav = document.querySelector('.bottom-nav'); if (nav) nav.style.display = 'flex';
+        document.querySelector('.bottom-nav').style.display = 'flex';
         switchTab('dashboard'); showToast("Connexion réussie !");
-      } catch (error) {
-        console.error("Erreur de connexion:", error);
-        alert('Erreur : ' + error.message);
-      }
+      } catch (error) { alert('Erreur : ' + error.message); }
     });
   }
 
   /* ============================================================
-     4. CHARGEMENT DES DONNÉES (PRODUITS, COMMANDES, STATS)
+     CHARGEMENT DES DONNÉES
      ============================================================ */
   async function loadProducts() {
     const user = auth.currentUser; if (!user) return;
     const grid = document.querySelector('#view-produits .products-grid'); if (!grid) return;
-
     try {
       const snapshot = await db.collection('produits').where('vendeur_id', '==', user.uid).get();
       grid.innerHTML = '';
-      if (snapshot.empty) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 20px;">Aucun produit pour le moment.</div>';
-        return;
-      }
-
+      if (snapshot.empty) { grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 20px;">Aucun produit.</div>'; return; }
       snapshot.forEach((doc) => {
         const p = doc.data();
         const imgStyle = p.photo_url ? `background-image: url('${p.photo_url}'); background-size: cover; background-position: center;` : `background: ${p.bgColor || '#F8BBD0'};`;
-        grid.insertAdjacentHTML('beforeend', `
-          <div class="product-card">
-            <div class="product-img ${p.statut === 'Épuisé' ? 'soldout' : ''}" style="${imgStyle}">
-              ${!p.photo_url ? p.nom.charAt(0).toUpperCase() : ''}
-              ${p.statut === 'Épuisé' ? '<span class="soldout-badge">Épuisé</span>' : ''}
-            </div>
-            <div class="product-info">
-              <div class="product-name">${escapeHtml(p.nom)}</div>
-              <div class="product-price">${formatPrice(p.prix)}</div>
-            </div>
-          </div>`);
+        grid.insertAdjacentHTML('beforeend', `<div class="product-card"><div class="product-img ${p.statut === 'Épuisé' ? 'soldout' : ''}" style="${imgStyle}">${!p.photo_url ? p.nom.charAt(0).toUpperCase() : ''}${p.statut === 'Épuisé' ? '<span class="soldout-badge">Épuisé</span>' : ''}</div><div class="product-info"><div class="product-name">${escapeHtml(p.nom)}</div><div class="product-price">${formatPrice(p.prix)}</div></div></div>`);
       });
       document.querySelector('#view-produits .products-header p').textContent = `${snapshot.size} produit(s) enregistré(s)`;
     } catch (error) { console.error(error); }
@@ -161,36 +116,24 @@
   async function loadOrders() {
     const user = auth.currentUser; if (!user) return;
     const list = document.querySelector('#view-commandes .orders-list'); if (!list) return;
-
-    list.innerHTML = '<div style="text-align:center; padding: 20px;">Chargement des commandes...</div>';
+    list.innerHTML = '<div style="text-align:center; padding: 20px;">Chargement...</div>';
 
     try {
-      // On récupère les commandes de cette vendeuse, triées par date
       const snapshot = await db.collection('commandes').where('vendeur_id', '==', user.uid).get();
-      
-      if (snapshot.empty) {
-        list.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Aucune commande pour le moment.</div>';
-        return;
-      }
+      if (snapshot.empty) { list.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Aucune commande.</div>'; return; }
 
-      // On trie manuellement en JavaScript (plus simple que de demander un index à Firebase)
-      const orders = [];
-      snapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
-      orders.sort((a, b) => b.created_at.toMillis() - a.created_at.toMillis()); // Du plus récent au plus vieux
+      const orders = []; snapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+      orders.sort((a, b) => (b.created_at ? b.created_at.toMillis() : 0) - (a.created_at ? a.created_at.toMillis() : 0));
 
       list.innerHTML = '';
       orders.forEach(order => {
-        // On formate la date
         const date = order.created_at ? new Date(order.created_at.toMillis()).toLocaleDateString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'Date inconnue';
-        
-        // On liste les articles
         let articlesHtml = '';
         order.articles.forEach(art => {
-          const qty = art.quantity || 1; // Si la quantité n'existe pas, on met 1 par défaut
-articlesHtml += `<div style="font-size: 12px; color: var(--text-muted);">${qty}x ${art.name} ${art.variant ? '('+art.variant+')' : ''}</div>`;
+          const qty = art.quantity || 1; // CORRECTION DU BUG UNDEFINED ICI
+          articlesHtml += `<div style="font-size: 12px; color: var(--text-muted);">${qty}x ${art.name} ${art.variant ? '('+art.variant+')' : ''}</div>`;
         });
 
-        // On affiche la commande
         list.insertAdjacentHTML('beforeend', `
           <div class="order-item">
             <div class="order-dot status-${order.statut}"></div>
@@ -202,7 +145,7 @@ articlesHtml += `<div style="font-size: 12px; color: var(--text-muted);">${qty}x
                   <option value="confirmee" ${order.statut === 'confirmee' ? 'selected' : ''}>Confirmée</option>
                   <option value="livree" ${order.statut === 'livree' ? 'selected' : ''}>Livrée</option>
                 </select>
-                <button type="button" class="btn-copy-confirm" data-phone="${order.client_phone || ''}">Copier le message</button>
+                <button type="button" class="btn-copy-confirm">Copier le message</button>
               </div>
             </div>
             <div class="order-meta">
@@ -213,50 +156,41 @@ articlesHtml += `<div style="font-size: 12px; color: var(--text-muted);">${qty}x
         `);
       });
 
-      // Ajouter les événements sur les selects pour changer le statut dans Firebase
+      // Événements sur les selects (changement de statut)
       list.querySelectorAll('.order-status-select').forEach(select => {
         select.addEventListener('change', async function() {
-          const orderId = this.dataset.orderId;
-          const newStatus = this.value;
-          
-          // Mettre à jour la couleur du point
+          const orderId = this.dataset.orderId, newStatus = this.value;
           const dot = this.closest('.order-item').querySelector('.order-dot');
           if (dot) dot.className = 'order-dot status-' + newStatus;
-
-          // Sauvegarder dans Firebase
-          try {
-            await db.collection('commandes').doc(orderId).update({ statut: newStatus });
-            showToast('Statut mis à jour');
-          } catch (error) {
-            console.error(error);
-            alert("Erreur lors de la mise à jour.");
-          }
+          try { await db.collection('commandes').doc(orderId).update({ statut: newStatus }); showToast('Statut mis à jour'); } catch (error) { alert("Erreur."); }
         });
       });
 
-    } catch (error) { 
-      console.error(error); 
-      list.innerHTML = '<div style="text-align:center; padding: 20px; color: red;">Erreur de chargement.</div>';
-    }
+      // Événements sur les boutons "Copier le message"
+      list.querySelectorAll('.btn-copy-confirm').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const message = `Bonjour, votre commande chez ${SHOP.name} est bien confirmée ! Elle sera livrée dès que possible. Merci pour votre confiance !`;
+          const done = () => showToast('Message copié !');
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(message).then(done).catch(() => fallbackCopy(message, done));
+          else fallbackCopy(message, done);
+        });
+      });
+
+    } catch (error) { console.error(error); list.innerHTML = '<div style="text-align:center; padding: 20px; color: red;">Erreur.</div>'; }
   }
 
   async function loadDashboardStats() {
     const user = auth.currentUser; if (!user) return;
-    
     try {
-      // Compter les produits
       const prodSnap = await db.collection('produits').where('vendeur_id', '==', user.uid).get();
       document.querySelector('#view-dashboard .stat-value').textContent = prodSnap.size;
-
-      // Compter les commandes
       const cmdSnap = await db.collection('commandes').where('vendeur_id', '==', user.uid).get();
       document.querySelectorAll('#view-dashboard .stat-value')[1].textContent = cmdSnap.size;
-
     } catch (error) { console.error("Erreur stats:", error); }
   }
 
   /* ============================================================
-     5. FORMULAIRES & UI
+     FORMULAIRES, UI & PARTAGE
      ============================================================ */
   function updateUIWithShopData() {
     document.querySelector('#view-dashboard .shop-name').textContent = SHOP.name;
@@ -264,47 +198,55 @@ articlesHtml += `<div style="font-size: 12px; color: var(--text-muted);">${qty}x
     document.querySelector('#view-dashboard .link-code').textContent = 'shopina.shop/' + SHOP.slug;
     document.getElementById('setName').textContent = SHOP.name; document.getElementById('setSlug').textContent = SHOP.slug; document.getElementById('setWhatsapp').textContent = SHOP.whatsapp;
     document.getElementById('setHours').textContent = SHOP.hours || '—'; document.getElementById('setDelivery').textContent = SHOP.delivery || '—';
-    const setColorDot = document.getElementById('setColorDot'), setColorHex = document.getElementById('setColorHex');
-    if (setColorDot) setColorDot.style.backgroundColor = SHOP.color; if (setColorHex) setColorHex.textContent = SHOP.color.toUpperCase();
     document.getElementById('setDeliveryPrice1').textContent = SHOP.deliveryPrice1 ? SHOP.deliveryPrice1 + ' FCFA' : '—';
     document.getElementById('setDeliveryPrice2').textContent = SHOP.deliveryPrice2 ? SHOP.deliveryPrice2 + ' FCFA' : '—';
     document.getElementById('setDeliveryPrice3').textContent = SHOP.deliveryPrice3 ? SHOP.deliveryPrice3 + ' FCFA' : '—';
+    document.getElementById('setColorDot').style.backgroundColor = SHOP.color; document.getElementById('setColorHex').textContent = SHOP.color.toUpperCase();
     document.documentElement.style.setProperty('--accent', SHOP.color); document.documentElement.style.setProperty('--accent-soft', SHOP.colorSoft);
   }
 
-  // Gestion des photos (compresser + upload)
+  // Bouton Copier le lien
+  function copyLink() {
+    const link = 'shopina.shop/' + SHOP.slug; const done = () => showToast('Lien copié !');
+    const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e) { done(); } };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done).catch(fallback); else fallback();
+  }
+
+  // Bouton Partager (Nouveau !)
+  async function shareLink() {
+    const link = 'shopina.shop/' + SHOP.slug;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Ma boutique ' + SHOP.name,
+          text: 'Découvrez mes produits sur ma boutique en ligne !',
+          url: 'https://' + link
+        });
+      } catch (error) {
+        console.log('Partage annulé par l\'utilisateur');
+      }
+    } else {
+      // Si le téléphone ne supporte pas le partage natif, on copie
+      copyLink();
+      showToast('Lien copié (partage non supporté)');
+    }
+  }
+
+  // Écouteurs sur les boutons du Dashboard
+  $$('#view-dashboard .btn-secondary').forEach((btn) => {
+    if (btn.textContent.trim() === 'Copier') btn.addEventListener('click', copyLink);
+    else if (btn.textContent.trim() === 'Partager') btn.addEventListener('click', shareLink);
+    else if (btn.id !== 'catalogBtn') btn.addEventListener('click', simulate);
+  });
+
+  // Reste du code (Photos, Produits...)
   const btnCamera = document.getElementById('btnCamera'), btnGallery = document.getElementById('btnGallery');
   const cameraInput = document.getElementById('cameraInput'), galleryInput = document.getElementById('galleryInput');
   if(btnCamera) btnCamera.addEventListener('click', () => cameraInput.click());
   if(btnGallery) btnGallery.addEventListener('click', () => galleryInput.click());
   
-  async function compresserImage(file) {
-    return new Promise((resolve) => {
-      const reader = new FileReader(); reader.readAsDataURL(file);
-      reader.onload = (event) => {
-        const img = new Image(); img.src = event.target.result;
-        img.onload = () => {
-          const canvas = document.createElement('canvas'); const MAX_WIDTH = 800;
-          let width = img.width, height = img.height;
-          if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; }
-          canvas.width = width; canvas.height = height;
-          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7);
-        };
-      };
-    });
-  }
-
-  async function handleImageSelect(event) {
-    const file = event.target.files[0]; if (!file) return;
-    const previewEl = document.getElementById('photoPreview');
-    if (previewEl) previewEl.textContent = "Compression...";
-    try {
-      const compressedBlob = await compresserImage(file);
-      currentImageBlob = compressedBlob;
-      if (previewEl) { previewEl.style.backgroundImage = `url('${URL.createObjectURL(compressedBlob)}')`; previewEl.textContent = ''; }
-    } catch (error) { alert("Impossible de lire l'image."); }
-  }
+  async function compresserImage(file) { /* ... (même code que la dernière fois) ... */ return new Promise((resolve) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = (event) => { const img = new Image(); img.src = event.target.result; img.onload = () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; let width = img.width, height = img.height; if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; } canvas.width = width; canvas.height = height; canvas.getContext('2d').drawImage(img, 0, 0, width, height); canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7); }; }; }); }
+  async function handleImageSelect(event) { const file = event.target.files[0]; if (!file) return; const previewEl = document.getElementById('photoPreview'); if (previewEl) previewEl.textContent = "Compression..."; try { const compressedBlob = await compresserImage(file); currentImageBlob = compressedBlob; if (previewEl) { previewEl.style.backgroundImage = `url('${URL.createObjectURL(compressedBlob)}')`; previewEl.textContent = ''; } } catch (error) { alert("Impossible de lire l'image."); } }
   if(cameraInput) cameraInput.addEventListener('change', handleImageSelect);
   if(galleryInput) galleryInput.addEventListener('change', handleImageSelect);
 
@@ -325,34 +267,20 @@ articlesHtml += `<div style="font-size: 12px; color: var(--text-muted);">${qty}x
     if(cameraInput) cameraInput.value = ''; if(galleryInput) galleryInput.value = '';
   }
 
-  // Sauvegarde produit
   document.getElementById('overlaySaveBtn').addEventListener('click', async () => {
     const user = auth.currentUser; if (!user) return alert("Connectez-vous.");
     const name = document.getElementById('pName').value.trim(), price = parseInt(document.getElementById('pPrice').value, 10);
     if (!name || !price || price <= 0) return alert('Nom et prix valides requis.');
-
-    const saveBtn = document.getElementById('overlaySaveBtn');
-    saveBtn.textContent = "Envoi..."; saveBtn.disabled = true;
-
+    const saveBtn = document.getElementById('overlaySaveBtn'); saveBtn.textContent = "Envoi..."; saveBtn.disabled = true;
     try {
       let photoUrl = null;
-      if (currentImageBlob) {
-        const formData = new FormData(); formData.append('file', currentImageBlob); formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
-        const data = await res.json();
-        if (data.secure_url) photoUrl = data.secure_url; else throw new Error("Upload échoué");
-      }
-      await db.collection('produits').add({
-        vendeur_id: user.uid, nom: name, prix: price, description: document.getElementById('pDesc').value.trim(),
-        categorie: selectedCat, statut: selectedStatus === 'available' ? 'Disponible' : 'Épuisé',
-        variantes: currentTags, photo_url: photoUrl, bgColor: '#F8BBD0', created_at: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      if (currentImageBlob) { const formData = new FormData(); formData.append('file', currentImageBlob); formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET); const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: formData }); const data = await res.json(); if (data.secure_url) photoUrl = data.secure_url; else throw new Error("Upload échoué"); }
+      await db.collection('produits').add({ vendeur_id: user.uid, nom: name, prix: price, description: document.getElementById('pDesc').value.trim(), categorie: selectedCat, statut: selectedStatus === 'available' ? 'Disponible' : 'Épuisé', variantes: currentTags, photo_url: photoUrl, bgColor: '#F8BBD0', created_at: firebase.firestore.FieldValue.serverTimestamp() });
       showToast('✓ Produit enregistré !'); closeProductOverlay(); loadProducts(); switchTab('produits');
-    } catch (e) { alert("Erreur: " + e.message); } 
-    finally { saveBtn.textContent = "Enregistrer"; saveBtn.disabled = false; }
+    } catch (e) { alert("Erreur: " + e.message); } finally { saveBtn.textContent = "Enregistrer"; saveBtn.disabled = false; }
   });
 
-  // Léa (contenu)
+  // Léa
   function showLeaCategories() { document.getElementById('lea-categories').style.display = 'flex'; document.getElementById('lea-content').style.display = 'none'; }
   function openLeaCategory(catKey) {
     const group = (SHOP.type === 'import_chine' || SHOP.type === 'electromenager') ? 'import' : 'local';

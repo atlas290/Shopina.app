@@ -584,7 +584,7 @@
       catalogDownloadBtn.disabled = true;
 
       // Utilisation de html2canvas pour transformer la div en image
-      html2canvas(card, { scale: 2, backgroundColor: null }).then(canvas => {
+      html2canvas(card, { scale: 2, backgroundColor: null, useCORS: true }).then(canvas => {
         // Créer un lien de téléchargement
         const link = document.createElement('a');
         link.download = `catalogue-${SHOP.slug}.jpg`;

@@ -33,9 +33,8 @@
 
   let currentTags = [], selectedCat = '', selectedStatus = 'available', selectedColor = { value: '#E91E63', soft: '#FCE4EC' }, currentImageBlob = null;
   
-  // AJOUT : Variable pour stocker l'ID du produit en cours de modification
+  // Variables pour la modification
   let editingProductId = null;
-  // AJOUT : Variable pour garder l'ancienne photo si on n'en change pas
   let existingPhotoUrl = null; 
 
   const $ = (sel) => document.querySelector(sel);
@@ -96,7 +95,6 @@
     document.documentElement.style.setProperty('--accent', SHOP.color);
     document.documentElement.style.setProperty('--accent-soft', SHOP.colorSoft);
 
-    // Remplir les catégories dans le formulaire produit
     const catContainer = document.getElementById('productCategoriesContainer');
     if (catContainer && SHOP.categories.length > 0) {
       catContainer.innerHTML = SHOP.categories.map((c, i) => `<button type="button" class="radio-pill ${i === 0 ? 'selected' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('');
@@ -169,7 +167,6 @@
         const p = doc.data();
         const imgStyle = p.photo_url ? `background-image: url('${p.photo_url}'); background-size: cover; background-position: center;` : `background: ${p.bgColor || '#F8BBD0'};`;
         
-        // AJOUT : Le bouton "Modifier" a été ajouté ici
         grid.insertAdjacentHTML('beforeend', `
           <div class="product-card">
             <div class="product-img ${p.statut === 'Épuisé' ? 'soldout' : ''}" style="${imgStyle}">
@@ -187,10 +184,9 @@
       
       document.querySelector('#view-produits .products-header p').textContent = `${snapshot.size} produit(s) enregistré(s)`;
 
-      // AJOUT : On écoute les clics sur "Modifier"
       grid.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', (e) => {
-          e.stopPropagation(); // Évite de déclencher d'autres clics
+          e.stopPropagation();
           openProductOverlay(btn.dataset.id);
         });
       });
@@ -329,10 +325,8 @@
   });
 
   /* ============================================================
-     OVERLAY PRODUIT (PHOTOS, TAGS, CATÉGORIES)
+     OVERLAY PRODUIT (CRÉATION & MODIFICATION)
      ============================================================ */
-  
-  // AJOUT : La fonction prend un id optionnel
   function openProductOverlay(id = null) { 
     editingProductId = id;
     document.getElementById('product-form-overlay').classList.add('open'); 
@@ -342,7 +336,6 @@
     const saveBtn = document.getElementById('overlaySaveBtn');
 
     if (id) {
-      // MODE MODIFICATION
       titleEl.textContent = "Modifier le produit";
       saveBtn.textContent = "Mettre à jour";
       
@@ -371,7 +364,7 @@
           if (p.photo_url) {
             photoPreview.style.backgroundImage = `url('${p.photo_url}')`;
             photoPreview.textContent = '';
-            existingPhotoUrl = p.photo_url; // On mémorise l'ancienne photo
+            existingPhotoUrl = p.photo_url; 
           } else {
             photoPreview.style.backgroundImage = '';
             photoPreview.textContent = 'Aucune photo';
@@ -381,7 +374,6 @@
       });
 
     } else {
-      // MODE CRÉATION
       titleEl.textContent = "Ajouter un produit";
       saveBtn.textContent = "Enregistrer";
       resetProductForm();
@@ -421,23 +413,21 @@
   if(btnCamera) btnCamera.addEventListener('click', () => cameraInput.click());
   if(btnGallery) btnGallery.addEventListener('click', () => galleryInput.click());
 
-  async function compresserImage);(file) { 
+  async function compresserImage(file) { 
     return new Promise((resolve) => { 
       const reader = new FileReader(); 
       reader.readAsDataURL(file); 
       reader.onload = (event) => { 
         const img = new Image(); 
         img.src = event.target.result; 
-        img.onload = } () => { 
+        img.onload = () => { 
           const canvas = document.createElement('canvas'); 
-          const 
- MAX_WIDTH = 800; 
+          const MAX_WIDTH = 800; 
           let width = img.width, height = img.height; 
-          if (width > MAX_WIDTH) { height =  Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; } 
-          canvas.width = width; canvas.height = height; }
- 
+          if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; } 
+          canvas.width = width; canvas.height = height; 
           canvas.getContext('2d').drawImage(img, 0, 0, width, height); 
-          canvas.toBl ob((blob) => resolve(blob), 'image/jpeg', 0.7); 
+          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7); 
         }; 
       }; 
     }); 
@@ -451,9 +441,11 @@
     try { 
       const compressedBlob = await compresserImage(file); 
       currentImageBlob = compressedBlob; 
-      existingPhotoUrl = null; // Si on choisit une nouvelle photo, on oublie l'ancienne
+      existingPhotoUrl = null;
       if (previewEl) { previewEl.style.backgroundImage = `url('${URL.createObjectURL(compressedBlob)}')`; previewEl.textContent = ''; } 
-    } catch (error) { alert("Impossible de lire l'image." if(cameraInput) cameraInput.addEventListener('change', handleImageSelect);
+    } catch (error) { alert("Impossible de lire l'image."); } 
+  }
+  if(cameraInput) cameraInput.addEventListener('change', handleImageSelect);
   if(galleryInput) galleryInput.addEventListener('change', handleImageSelect);
 
   document.getElementById('pDesc').addEventListener('input', function () { document.querySelector('#product-form-overlay .char-count').textContent = this.value.length + '/140'; });
@@ -481,7 +473,6 @@
     });
   });
 
-  // AJOUT : La logique de sauvegarde gère l'ajout ET la modification
   document.getElementById('overlaySaveBtn').addEventListener('click', async () => {
     const user = auth.currentUser; if (!user) return alert("Connectez-vous.");
     const name = document.getElementById('pName').value.trim(), price = parseInt(document.getElementById('pPrice').value, 10);
@@ -496,7 +487,6 @@
     try {
       let photoUrl = null;
       
-      // Si on a une NOUVELLE photo
       if (currentImageBlob) { 
         const formData = new FormData(); 
         formData.append('file', currentImageBlob); 
@@ -506,7 +496,6 @@
         if (data.secure_url) photoUrl = data.secure_url; 
         else throw new Error("Upload échoué"); 
       } else if (existingPhotoUrl) {
-        // Si on modifie et qu'on n'a pas touché à la photo, on garde l'ancienne
         photoUrl = existingPhotoUrl;
       }
 
@@ -517,11 +506,9 @@
       };
 
       if (editingProductId) {
-        // MISE À JOUR
         await db.collection('produits').doc(editingProductId).update(productData);
         showToast('✓ Produit mis à jour !');
       } else {
-        // CRÉATION
         productData.created_at = firebase.firestore.FieldValue.serverTimestamp();
         await db.collection('produits').add(productData);
         showToast('✓ Produit enregistré !');
@@ -536,7 +523,7 @@
   });
 
   /* ============================================================
-     OVERLAY CATALOGUE
+     OVERLAY CATALOGUE & LÉA & ONBOARDING
      ============================================================ */
   const catalogBtn = document.getElementById('catalogBtn');
   const catalogOverlay = document.getElementById('catalog-image-overlay');
@@ -552,9 +539,6 @@
   if (catalogCloseBtn) catalogCloseBtn.addEventListener('click', () => { catalogOverlay.classList.remove('open'); document.body.style.overflow = ''; });
   document.getElementById('catalogDownloadBtn').addEventListener('click', () => alert('Simulation : Image téléchargée'));
 
-  /* ============================================================
-     ONBOARDING & LÉA
-     ============================================================ */
   function goToStep(n) {
     const step1 = document.getElementById('obStep1'), step2 = document.getElementById('obStep2'), dots = $$('#view-onboarding .ob-step-dot');
     if (n === 2) {

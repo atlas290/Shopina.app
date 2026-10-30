@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — vendeur.js (Version Dynamique & Pro)
+   Shopina — vendeur.js (Version Finale et Corrigée)
    ============================================================ */
 
 (function () {
@@ -20,13 +20,11 @@
   const CLOUDINARY_CLOUD_NAME = 'jaifaim-app';
   const CLOUDINARY_UPLOAD_PRESET = 'plats_resto';
 
-  // On ajoute "categories" pour stocker ce que la vendeuse a écrit
   const SHOP = { name: '', slug: '', whatsapp: '', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, categories: [], email: '', password: '' };
-  let currentShopCategories = []; // Pour générer les boutons dans le formulaire produit
+  let currentShopCategories = [];
 
   const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: 'Léa', reglages: 'Réglages' };
 
-  // Léa reste généraliste
   const leaData = {
     video: { local: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Le trend du changement de tenue</h3><p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p></div>` },
     whatsapp: { local: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>La stratégie des statuts</h3><p>Poste <strong>1 photo par jour</strong>, pas 10 d'un coup.</p></div>` },
@@ -69,6 +67,29 @@
   $$('.nav-btn').forEach((btn) => { btn.addEventListener('click', () => switchTab(btn.dataset.tab)); });
 
   /* ============================================================
+     UI MISE À JOUR (CORRIGÉE ET SORTIE DE L'ÉCOUTEUR)
+     ============================================================ */
+  function updateUIWithShopData() {
+    document.querySelector('#view-dashboard .shop-name').textContent = SHOP.name;
+    document.querySelector('#view-dashboard .shop-logo').textContent = (SHOP.name.charAt(0) || 'H').toUpperCase();
+    
+    const sloganEl = document.getElementById('dashSlogan');
+    if (sloganEl) {
+      const cats = SHOP.categories.length > 0 ? SHOP.categories.join(' · ') : 'Bienvenue sur ma boutique';
+      sloganEl.textContent = cats;
+    }
+
+    document.querySelector('#view-dashboard .link-code').textContent = 'shopina.shop/' + SHOP.slug;
+    document.getElementById('setName').textContent = SHOP.name; document.getElementById('setSlug').textContent = SHOP.slug; document.getElementById('setWhatsapp').textContent = SHOP.whatsapp;
+    document.getElementById('setHours').textContent = SHOP.hours || '—'; document.getElementById('setDelivery').textContent = SHOP.delivery || '—';
+    document.getElementById('setDeliveryPrice1').textContent = SHOP.deliveryPrice1 ? SHOP.deliveryPrice1 + ' FCFA' : '—';
+    document.getElementById('setDeliveryPrice2').textContent = SHOP.deliveryPrice2 ? SHOP.deliveryPrice2 + ' FCFA' : '—';
+    document.getElementById('setDeliveryPrice3').textContent = SHOP.deliveryPrice3 ? SHOP.deliveryPrice3 + ' FCFA' : '—';
+    document.getElementById('setColorDot').style.backgroundColor = SHOP.color; document.getElementById('setColorHex').textContent = SHOP.color.toUpperCase();
+    document.documentElement.style.setProperty('--accent', SHOP.color); document.documentElement.style.setProperty('--accent-soft', SHOP.colorSoft);
+  }
+
+  /* ============================================================
      AUTHENTIFICATION & SESSION
      ============================================================ */
   const goToLoginBtn = document.getElementById('goToLoginBtn'), goToOnboardingBtn = document.getElementById('goToOnboardingBtn');
@@ -96,24 +117,12 @@
           SHOP.email = v.email; SHOP.name = v.nom_boutique; SHOP.slug = v.slug; SHOP.whatsapp = v.numero_whatsapp;
           SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
           SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
-          // On récupère les catégories personnalisées
           SHOP.categories = v.categories || ['Divers']; 
           
-          function updateUIWithShopData() {
-    document.querySelector('#view-dashboard .shop-name').textContent = SHOP.name;
-    document.querySelector('#view-dashboard .shop-logo').textContent = (SHOP.name.charAt(0) || 'H').toUpperCase();
-    
-    // METTRE À JOUR LE SLOGAN AVEC LES CATÉGORIES
-    const sloganEl = document.getElementById('dashSlogan');
-    if (sloganEl) {
-      // On affiche les catégories. Si pas de catégories, on met un texte par défaut.
-      const cats = SHOP.categories.length > 0 ? SHOP.categories.join(' · ') : 'Bienvenue sur ma boutique';
-      sloganEl.textContent = cats;
-    }
-
-    document.querySelector('#view-dashboard .link-code').textContent = 'shopina.shop/' + SHOP.slug;
-    // ... le reste de ta fonction ...
-  }
+          updateUIWithShopData();
+          document.querySelector('.bottom-nav').style.display = 'flex';
+          switchTab('dashboard');
+        }
       } catch (error) { console.error("Erreur chargement session", error); }
     } else {
       document.querySelector('.bottom-nav').style.display = 'none';
@@ -216,21 +225,8 @@
   }
 
   /* ============================================================
-     UI & INSCRIPTION
+     ACTIONS DASHBOARD
      ============================================================ */
-  function updateUIWithShopData() {
-    document.querySelector('#view-dashboard .shop-name').textContent = SHOP.name;
-    document.querySelector('#view-dashboard .shop-logo').textContent = (SHOP.name.charAt(0) || 'H').toUpperCase();
-    document.querySelector('#view-dashboard .link-code').textContent = 'shopina.shop/' + SHOP.slug;
-    document.getElementById('setName').textContent = SHOP.name; document.getElementById('setSlug').textContent = SHOP.slug; document.getElementById('setWhatsapp').textContent = SHOP.whatsapp;
-    document.getElementById('setHours').textContent = SHOP.hours || '—'; document.getElementById('setDelivery').textContent = SHOP.delivery || '—';
-    document.getElementById('setDeliveryPrice1').textContent = SHOP.deliveryPrice1 ? SHOP.deliveryPrice1 + ' FCFA' : '—';
-    document.getElementById('setDeliveryPrice2').textContent = SHOP.deliveryPrice2 ? SHOP.deliveryPrice2 + ' FCFA' : '—';
-    document.getElementById('setDeliveryPrice3').textContent = SHOP.deliveryPrice3 ? SHOP.deliveryPrice3 + ' FCFA' : '—';
-    document.getElementById('setColorDot').style.backgroundColor = SHOP.color; document.getElementById('setColorHex').textContent = SHOP.color.toUpperCase();
-    document.documentElement.style.setProperty('--accent', SHOP.color); document.documentElement.style.setProperty('--accent-soft', SHOP.colorSoft);
-  }
-
   function copyLink() {
     const link = 'https://shopina.vercel.app/boutique.html?shop=' + SHOP.slug; 
     const done = () => showToast('Lien copié !');
@@ -248,7 +244,9 @@
   document.getElementById('btnCopyLink').addEventListener('click', copyLink);
   document.getElementById('btnShareLink').addEventListener('click', shareLink);
 
-  // Gestion Onboarding
+  /* ============================================================
+     ONBOARDING
+     ============================================================ */
   function goToStep(n) {
     const step1 = document.getElementById('obStep1'), step2 = document.getElementById('obStep2'), dots = $$('#view-onboarding .ob-step-dot');
     if (n === 2) {
@@ -261,10 +259,9 @@
       SHOP.slug = document.getElementById('obSlug').value.trim() || 'ma-boutique';
       SHOP.whatsapp = document.getElementById('obWhatsapp').value.trim();
       
-      // On récupère les catégories écrites par la vendeuse
       const catsInput = document.getElementById('obCategories').value;
       SHOP.categories = catsInput.split(',').map(c => c.trim()).filter(c => c.length > 0);
-      if (SHOP.categories.length === 0) SHOP.categories = ['Divers']; // Fallback
+      if (SHOP.categories.length === 0) SHOP.categories = ['Divers'];
 
       step1.style.display = 'none'; step2.style.display = '';
       if (dots[0]) { dots[0].classList.remove('active'); dots[0].textContent = '✓'; }
@@ -293,8 +290,7 @@
         email: SHOP.email, nom_boutique: SHOP.name, slug: SHOP.slug, numero_whatsapp: SHOP.whatsapp,
         couleur_accent: SHOP.color, horaires: SHOP.hours, zone_livraison: SHOP.delivery,
         deliveryPrice1: SHOP.deliveryPrice1, deliveryPrice2: SHOP.deliveryPrice2, deliveryPrice3: SHOP.deliveryPrice3,
-        categories: SHOP.categories, // ON SAUVEGARDE LES CATÉGORIES ICI
-        created_at: firebase.firestore.FieldValue.serverTimestamp()
+        categories: SHOP.categories, created_at: firebase.firestore.FieldValue.serverTimestamp()
       });
       showToast("Compte créé !");
     } catch (error) {
@@ -303,7 +299,6 @@
     }
   });
 
-  // Couleurs
   $$('#colorPicker .color-swatch').forEach((sw) => {
     sw.addEventListener('click', () => {
       $$('#colorPicker .color-swatch').forEach((s) => s.classList.remove('selected'));
@@ -312,7 +307,6 @@
     });
   });
 
-  // Léa
   function showLeaCategories() { document.getElementById('lea-categories').style.display = 'flex'; document.getElementById('lea-content').style.display = 'none'; }
   function openLeaCategory(catKey) {
     document.getElementById('lea-categories').style.display = 'none'; document.getElementById('lea-content').style.display = 'block';

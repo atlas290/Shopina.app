@@ -730,3 +730,13 @@
   min-width: 16px;
   text-align: center;
 }
+/* Force le lien de la boutique à se placer correctement sous le bouton */
+.shop-bar {
+  justify-content: space-between;
+  row-gap: 8px;
+}
+.shop-url {
+  flex: 1 1 100%; /* Force le lien à prendre toute la largeur et à passer à la ligne */
+  text-align: left;
+  margin-top: 4px;
+}

@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — client.js (Version Finale)
+   Shopina — client.js (Version Finale Corrigée)
    ============================================================ */
 
 (function () {
@@ -60,13 +60,7 @@
       SHOP.slug = vendeurData.slug;
       SHOP.whatsapp = vendeurData.numero_whatsapp;
       SHOP.color = vendeurData.couleur_accent;
-// Mise à jour de l'aperçu (Open Graph) pour les navigateurs
-      document.title = SHOP.name + " — Boutique en ligne";
-      const ogTitle = document.querySelector('meta[property="og:title"]');
-      if (ogTitle) ogTitle.setAttribute('content', "Découvrez " + SHOP.name);
       
-      const ogDesc = document.querySelector('meta[property="og:description"]');
-      if (ogDesc) ogDesc.setAttribute('content', "Retrouvez tous mes produits et commandez directement sur WhatsApp !");
       $('.shop-name').textContent = SHOP.name;
       $('.shop-slogan').textContent = vendeurData.horaires ? `Horaires : ${vendeurData.horaires}` : 'Bienvenue !';
       $('.logo').textContent = SHOP.name.charAt(0).toUpperCase();
@@ -210,11 +204,11 @@
     if (existing) { existing.quantity += 1; } else { cart.push({ id: product.id, name: product.name, price: product.price, variant: variant, bgColor: product.bgColor, photo_url: product.photo_url, quantity: 1 }); }
     renderCart(); return true;
   }
-function renderCart() {
+
+  function renderCart() {
     let totalArticles = 0;
     cart.forEach(item => totalArticles += item.quantity);
 
-    // --- GESTION DE LA BARRE FIXE EN BAS ---
     const floatingBar = document.getElementById('floating-cart-bar');
     if (floatingBar) {
       if (cart.length > 0) {
@@ -228,7 +222,6 @@ function renderCart() {
       }
     }
 
-    // --- GESTION DU TIROIR (COMME AVANT) ---
     if (cartCountEl) { cartCountEl.textContent = totalArticles; cartCountEl.dataset.empty = totalArticles === 0 ? 'true' : 'false'; }
     if (!drawerBodyEl) return;
 
@@ -276,12 +269,34 @@ function renderCart() {
     });
   }
 
+  // --- FONCTIONS D'OUVERTURE / FERMETURE DU PANIER (AJOUTÉES) ---
+  function openCart() {
+    if (drawerEl && backdropEl) {
+      drawerEl.classList.add('open');
+      backdropEl.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeCart() {
+    if (drawerEl && backdropEl) {
+      drawerEl.classList.remove('open');
+      backdropEl.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
   const cartBtn = document.querySelector('.cart-btn');
-  if (cartBtn) cartBtn.addEventListener('click', () => { drawerEl.classList.add('open'); if(backdropEl) backdropEl.classList.add('open'); document.body.style.overflow = 'hidden'; });
-const floatBtn = document.querySelector('.floating-cart-btn');
+  if (cartBtn) cartBtn.addEventListener('click', openCart);
+
+  const floatBtn = document.querySelector('.floating-cart-btn');
   if (floatBtn) floatBtn.addEventListener('click', openCart);
-   if (backdropEl) backdropEl.addEventListener('click', () => { drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = ''; });
-  if (drawerEl) { const closeBtn = drawerEl.querySelector('.drawer-head button'); if(closeBtn) closeBtn.addEventListener('click', () => { drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = ''; }); }
+
+  if (backdropEl) backdropEl.addEventListener('click', closeCart);
+  if (drawerEl) { 
+    const closeBtn = drawerEl.querySelector('.drawer-head button'); 
+    if(closeBtn) closeBtn.addEventListener('click', closeCart); 
+  }
 
   if (whatsappBtn) {
     whatsappBtn.addEventListener('click', async () => {
@@ -295,7 +310,8 @@ const floatBtn = document.querySelector('.floating-cart-btn');
         
         await db.collection('commandes').add({ vendeur_id: SHOP_ID, articles: cart, total: total, statut: 'nouvelle', created_at: firebase.firestore.FieldValue.serverTimestamp() });
         window.location.href = `https://wa.me/${SHOP.whatsapp.replace(/\s/g, '')}?text=${encodeURIComponent(lines.join('\n'))}`;
-        cart = []; renderCart(); drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = '';
+        
+        cart = []; renderCart(); closeCart();
       } catch (error) { console.error(error); alert("Erreur d'enregistrement."); } 
       finally { whatsappBtn.textContent = "Envoyer la commande sur WhatsApp"; whatsappBtn.disabled = false; }
     });

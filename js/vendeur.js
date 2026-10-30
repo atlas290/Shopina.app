@@ -99,10 +99,21 @@
           // On récupère les catégories personnalisées
           SHOP.categories = v.categories || ['Divers']; 
           
-          updateUIWithShopData();
-          document.querySelector('.bottom-nav').style.display = 'flex';
-          switchTab('dashboard');
-        }
+          function updateUIWithShopData() {
+    document.querySelector('#view-dashboard .shop-name').textContent = SHOP.name;
+    document.querySelector('#view-dashboard .shop-logo').textContent = (SHOP.name.charAt(0) || 'H').toUpperCase();
+    
+    // METTRE À JOUR LE SLOGAN AVEC LES CATÉGORIES
+    const sloganEl = document.getElementById('dashSlogan');
+    if (sloganEl) {
+      // On affiche les catégories. Si pas de catégories, on met un texte par défaut.
+      const cats = SHOP.categories.length > 0 ? SHOP.categories.join(' · ') : 'Bienvenue sur ma boutique';
+      sloganEl.textContent = cats;
+    }
+
+    document.querySelector('#view-dashboard .link-code').textContent = 'shopina.shop/' + SHOP.slug;
+    // ... le reste de ta fonction ...
+  }
       } catch (error) { console.error("Erreur chargement session", error); }
     } else {
       document.querySelector('.bottom-nav').style.display = 'none';

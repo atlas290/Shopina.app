@@ -252,7 +252,14 @@
       <div class="form-field"><label for="pPrice">Prix (FCFA)</label><input type="number" id="pPrice" placeholder="Ex : 15000"></div>
       <div class="form-field"><label for="pDesc">Description courte</label><textarea id="pDesc" maxlength="140" placeholder="Une phrase qui décrit le produit..."></textarea><span class="char-count">0/140</span></div>
       <div class="form-field"><label>Catégorie</label><div class="radio-row" id="productCategoriesContainer"></div></div>
-      <div class="form-field"><label>Variantes</label><div class="tags-list"></div><input class="tag-input" type="text" placeholder="Ajoutez une variante puis Entrée"></div>
+      <div class="form-field">
+        <label>Variantes (Très important pour les clientes)</label>
+        <div class="tags-list"></div>
+        <input class="tag-input" type="text" placeholder="Ex: S, M, L, XL...">
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.4;">
+          💡 Tapez une option (ex: M), puis <strong>appuyez sur la touche Entrée (ou virgule)</strong> pour l'ajouter. Recommencez pour chaque option.
+        </div>
+      </div>
       <div class="form-field"><label>Disponibilité</label><div class="status-pills"><button type="button" class="status-pill selected">Disponible</button><button type="button" class="status-pill">Épuisé</button></div></div>
     </div>
     <div class="overlay-footer"><button type="button" class="btn-secondary">Annuler</button><button type="button" class="btn-primary" id="overlaySaveBtn">Enregistrer</button></div>

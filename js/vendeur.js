@@ -226,16 +226,27 @@
   }
 
   function copyLink() {
-    const link = 'shopina.shop/' + SHOP.slug; const done = () => showToast('Lien copié !');
+    // On utilise le vrai lien Vercel pour l'instant
+    const link = 'https://shopina.vercel.app/boutique.html?shop=' + SHOP.slug; 
+    const done = () => showToast('Lien copié !');
     const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e) { done(); } };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done).catch(fallback); else fallback();
   }
 
   async function shareLink() {
-    const link = 'shopina.shop/' + SHOP.slug;
+    const link = 'https://shopina.vercel.app/boutique.html?shop=' + SHOP.slug;
     if (navigator.share) {
-      try { await navigator.share({ title: 'Ma boutique ' + SHOP.name, text: 'Découvrez mes produits !', url: 'https://' + link }); } catch (error) {}
-    } else { copyLink(); showToast('Lien copié !'); }
+      try { 
+        await navigator.share({ 
+          title: 'Découvrez ' + SHOP.name + ' sur Shopina', 
+          text: 'Retrouvez tous mes produits en ligne et commandez directement sur WhatsApp !', 
+          url: link 
+        }); 
+      } catch (error) {}
+    } else { 
+      copyLink(); 
+      showToast('Lien copié !'); 
+    }
   }
 
   document.getElementById('btnCopyLink').addEventListener('click', copyLink);

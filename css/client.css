@@ -698,11 +698,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Empêche le prix de passer à la ligne */
+/* Permet au prix de passer à la ligne si nécessaire */
 .product-price {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .ci-qty-controls {

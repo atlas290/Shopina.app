@@ -44,7 +44,7 @@
     </div>
   </div>
 
-  <!-- ONBOARDING (CHAMPS VIDES) -->
+  <!-- ONBOARDING -->
   <div id="view-onboarding" class="app-view no-nav section active">
     <div class="ob-header">
       <div class="ob-logo-badge">S</div>
@@ -82,14 +82,9 @@
           <input type="tel" id="obWhatsapp" placeholder="+229 97 00 00 00" autocomplete="off">
         </div>
         <div class="ob-field">
-          <label for="obShopType">Type de produits</label>
-          <select id="obShopType" class="ob-select">
-            <option value="mode_locale">Mode locale (Wax, pagne, couture)</option>
-            <option value="import_chine">Import Chine (Sacs, chaussures, gadgets)</option>
-            <option value="cosmetiques">Cosmétiques (Soins, maquillage, parfums)</option>
-            <option value="electromenager">Électroménager / Maison</option>
-            <option value="autre">Autre (Nourriture, Sex-toys, Divers...)</option>
-          </select>
+          <label for="obCategories">Vos catégories de produits (séparées par des virgules)</label>
+          <input type="text" id="obCategories" placeholder="Ex: Robes, Sacs, Parfums" autocomplete="off">
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Ajoutez uniquement ce que vous vendez.</div>
         </div>
         <div class="ob-actions">
           <button type="button" class="btn-primary" id="obNextBtn">Suivant</button>
@@ -115,12 +110,6 @@
             <button type="button" class="color-swatch" data-color="#9C27B0" data-soft="#F3E5F5" style="background:#9C27B0; color:#9C27B0"></button>
             <button type="button" class="color-swatch" data-color="#FF9800" data-soft="#FFF3E0" style="background:#FF9800; color:#FF9800"></button>
             <button type="button" class="color-swatch" data-color="#00BCD4" data-soft="#E0F7FA" style="background:#00BCD4; color:#00BCD4"></button>
-            <button type="button" class="color-swatch" data-color="#F44336" data-soft="#FFEBEE" style="background:#F44336; color:#F44336"></button>
-            <button type="button" class="color-swatch" data-color="#3F51B5" data-soft="#E8EAF6" style="background:#3F51B5; color:#3F51B5"></button>
-            <button type="button" class="color-swatch" data-color="#FFEB3B" data-soft="#FFFDE7" style="background:#FFEB3B; color:#FFEB3B"></button>
-            <button type="button" class="color-swatch" data-color="#795548" data-soft="#EFEBE9" style="background:#795548; color:#795548"></button>
-            <button type="button" class="color-swatch" data-color="#00BCD4" data-soft="#E0F7FA" style="background:#00BCD4; color:#00BCD4"></button>
-            <button type="button" class="color-swatch" data-color="#607D8B" data-soft="#ECEFF1" style="background:#607D8B; color:#607D8B"></button>
           </div>
         </div>
         <div class="ob-field">
@@ -243,8 +232,8 @@
   <nav class="bottom-nav">
     <button type="button" class="nav-btn active" data-tab="dashboard"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Accueil</span></button>
     <button type="button" class="nav-btn" data-tab="produits"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Produits</span></button>
-    <button type="button" class="nav-btn" data-tab="commandes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span>Commandes</span></button>
-    <button type="button" class="nav-btn" data-tab="lea"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>Léa</span></button>
+    <button type="button" class="nav-btn" data-tab="commandes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/.><line x1="8" y1="12" x2="21" y2="12"/><line x1="888" y1="18" x2="21" y2="18"/><line x1="3" y1="L6" x2="3.01" y2="6"/><line x1="3" y1="12"12 x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span>Commandes</span></button>
+    <button type="button" class="nav-btn" data-tab="lea"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>Léa</span></button>
     <button type="button" class="nav-btn" data-tab="reglages"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Réglages</span></button>
   </nav>
 
@@ -264,7 +253,11 @@
       <div class="form-field"><label for="pName">Nom du produit</label><input type="text" id="pName" placeholder="Ex : Robe wax imprimée"></div>
       <div class="form-field"><label for="pPrice">Prix (FCFA)</label><input type="number" id="pPrice" placeholder="Ex : 15000"></div>
       <div class="form-field"><label for="pDesc">Description courte</label><textarea id="pDesc" maxlength="140" placeholder="Une phrase qui décrit le produit..."></textarea><span class="char-count">0/140</span></div>
-      <div class="form-field"><label>Catégorie</label><div class="radio-row"><button type="button" class="radio-pill selected">Vêtement</button><button type="button" class="radio-pill">Cosmétique</button></div></div>
+      <div class="form-field">
+        <label>Catégorie</label>
+        <!-- Les boutons seront générés par JS -->
+        <div class="radio-row" id="productCategoriesContainer"></div>
+      </div>
       <div class="form-field"><label>Variantes</label><div class="tags-list"></div><input class="tag-input" type="text" placeholder="Ajoutez une variante puis Entrée"></div>
       <div class="form-field"><label>Disponibilité</label><div class="status-pills"><button type="button" class="status-pill selected">Disponible</button><button type="button" class="status-pill">Épuisé</button></div></div>
     </div>

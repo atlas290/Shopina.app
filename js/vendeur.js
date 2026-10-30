@@ -541,7 +541,9 @@
       container.innerHTML = '<div style="color:white; font-size:12px;">Chargement...</div>';
       
       try {
-        const snap = await db.collection('produits').where('vendeur_id', '==', SHOP_ID).limit(2).get();
+        const user = auth.currentUser;
+        if (!user) throw new Error("Non connecté");
+        const snap = await db.collection('produits').where('vendeur_id', '==', user.uid).limit(2).get();
         let html = '';
         
         if (snap.empty) {

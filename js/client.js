@@ -60,7 +60,13 @@
       SHOP.slug = vendeurData.slug;
       SHOP.whatsapp = vendeurData.numero_whatsapp;
       SHOP.color = vendeurData.couleur_accent;
-
+// Mise à jour de l'aperçu (Open Graph) pour les navigateurs
+      document.title = SHOP.name + " — Boutique en ligne";
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', "Découvrez " + SHOP.name);
+      
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content', "Retrouvez tous mes produits et commandez directement sur WhatsApp !");
       $('.shop-name').textContent = SHOP.name;
       $('.shop-slogan').textContent = vendeurData.horaires ? `Horaires : ${vendeurData.horaires}` : 'Bienvenue !';
       $('.logo').textContent = SHOP.name.charAt(0).toUpperCase();

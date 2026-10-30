@@ -221,16 +221,19 @@
   <!-- OVERLAY CATALOGUE -->
   <div id="catalog-image-overlay" class="catalog-overlay">
     <div class="catalog-card" id="catalog-card">
-      <h2 class="catalog-title">Havana Shop</h2>
-      <p class="catalog-subtitle">Prêt-à-porter & cosmétiques</p>
-      <div class="catalog-products">
-        <div class="catalog-product"><div class="catalog-product-img" style="background: #F8BBD0;">R</div><div class="catalog-product-name">Robe wax</div><div class="catalog-product-price">15 000 F</div></div>
-        <div class="catalog-product"><div class="catalog-product-img" style="background: #FFCDD2;">R</div><div class="catalog-product-name">Rouge à lèvres</div><div class="catalog-product-price">3 500 F</div></div>
-      </div>
-      <div class="catalog-link" id="catalog-link">shopina.shop/havana-shop</div>
+      <h2 class="catalog-title" id="cat-shop-name">Havana Shop</h2>
+      <p class="catalog-subtitle" id="cat-shop-slogan">Prêt-à-porter & cosmétiques</p>
+      
+      <!-- Zone où on va injecter les 2 vrais produits -->
+      <div class="catalog-products" id="cat-products-container"></div>
+
+      <div class="catalog-link" id="cat-shop-link">shopina.shop/havana-shop</div>
     </div>
-    <div class="catalog-actions"><button type="button" class="btn-secondary" id="catalogCloseBtn">Fermer</button><button type="button" class="btn-primary" id="catalogDownloadBtn">Télécharger</button></div>
-  </div>
+    
+    <div class="catalog-actions">
+      <button type="button" class="btn-secondary" id="catalogCloseBtn">Fermer</button>
+      <button type="button" class="btn-primary" id="catalogDownloadBtn">Télécharger l'image</button>
+    </div>
 
   <script>setTimeout(function () { var splash = document.getElementById('splash-screen'); if (splash) splash.remove(); }, 1000);</script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>

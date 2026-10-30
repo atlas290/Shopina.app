@@ -156,55 +156,22 @@
   <!-- RÉGLAGES -->
   <div id="view-reglages" class="app-view section">
     <div class="products-header"><h2>Réglages</h2></div>
-    
     <div class="card">
       <div class="card-title">Informations</div>
-      <div class="settings-row">
-        <label class="settings-label" for="setName">Nom boutique</label>
-        <input type="text" id="setName" class="settings-input">
-      </div>
-      <div class="settings-row">
-        <label class="settings-label" for="setWhatsapp">WhatsApp</label>
-        <input type="tel" id="setWhatsapp" class="settings-input">
-      </div>
-      <div class="settings-row">
-        <label class="settings-label" for="setHours">Horaires</label>
-        <input type="text" id="setHours" class="settings-input">
-      </div>
-      <div class="settings-row">
-        <label class="settings-label" for="setDelivery">Zone de livraison</label>
-        <input type="text" id="setDelivery" class="settings-input">
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">Slug (non modifiable)</span>
-        <span class="settings-value" id="setSlug">—</span>
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">Couleur</span>
-        <span class="settings-value"><span class="color-dot" id="setColorDot"></span><span id="setColorHex"></span></span>
-      </div>
+      <div class="settings-row"><label class="settings-label" for="setName">Nom boutique</label><input type="text" id="setName" class="settings-input"></div>
+      <div class="settings-row"><label class="settings-label" for="setWhatsapp">WhatsApp</label><input type="tel" id="setWhatsapp" class="settings-input"></div>
+      <div class="settings-row"><label class="settings-label" for="setHours">Horaires</label><input type="text" id="setHours" class="settings-input"></div>
+      <div class="settings-row"><label class="settings-label" for="setDelivery">Zone de livraison</label><input type="text" id="setDelivery" class="settings-input"></div>
+      <div class="settings-row"><span class="settings-label">Slug (non modifiable)</span><span class="settings-value" id="setSlug">—</span></div>
+      <div class="settings-row"><span class="settings-label">Couleur</span><span class="settings-value"><span class="color-dot" id="setColorDot"></span><span id="setColorHex"></span></span></div>
     </div>
-
     <div class="card">
       <div class="card-title">Frais de livraison (FCFA)</div>
-      <div class="settings-row">
-        <label class="settings-label" for="setDeliveryPrice1">Zone 1</label>
-        <input type="number" id="setDeliveryPrice1" class="settings-input">
-      </div>
-      <div class="settings-row">
-        <label class="settings-label" for="setDeliveryPrice2">Zone 2</label>
-        <input type="number" id="setDeliveryPrice2" class="settings-input">
-      </div>
-      <div class="settings-row">
-        <label class="settings-label" for="setDeliveryPrice3">Zone 3</label>
-        <input type="number" id="setDeliveryPrice3" class="settings-input">
-      </div>
+      <div class="settings-row"><label class="settings-label" for="setDeliveryPrice1">Zone 1</label><input type="number" id="setDeliveryPrice1" class="settings-input"></div>
+      <div class="settings-row"><label class="settings-label" for="setDeliveryPrice2">Zone 2</label><input type="number" id="setDeliveryPrice2" class="settings-input"></div>
+      <div class="settings-row"><label class="settings-label" for="setDeliveryPrice3">Zone 3</label><input type="number" id="setDeliveryPrice3" class="settings-input"></div>
     </div>
-
-    <div class="settings-actions" style="padding: 0 16px 16px;">
-      <button type="button" class="btn-primary" id="btnSaveSettings">Enregistrer les modifications</button>
-    </div>
-
+    <div class="settings-actions" style="padding: 0 16px 16px;"><button type="button" class="btn-primary" id="btnSaveSettings">Enregistrer les modifications</button></div>
     <div class="card">
       <div class="card-title">Abonnement</div>
       <div class="settings-row"><span class="settings-label">Statut</span><span class="settings-value">Essai gratuit</span></div>
@@ -216,31 +183,19 @@
 
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
-    <button type="button" class="nav-btn active" data-tab="dashboard">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span>Accueil</span>
-    </button>
-    <button type="button" class="nav-btn" data-tab="produits">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      <span>Produits</span>
-    </button>
-    <button type="button" class="nav-btn" data-tab="commandes">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-      <span>Commandes</span>
-    </button>
-    <button type="button" class="nav-btn" data-tab="lea">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-      <span>Léa</span>
-    </button>
-    <button type="button" class="nav-btn" data-tab="reglages">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span>Réglages</span>
-    </button>
+    <button type="button" class="nav-btn active" data-tab="dashboard"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Accueil</span></button>
+    <button type="button" class="nav-btn" data-tab="produits"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Produits</span></button>
+    <button type="button" class="nav-btn" data-tab="commandes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg><span>Commandes</span></button>
+    <button type="button" class="nav-btn" data-tab="lea"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span>Léa</span></button>
+    <button type="button" class="nav-btn" data-tab="reglages"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Réglages</span></button>
   </nav>
 
-  <!-- FORMULAIRE PRODUIT -->
+  <!-- FORMULAIRE PRODUIT (AVEC ID POUR LE TITRE) -->
   <div id="product-form-overlay" class="overlay">
-    <div class="overlay-header"><h2 id="overlayTitle">Ajouter un produit</h2><button type="button" class="overlay-close">✕</button></div>
+    <div class="overlay-header">
+      <h2 id="overlayTitle">Ajouter un produit</h2>
+      <button type="button" class="overlay-close">✕</button>
+    </div>
     <div class="overlay-body">
       <div class="photo-section">
         <div class="photo-preview" id="photoPreview">Aucune photo</div>
@@ -253,41 +208,28 @@
       <div class="form-field"><label for="pDesc">Description courte</label><textarea id="pDesc" maxlength="140" placeholder="Une phrase qui décrit le produit..."></textarea><span class="char-count">0/140</span></div>
       <div class="form-field"><label>Catégorie</label><div class="radio-row" id="productCategoriesContainer"></div></div>
       <div class="form-field">
-        <label>Variantes (Très important pour les clientes)</label>
+        <label>Variantes</label>
         <div class="tags-list"></div>
-        <input class="tag-input" type="text" placeholder="Ex: S, M, L, XL...">
-        <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.4;">
-          💡 Tapez une option (ex: M), puis <strong>appuyez sur la touche Entrée (ou virgule)</strong> pour l'ajouter. Recommencez pour chaque option.
-        </div>
+        <input class="tag-input" type="text" placeholder="Ex: S, M, L...">
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.4;">💡 Tapez une option, puis <strong>appuyez sur Entrée</strong> (ou virgule) pour l'ajouter.</div>
       </div>
       <div class="form-field"><label>Disponibilité</label><div class="status-pills"><button type="button" class="status-pill selected">Disponible</button><button type="button" class="status-pill">Épuisé</button></div></div>
     </div>
-    <div class="overlay-footer"><button type="button" class="btn-secondary">Annuler</button><button type="button" class="btn-primary" id="overlaySaveBtn">Enregistrer</button>
+    <div class="overlay-footer"><button type="button" class="btn-secondary">Annuler</button><button type="button" class="btn-primary" id="overlaySaveBtn">Enregistrer</button></div>
   </div>
 
-  <!-- OVERLAY CATALOGUE (RESTAURÉ) -->
+  <!-- OVERLAY CATALOGUE -->
   <div id="catalog-image-overlay" class="catalog-overlay">
     <div class="catalog-card" id="catalog-card">
       <h2 class="catalog-title">Havana Shop</h2>
       <p class="catalog-subtitle">Prêt-à-porter & cosmétiques</p>
       <div class="catalog-products">
-        <div class="catalog-product">
-          <div class="catalog-product-img" style="background: #F8BBD0;">R</div>
-          <div class="catalog-product-name">Robe wax</div>
-          <div class="catalog-product-price">15 000 F</div>
-        </div>
-        <div class="catalog-product">
-          <div class="catalog-product-img" style="background: #FFCDD2;">R</div>
-          <div class="catalog-product-name">Rouge à lèvres</div>
-          <div class="catalog-product-price">3 500 F</div>
-        </div>
+        <div class="catalog-product"><div class="catalog-product-img" style="background: #F8BBD0;">R</div><div class="catalog-product-name">Robe wax</div><div class="catalog-product-price">15 000 F</div></div>
+        <div class="catalog-product"><div class="catalog-product-img" style="background: #FFCDD2;">R</div><div class="catalog-product-name">Rouge à lèvres</div><div class="catalog-product-price">3 500 F</div></div>
       </div>
       <div class="catalog-link" id="catalog-link">shopina.shop/havana-shop</div>
     </div>
-    <div class="catalog-actions">
-      <button type="button" class="btn-secondary" id="catalogCloseBtn">Fermer</button>
-      <button type="button" class="btn-primary" id="catalogDownloadBtn">Télécharger</button>
-    </div>
+    <div class="catalog-actions"><button type="button" class="btn-secondary" id="catalogCloseBtn">Fermer</button><button type="button" class="btn-primary" id="catalogDownloadBtn">Télécharger</button></div>
   </div>
 
   <script>setTimeout(function () { var splash = document.getElementById('splash-screen'); if (splash) splash.remove(); }, 1000);</script>

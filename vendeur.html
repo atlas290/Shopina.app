@@ -29,17 +29,9 @@
       <p>Connecte-toi pour gérer ta boutique</p>
     </div>
     <div class="ob-form">
-      <div class="ob-field">
-        <label for="loginEmail">Email</label>
-        <input type="email" id="loginEmail" placeholder="ton@email.com" autocomplete="email">
-      </div>
-      <div class="ob-field">
-        <label for="loginPassword">Mot de passe</label>
-        <input type="password" id="loginPassword" placeholder="Ton mot de passe" autocomplete="current-password">
-      </div>
-      <div class="ob-actions" style="margin-top: 24px;">
-        <button type="button" class="btn-primary" id="loginSubmitBtn">Se connecter</button>
-      </div>
+      <div class="ob-field"><label for="loginEmail">Email</label><input type="email" id="loginEmail" placeholder="ton@email.com" autocomplete="email"></div>
+      <div class="ob-field"><label for="loginPassword">Mot de passe</label><input type="password" id="loginPassword" placeholder="Ton mot de passe" autocomplete="current-password"></div>
+      <div class="ob-actions" style="margin-top: 24px;"><button type="button" class="btn-primary" id="loginSubmitBtn">Se connecter</button></div>
       <a href="#" id="goToOnboardingBtn" class="auth-switch-link" style="margin-bottom: 120px;">Pas encore de compte ? Créer ma boutique</a>
     </div>
   </div>
@@ -51,44 +43,24 @@
       <h1>Bienvenue sur Shopina</h1>
       <p>Créez votre boutique en ligne en 2 minutes</p>
     </div>
-    <div class="ob-steps">
-      <div class="ob-step-dot active">1</div>
-      <div class="ob-step-dot">2</div>
-    </div>
+    <div class="ob-steps"><div class="ob-step-dot active">1</div><div class="ob-step-dot">2</div></div>
     <div class="ob-form">
       <div id="obStep1">
-        <div class="ob-field">
-          <label for="obEmail">Email</label>
-          <input type="email" id="obEmail" placeholder="ton@email.com" autocomplete="email">
-        </div>
-        <div class="ob-field">
-          <label for="obPassword">Mot de passe (6 caractères min)</label>
-          <input type="password" id="obPassword" placeholder="Créer un mot de passe" minlength="6" autocomplete="new-password">
-        </div>
-        <div class="ob-field">
-          <label for="obName">Nom de la boutique</label>
-          <input type="text" id="obName" placeholder="Ex: Havana Shop" autocomplete="off">
-        </div>
+        <div class="ob-field"><label for="obEmail">Email</label><input type="email" id="obEmail" placeholder="ton@email.com" autocomplete="email"></div>
+        <div class="ob-field"><label for="obPassword">Mot de passe (6 caractères min)</label><input type="password" id="obPassword" placeholder="Créer un mot de passe" minlength="6" autocomplete="new-password"></div>
+        <div class="ob-field"><label for="obName">Nom de la boutique</label><input type="text" id="obName" placeholder="Ex: Havana Shop" autocomplete="off"></div>
         <div class="ob-field">
           <label for="obSlug">Lien de boutique</label>
-          <div class="slug-input-wrap">
-            <span class="slug-prefix">shopina.shop/</span>
-            <input type="text" id="obSlug" placeholder="havana-shop" autocomplete="off">
-          </div>
+          <div class="slug-input-wrap"><span class="slug-prefix">shopina.shop/</span><input type="text" id="obSlug" placeholder="havana-shop" autocomplete="off"></div>
           <div class="slug-feedback error" id="slugFeedback" style="display: none;">✗ Ce lien est déjà pris</div>
         </div>
-        <div class="ob-field">
-          <label for="obWhatsapp">Numéro WhatsApp</label>
-          <input type="tel" id="obWhatsapp" placeholder="+229 97 00 00 00" autocomplete="off">
-        </div>
+        <div class="ob-field"><label for="obWhatsapp">Numéro WhatsApp</label><input type="tel" id="obWhatsapp" placeholder="+229 97 00 00 00" autocomplete="off"></div>
         <div class="ob-field">
           <label for="obCategories">Vos catégories de produits (séparées par des virgules)</label>
           <input type="text" id="obCategories" placeholder="Ex: Robes, Sacs, Parfums" autocomplete="off">
           <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Ajoutez uniquement ce que vous vendez.</div>
         </div>
-        <div class="ob-actions">
-          <button type="button" class="btn-primary" id="obNextBtn">Suivant</button>
-        </div>
+        <div class="ob-actions"><button type="button" class="btn-primary" id="obNextBtn">Suivant</button></div>
         <a href="#" id="goToLoginBtn" class="auth-switch-link" style="margin-bottom: 120px;">Déjà un compte ? Se connecter</a>
       </div>
 
@@ -96,10 +68,7 @@
         <div class="ob-field">
           <label>Logo (optionnel)</label>
           <input type="file" id="obLogoInput" accept="image/*" style="display:none">
-          <div class="ob-logo-row">
-            <button type="button" class="btn-secondary" id="obLogoBtn">Choisir une image</button>
-            <div class="ob-logo-name" id="obLogoName"></div>
-          </div>
+          <div class="ob-logo-row"><button type="button" class="btn-secondary" id="obLogoBtn">Choisir une image</button><div class="ob-logo-name" id="obLogoName"></div></div>
         </div>
         <div class="ob-field">
           <label>Couleur d'accent</label>
@@ -112,24 +81,15 @@
             <button type="button" class="color-swatch" data-color="#00BCD4" data-soft="#E0F7FA" style="background:#00BCD4; color:#00BCD4"></button>
           </div>
         </div>
-        <div class="ob-field">
-          <label for="obHours">Horaires</label>
-          <input type="text" id="obHours" placeholder="Ex: Lun-Sam, 9h - 19h" autocomplete="off">
-        </div>
-        <div class="ob-field">
-          <label for="obDelivery">Zone de livraison</label>
-          <input type="text" id="obDelivery" placeholder="Ex: Cotonou, Calavi, Abomey" autocomplete="off">
-        </div>
+        <div class="ob-field"><label for="obHours">Horaires</label><input type="text" id="obHours" placeholder="Ex: Lun-Sam, 9h - 19h" autocomplete="off"></div>
+        <div class="ob-field"><label for="obDelivery">Zone de livraison</label><input type="text" id="obDelivery" placeholder="Ex: Cotonou, Calavi, Abomey" autocomplete="off"></div>
         <div class="ob-field">
           <label>Frais de livraison (FCFA)</label>
           <input type="number" id="obDeliveryPrice1" placeholder="Prix Livraison 1 (ex: 1000)" style="margin-bottom: 8px;">
           <input type="number" id="obDeliveryPrice2" placeholder="Prix Livraison 2 (ex: 1500)" style="margin-bottom: 8px;">
           <input type="number" id="obDeliveryPrice3" placeholder="Prix Livraison 3 (ex: 2000)">
         </div>
-        <div class="ob-actions">
-          <button type="button" class="btn-secondary" id="obPrevBtn">Retour</button>
-          <button type="button" class="btn-primary" id="obCreateBtn">Créer ma boutique</button>
-        </div>
+        <div class="ob-actions"><button type="button" class="btn-secondary" id="obPrevBtn">Retour</button><button type="button" class="btn-primary" id="obCreateBtn">Créer ma boutique</button></div>
       </div>
     </div>
   </div>
@@ -140,17 +100,14 @@
       <div class="shop-logo">H</div>
       <div>
         <div class="shop-name">Havana Shop</div>
-        <div class="shop-slogan">Prêt-à-porter &amp; cosmétiques · Cotonou</div>
+        <div class="shop-slogan" id="dashSlogan">—</div>
       </div>
     </div>
     <div class="card">
       <div class="card-title">Votre lien de boutique</div>
       <div class="link-block">
         <div class="link-code">shopina.shop/havana-shop</div>
-        <div class="link-actions">
-          <button type="button" class="btn-secondary" id="btnCopyLink">Copier</button>
-          <button type="button" class="btn-secondary" id="btnShareLink">Partager</button>
-        </div>
+        <div class="link-actions"><button type="button" class="btn-secondary" id="btnCopyLink">Copier</button><button type="button" class="btn-secondary" id="btnShareLink">Partager</button></div>
       </div>
     </div>
     <div class="stats-row">
@@ -214,27 +171,40 @@
       <div class="settings-row"><span class="settings-label">Zone 2</span><span class="settings-value" id="setDeliveryPrice2">—</span></div>
       <div class="settings-row"><span class="settings-label">Zone 3</span><span class="settings-value" id="setDeliveryPrice3">—</span></div>
     </div>
-    <div class="settings-actions">
-      <button type="button" class="btn-secondary" id="btnEditInfo">Modifier mes informations</button>
-    </div>
+    <div class="settings-actions"><button type="button" class="btn-secondary" id="btnEditInfo">Modifier mes informations</button></div>
     <div class="card">
       <div class="card-title">Abonnement</div>
       <div class="settings-row"><span class="settings-label">Statut</span><span class="settings-value">Essai gratuit</span></div>
       <div class="settings-row"><span class="settings-label">Forfait</span><span class="settings-value">Basique — 2 000 FCFA/mois</span></div>
       <button type="button" class="btn-secondary" style="margin-top:12px;" id="btnManageSub">Gérer l'abonnement</button>
     </div>
-    <div class="settings-actions">
-      <button type="button" class="btn-danger" id="btnLogout">Se déconnecter</button>
-    </div>
+    <div class="settings-actions"><button type="button" class="btn-danger" id="btnLogout">Se déconnecter</button></div>
   </div>
 
-  <!-- BOTTOM NAV -->
+  <!-- BOTTOM NAV (ICÔNES RÉPARÉES) -->
   <nav class="bottom-nav">
-    <button type="button" class="nav-btn active" data-tab="dashboard"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Accueil</span></button>
-    <button type="button" class="nav-btn" data-tab="produits"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Produits</span></button>
-    <button type="button" class="nav-btn" data-tab="commandes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/.><line x1="8" y1="12" x2="21" y2="12"/><line x1="888" y1="18" x2="21" y2="18"/><line x1="3" y1="L6" x2="3.01" y2="6"/><line x1="3" y1="12"12 x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span>Commandes</span></button>
-    <button type="button" class="nav-btn" data-tab="lea"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>Léa</span></button>
-    <button type="button" class="nav-btn" data-tab="reglages"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Réglages</span></button>
+    <button type="button" class="nav-btn active" data-tab="dashboard">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button type="button" class="nav-btn" data-tab="produits">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span>Produits</span>
+    </button>
+    <button type="button" class="nav-btn" data-tab="commandes">
+      <!-- Icône réparée : Liste -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+      <span>Commandes</span>
+    </button>
+    <button type="button" class="nav-btn" data-tab="lea">
+      <!-- Icône réparée : Étoile -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      <span>Léa</span>
+    </button>
+    <button type="button" class="nav-btn" data-tab="reglages">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Réglages</span>
+    </button>
   </nav>
 
   <!-- FORMULAIRE PRODUIT -->
@@ -245,19 +215,12 @@
         <div class="photo-preview" id="photoPreview">Aucune photo</div>
         <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
         <input type="file" id="galleryInput" accept="image/*" style="display:none;">
-        <div class="photo-btns">
-          <button type="button" id="btnCamera">Prendre une photo</button>
-          <button type="button" id="btnGallery">Choisir dans la galerie</button>
-        </div>
+        <div class="photo-btns"><button type="button" id="btnCamera">Prendre une photo</button><button type="button" id="btnGallery">Choisir dans la galerie</button></div>
       </div>
       <div class="form-field"><label for="pName">Nom du produit</label><input type="text" id="pName" placeholder="Ex : Robe wax imprimée"></div>
       <div class="form-field"><label for="pPrice">Prix (FCFA)</label><input type="number" id="pPrice" placeholder="Ex : 15000"></div>
       <div class="form-field"><label for="pDesc">Description courte</label><textarea id="pDesc" maxlength="140" placeholder="Une phrase qui décrit le produit..."></textarea><span class="char-count">0/140</span></div>
-      <div class="form-field">
-        <label>Catégorie</label>
-        <!-- Les boutons seront générés par JS -->
-        <div class="radio-row" id="productCategoriesContainer"></div>
-      </div>
+      <div class="form-field"><label>Catégorie</label><div class="radio-row" id="productCategoriesContainer"></div></div>
       <div class="form-field"><label>Variantes</label><div class="tags-list"></div><input class="tag-input" type="text" placeholder="Ajoutez une variante puis Entrée"></div>
       <div class="form-field"><label>Disponibilité</label><div class="status-pills"><button type="button" class="status-pill selected">Disponible</button><button type="button" class="status-pill">Épuisé</button></div></div>
     </div>

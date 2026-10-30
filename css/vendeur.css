@@ -232,3 +232,19 @@ body { overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
   outline: none;
   border-color: var(--accent);
 }
+.settings-input {
+  flex: 1;
+  text-align: right;
+  border: 1px solid var(--border-color);
+  background: var(--bg-main);
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 14px;
+  min-width: 0;
+}
+.settings-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}

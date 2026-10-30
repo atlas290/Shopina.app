@@ -522,47 +522,81 @@
     finally { saveBtn.textContent = originalText; saveBtn.disabled = false; }
   });
 
-  /* ============================================================
-     OVERLAY CATALOGUE & LÉA & ONBOARDING
+/* ============================================================
+     OVERLAY CATALOGUE (GÉNÉRATION D'IMAGE)
      ============================================================ */
   const catalogBtn = document.getElementById('catalogBtn');
   const catalogOverlay = document.getElementById('catalog-image-overlay');
   const catalogCloseBtn = document.getElementById('catalogCloseBtn');
+  const catalogDownloadBtn = document.getElementById('catalogDownloadBtn');
   
   if (catalogBtn && catalogOverlay) {
-    catalogBtn.addEventListener('click', () => {
-      const cardName = catalogOverlay.querySelector('.catalog-title'); if (cardName) cardName.textContent = SHOP.name;
-      const cardLink = catalogOverlay.querySelector('.catalog-link'); if (cardLink) cardLink.textContent = 'shopina.shop/' + SHOP.slug;
-      catalogOverlay.classList.add('open'); document.body.style.overflow = 'hidden';
+    catalogBtn.addEventListener('click', async () => {
+      // 1. Remplir les infos de base
+      document.getElementById('cat-shop-name').textContent = SHOP.name;
+      document.getElementById('cat-shop-link').textContent = 'shopina.shop/' + SHOP.slug;
+      
+      // 2. Aller chercher les 2 premiers produits
+      const container = document.getElementById('cat-products-container');
+      container.innerHTML = '<div style="color:white; font-size:12px;">Chargement...</div>';
+      
+      try {
+        const snap = await db.collection('produits').where('vendeur_id', '==', SHOP_ID).limit(2).get();
+        let html = '';
+        
+        if (snap.empty) {
+          html = '<div style="color:white; text-align:center; font-size:12px; margin-top:20px;">Aucun produit à afficher.</div>';
+        } else {
+          snap.forEach(doc => {
+            const p = doc.data();
+            const bg = p.photo_url ? `background-image: url('${p.photo_url}'); background-size: cover; background-position: center;` : `background: ${p.bgColor || '#fff'};`;
+            html += `
+              <div class="catalog-product">
+                <div class="catalog-product-img" style="${bg}"></div>
+                <div class="catalog-product-name">${p.nom}</div>
+                <div class="catalog-product-price">${p.prix} F</div>
+              </div>
+            `;
+          });
+        }
+        container.innerHTML = html;
+      } catch(e) { console.error(e); }
+
+      // 3. Afficher l'overlay
+      catalogOverlay.classList.add('open'); 
+      document.body.style.overflow = 'hidden';
     });
   }
-  if (catalogCloseBtn) catalogCloseBtn.addEventListener('click', () => { catalogOverlay.classList.remove('open'); document.body.style.overflow = ''; });
-  document.getElementById('catalogDownloadBtn').addEventListener('click', () => alert('Simulation : Image téléchargée'));
 
-  function goToStep(n) {
-    const step1 = document.getElementById('obStep1'), step2 = document.getElementById('obStep2'), dots = $$('#view-onboarding .ob-step-dot');
-    if (n === 2) {
-      const emailEl = document.getElementById('obEmail'), passwordEl = document.getElementById('obPassword');
-      if (!emailEl.value.trim() || !passwordEl.value.trim()) { alert('Remplissez l\'email et le mot de passe.'); return; }
-      if (passwordEl.value.length < 6) { alert('Le mot de passe doit contenir au moins 6 caractères.'); return; }
+  if (catalogCloseBtn) {
+    catalogCloseBtn.addEventListener('click', () => { 
+      catalogOverlay.classList.remove('open'); 
+      document.body.style.overflow = ''; 
+    });
+  }
 
-      SHOP.email = emailEl.value.trim(); SHOP.password = passwordEl.value.trim();
-      SHOP.name = document.getElementById('obName').value.trim() || 'Ma Boutique';
-      SHOP.slug = document.getElementById('obSlug').value.trim() || 'ma-boutique';
-      SHOP.whatsapp = document.getElementById('obWhatsapp').value.trim();
-      
-      const catsInput = document.getElementById('obCategories').value;
-      SHOP.categories = catsInput.split(',').map(c => c.trim()).filter(c => c.length > 0);
-      if (SHOP.categories.length === 0) SHOP.categories = ['Divers'];
+  if (catalogDownloadBtn) {
+    catalogDownloadBtn.addEventListener('click', () => {
+      const card = document.getElementById('catalog-card');
+      catalogDownloadBtn.textContent = "Création...";
+      catalogDownloadBtn.disabled = true;
 
-      step1.style.display = 'none'; step2.style.display = '';
-      if (dots[0]) { dots[0].classList.remove('active'); dots[0].textContent = '✓'; }
-      if (dots[1]) dots[1].classList.add('active');
-    } else {
-      step1.style.display = ''; step2.style.display = 'none';
-      if (dots[0]) { dots[0].classList.add('active'); dots[0].textContent = '1'; }
-      if (dots[1]) dots[1].classList.remove('active');
-    }
+      // Utilisation de html2canvas pour transformer la div en image
+      html2canvas(card, { scale: 2, backgroundColor: null }).then(canvas => {
+        // Créer un lien de téléchargement
+        const link = document.createElement('a');
+        link.download = `catalogue-${SHOP.slug}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.9);
+        link.click();
+        
+        catalogDownloadBtn.textContent = "Télécharger l'image";
+        catalogDownloadBtn.disabled = false;
+      }).catch(err => {
+        alert("Erreur lors de la création de l'image.");
+        catalogDownloadBtn.textContent = "Télécharger l'image";
+        catalogDownloadBtn.disabled = false;
+      });
+    });
   }
 
   document.getElementById('obNextBtn').addEventListener('click', () => goToStep(2));

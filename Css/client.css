@@ -698,3 +698,25 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Remplace le style du prix qui coupait le texte */
+.product-price {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent);
+  /* On enlève le nowrap pour que ça passe à la ligne si c'est trop long */
+  word-wrap: break-word; 
+}
+
+/* Ajustement pour le lien de la boutique qui touchait le bouton WhatsApp */
+.shop-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.shop-url {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 4px;
+}

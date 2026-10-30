@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — client.js (Version Dynamique)
+   Shopina — client.js (Version Finale)
    ============================================================ */
 
 (function () {
@@ -43,9 +43,6 @@
     setTimeout(() => cartBtn.classList.remove('cart-bump'), 300);
   }
 
-  /* ============================================================
-     1. INITIALISATION & GÉNÉRATION DES FILTRES
-     ============================================================ */
   async function initBoutique() {
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('shop');
@@ -73,7 +70,6 @@
       const waBtn = $('.wa-btn');
       if (waBtn) waBtn.href = `https://wa.me/${SHOP.whatsapp.replace(/\s/g, '')}`;
 
-      // Charger les produits
       const produitsSnapshot = await db.collection('produits').where('vendeur_id', '==', SHOP_ID).get();
       products = [];
       produitsSnapshot.forEach((doc) => {
@@ -81,19 +77,17 @@
         products.push({ id: doc.id, name: p.nom, price: p.prix, category: p.categorie, description: p.description, variants: p.variantes || [], soldout: p.statut === 'Épuisé', photo_url: p.photo_url, bgColor: p.bgColor || '#F8BBD0' });
       });
 
-      generateFilters(); // Nouvelle fonction magique
+      generateFilters();
       renderGrid();
       renderCart();
 
     } catch (error) { console.error("Erreur:", error); }
   }
 
-  // Générer les filtres UNIQUEMENT en fonction des produits existants
   function generateFilters() {
     const filtersEl = document.querySelector('.filters');
     if (!filtersEl) return;
 
-    // On récupère toutes les catégories uniques des produits
     const categories = ['Tout'];
     products.forEach(p => {
       if (p.category && !categories.includes(p.category)) {
@@ -101,12 +95,10 @@
       }
     });
 
-    // On crée les boutons HTML
     filtersEl.innerHTML = categories.map(cat => `
       <button class="filter ${cat === 'Tout' ? 'active' : ''}" data-filter="${escapeHtml(cat)}">${escapeHtml(cat)}</button>
     `).join('');
 
-    // On écoute les clics
     filtersEl.addEventListener('click', (e) => {
       const btn = e.target.closest('.filter'); if (!btn) return;
       activeFilter = btn.dataset.filter;
@@ -115,9 +107,6 @@
     });
   }
 
-  /* ============================================================
-     2. AFFICHAGE
-     ============================================================ */
   function renderGrid() {
     const gridEl = $('.grid');
     const list = products.filter((p) => activeFilter === 'Tout' || p.category === activeFilter);
@@ -142,10 +131,6 @@
       `;
     }).join('');
   }
-
-  // ... (Le reste du code client.js est identique à la version précédente pour le panier, l'overlay et WhatsApp)
-  // Pour faire court, je te laisse garder ton client.js actuel et juste remplacer la partie "INITIALISATION" et "AFFICHAGE".
-  // MAIS, pour que tu n'aies pas à chercher, voici le code complet à copier-coller :
 
   const gridEl = document.querySelector('.grid');
   if (gridEl) {

@@ -147,31 +147,64 @@
     <div id="lea-categories" class="lea-categories">
       <button type="button" class="lea-category-card" data-cat="video"><div class="lea-cat-icon">🎥</div><div class="lea-cat-text"><span class="lea-cat-title">Faire une vidéo TikTok</span><span class="lea-cat-sub">Trends et 3 premières secondes</span></div><div class="lea-cat-arrow">→</div></button>
       <button type="button" class="lea-category-card" data-cat="whatsapp"><div class="lea-cat-icon">📱</div><div class="lea-cat-text"><span class="lea-cat-title">Vendre sur WhatsApp</span><span class="lea-cat-sub">Statuts et relances</span></div><div class="lea-cat-arrow">→</div></button>
-      <button type="button" class="lea-category-card" data-cat="photos"><div class="lea-cat-icon">📸</div><div class="lea-cat-text"><span class="lea-cat-title">Prendre de belles photos</span><span class="lea-cat-sub">Lumière et angles</span></div><div class="lea-cat-arrow">→</div></button>
-      <button type="button" class="lea-category-card" data-cat="prix"><div class="lea-cat-icon">💰</div><div class="lea-cat-text"><span class="lea-cat-title">Fixer ses prix</span><span class="lea-cat-sub">Marges et négociations</span></div><div class="lea-cat-arrow">→</div></button>
+      <button type="button" class="lea-category-card" data-cat="photos"><div class="lea-cat-icon">📸</div><div class="lea-cat-text"><span class="lea-cat-title">Prendre de belles photos</span><divspan class="lea-cat-sub">Lumière et angles</span></div><div class="lea-cat-arrow"> class→</div></button>
+      <button type="button" class="lea-category-card" data-cat="prix"><="lea-cat-icon">💰</div><div class="lea-cat-text"><span class="lea-cat-title">Fixer ses prix</span><span class="lea-cat-sub">Marges et négociations</span></div><div class="lea-cat-arrow">→</div></button>
     </div>
     <div id="lea-content" class="lea-content" style="display: none;"></div>
   </div>
 
-  <!-- RÉGLAGES -->
+  <!-- RÉGLAGES (MODIFIABLES) -->
   <div id="view-reglages" class="app-view section">
     <div class="products-header"><h2>Réglages</h2></div>
+    
     <div class="card">
       <div class="card-title">Informations</div>
-      <div class="settings-row"><span class="settings-label">Nom boutique</span><span class="settings-value" id="setName">—</span></div>
-      <div class="settings-row"><span class="settings-label">Slug</span><span class="settings-value" id="setSlug">—</span></div>
-      <div class="settings-row"><span class="settings-label">WhatsApp</span><span class="settings-value" id="setWhatsapp">—</span></div>
-      <div class="settings-row"><span class="settings-label">Horaires</span><span class="settings-value" id="setHours">—</span></div>
-      <div class="settings-row"><span class="settings-label">Livraison</span><span class="settings-value" id="setDelivery">—</span></div>
-      <div class="settings-row"><span class="settings-label">Couleur</span><span class="settings-value"><span class="color-dot" id="setColorDot"></span><span id="setColorHex"></span></span></div>
+      <div class="settings-row">
+        <label class="settings-label" for="setName">Nom boutique</label>
+        <input type="text" id="setName" class="settings-input">
+      </div>
+      <div class="settings-row">
+        <label class="settings-label" for="setWhatsapp">WhatsApp</label>
+        <input type="tel" id="setWhatsapp" class="settings-input">
+      </div>
+      <div class="settings-row">
+        <label class="settings-label" for="setHours">Horaires</label>
+        <input type="text" id="setHours" class="settings-input">
+      </div>
+      <div class="settings-row">
+        <label class="settings-label" for="setDelivery">Zone de livraison</label>
+        <input type="text" id="setDelivery" class="settings-input">
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Slug (non modifiable)</span>
+        <span class="settings-value" id="setSlug">—</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Couleur</span>
+        <span class="settings-value"><span class="color-dot" id="setColorDot"></span><span id="setColorHex"></span></span>
+      </div>
     </div>
+
     <div class="card">
-      <div class="card-title">Frais de livraison</div>
-      <div class="settings-row"><span class="settings-label">Zone 1</span><span class="settings-value" id="setDeliveryPrice1">—</span></div>
-      <div class="settings-row"><span class="settings-label">Zone 2</span><span class="settings-value" id="setDeliveryPrice2">—</span></div>
-      <div class="settings-row"><span class="settings-label">Zone 3</span><span class="settings-value" id="setDeliveryPrice3">—</span></div>
+      <div class="card-title">Frais de livraison (FCFA)</div>
+      <div class="settings-row">
+        <label class="settings-label" for="setDeliveryPrice1">Zone 1</label>
+        <input type="number" id="setDeliveryPrice1" class="settings-input">
+      </div>
+      <div class="settings-row">
+        <label class="settings-label" for="setDeliveryPrice2">Zone 2</label>
+        <input type="number" id="setDeliveryPrice2" class="settings-input">
+      </div>
+      <div class="settings-row">
+        <label class="settings-label" for="setDeliveryPrice3">Zone 3</label>
+        <input type="number" id="setDeliveryPrice3" class="settings-input">
+      </div>
     </div>
-    <div class="settings-actions"><button type="button" class="btn-secondary" id="btnEditInfo">Modifier mes informations</button></div>
+
+    <div class="settings-actions" style="padding: 0 16px 16px;">
+      <button type="button" class="btn-primary" id="btnSaveSettings">Enregistrer les modifications</button>
+    </div>
+
     <div class="card">
       <div class="card-title">Abonnement</div>
       <div class="settings-row"><span class="settings-label">Statut</span><span class="settings-value">Essai gratuit</span></div>

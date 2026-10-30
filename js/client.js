@@ -278,7 +278,9 @@ function renderCart() {
 
   const cartBtn = document.querySelector('.cart-btn');
   if (cartBtn) cartBtn.addEventListener('click', () => { drawerEl.classList.add('open'); if(backdropEl) backdropEl.classList.add('open'); document.body.style.overflow = 'hidden'; });
-  if (backdropEl) backdropEl.addEventListener('click', () => { drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = ''; });
+const floatBtn = document.querySelector('.floating-cart-btn');
+  if (floatBtn) floatBtn.addEventListener('click', openCart);
+   if (backdropEl) backdropEl.addEventListener('click', () => { drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = ''; });
   if (drawerEl) { const closeBtn = drawerEl.querySelector('.drawer-head button'); if(closeBtn) closeBtn.addEventListener('click', () => { drawerEl.classList.remove('open'); if(backdropEl) backdropEl.classList.remove('open'); document.body.style.overflow = ''; }); }
 
   if (whatsappBtn) {

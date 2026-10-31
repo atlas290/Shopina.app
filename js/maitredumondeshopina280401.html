@@ -13,10 +13,18 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // ⚠️ METS TON EMAIL ICI POUR SÉCURISER L'ACCÈS
+  // ⚠️ TON EMAIL ADMIN
   const ADMIN_EMAIL = "atlasstudio216@gmail.com";
 
   const $ = (sel) => document.querySelector(sel);
+
+  // Petite fonction pour nettoyer le texte (évite les failles XSS)
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
 
   // Connexion
   $('#btnLoginAdmin').addEventListener('click', async () => {
@@ -36,7 +44,7 @@
     auth.signOut();
   });
 
-  // Écouteur d'état (Sécurité)
+  // Écouteur d'état (Sécurité UI)
   auth.onAuthStateChanged((user) => {
     if (user) {
       if (user.email !== ADMIN_EMAIL) {
@@ -72,12 +80,19 @@
 
       snapshot.forEach(doc => {
         const v = doc.data();
+        
+        // On nettoie les données avant de les afficher
+        const nomSafe = escapeHtml(v.nom_boutique || 'Sans nom');
+        const emailSafe = escapeHtml(v.email || 'Pas d\'email');
+        const numSafe = escapeHtml(v.numero_whatsapp || 'Pas de numéro');
+        const slugSafe = escapeHtml(v.slug || '—');
+
         listEl.innerHTML += `
           <div class="vendor-card">
             <div>
-              <div class="vendor-name">${v.nom_boutique || 'Sans nom'}</div>
-              <div class="vendor-info">${v.email} · ${v.numero_whatsapp || 'Pas de numéro'}</div>
-              <div class="vendor-info" style="font-size: 11px; margin-top: 4px;">Slug : shopina.shop/${v.slug}</div>
+              <div class="vendor-name">${nomSafe}</div>
+              <div class="vendor-info">${emailSafe} · ${numSafe}</div>
+              <div class="vendor-info" style="font-size: 11px; margin-top: 4px;">Slug : shopina.shop/${slugSafe}</div>
             </div>
             <div class="vendor-badge">Vendeuse</div>
           </div>

@@ -63,7 +63,17 @@
       
       $('.shop-name').textContent = SHOP.name;
       $('.shop-slogan').textContent = vendeurData.horaires ? `Horaires : ${vendeurData.horaires}` : 'Bienvenue !';
-      $('.logo').textContent = SHOP.name.charAt(0).toUpperCase();
+      
+      // CORRECTION 5 : Affichage du logo
+      if (vendeurData.logo_url) {
+        $('.logo').textContent = '';
+        $('.logo').style.backgroundImage = `url('${vendeurData.logo_url}')`;
+        $('.logo').style.backgroundSize = 'cover';
+        $('.logo').style.backgroundPosition = 'center';
+      } else {
+        $('.logo').textContent = SHOP.name.charAt(0).toUpperCase();
+      }
+      
       document.documentElement.style.setProperty('--accent', SHOP.color);
       $('.shop-url').textContent = `shopina.shop/${SHOP.slug}`;
 
@@ -269,7 +279,7 @@
     });
   }
 
-  // --- FONCTIONS D'OUVERTURE / FERMETURE DU PANIER (AJOUTÉES) ---
+  // --- FONCTIONS D'OUVERTURE / FERMETURE DU PANIER ---
   function openCart() {
     if (drawerEl && backdropEl) {
       drawerEl.classList.add('open');

@@ -20,13 +20,12 @@
   const CLOUDINARY_CLOUD_NAME = 'jaifaim-app';
   const CLOUDINARY_UPLOAD_PRESET = 'plats_resto';
 
-  // CORRECTION 1 : Ajout de logo_url
   const SHOP = { name: '', slug: '', whatsapp: '', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, categories: [], email: '', password: '', logo_url: '' };
   
-  const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: 'Léa', reglages: 'Réglages' };
+  const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: ' classLéa', reglages: 'Réglages' };
 
   const leaData = {
-    video: { local: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Le trend du changement de tenue</h3><p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p></div>` },
+    video: { local: `<h2="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Le trend du changement de tenue</h3><p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p></div>` },
     whatsapp: { local: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>La stratégie des statuts</h3><p>Poste <strong>1 photo par jour</strong>, pas 10 d'un coup.</p></div>` },
     photos: { local: `<h2 class="lea-content-title">📸 Prendre de belles photos</h2><div class="lea-advice-card"><h3>La lumière naturelle</h3><p>Ne mets <strong>JAMAIS</strong> le flash.</p></div>` },
     prix: { local: `<h2 class="lea-content-title">💰 Fixer ses prix</h2><div class="lea-advice-card"><h3>La formule magique</h3><p>Prix d'achat + Transport + Marge (40%) = Ton prix de vente.</p></div>` }
@@ -140,8 +139,6 @@
           SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
           SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
           SHOP.categories = v.categories || ['Divers']; 
-          
-          // CORRECTION 2 : Charger le logo_url à la connexion
           SHOP.logo_url = v.logo_url || ''; 
           
           updateUIWithShopData();
@@ -598,6 +595,55 @@
         catalogDownloadBtn.disabled = false;
       });
     });
+  }
+
+  /* ============================================================
+     FONCTION GOTOSTEP (RESTAURÉE ICI)
+     ============================================================ */
+  function goToStep(n) {
+    const step1 = document.getElementById('obStep1');
+    const step2 = document.getElementById('obStep2');
+    const dots = document.querySelectorAll('#view-onboarding .ob-step-dot');
+    if (!step1 || !step2) return;
+
+    if (n === 2) {
+      const emailEl = document.getElementById('obEmail');
+      const passwordEl = document.getElementById('obPassword');
+      const nameEl = document.getElementById('obName');
+      const slugEl = document.getElementById('obSlug');
+      const waEl = document.getElementById('obWhatsapp');
+      const catsInput = document.getElementById('obCategories');
+
+      if (!emailEl.value.trim() || !passwordEl.value.trim()) {
+        alert('Veuillez remplir l\'email et le mot de passe.');
+        return;
+      }
+      if (passwordEl.value.length < 6) {
+        alert('Le mot de passe doit contenir au moins 6 caractères.');
+        return;
+      }
+
+      SHOP.email = emailEl.value.trim();
+      SHOP.password = passwordEl.value.trim();
+      if (nameEl) SHOP.name = nameEl.value.trim() || 'Ma Boutique';
+      if (slugEl) SHOP.slug = slugEl.value.trim() || 'ma-boutique';
+      if (waEl) SHOP.whatsapp = waEl.value.trim();
+      
+      if (catsInput) {
+        SHOP.categories = catsInput.value.split(',').map(c => c.trim()).filter(c => c.length > 0);
+        if (SHOP.categories.length === 0) SHOP.categories = ['Divers'];
+      }
+
+      step1.style.display = 'none';
+      step2.style.display = '';
+      if (dots[0]) { dots[0].classList.remove('active'); dots[0].textContent = '✓'; }
+      if (dots[1]) dots[1].classList.add('active');
+    } else {
+      step1.style.display = '';
+      step2.style.display = 'none';
+      if (dots[0]) { dots[0].classList.add('active'); dots[0].textContent = '1'; }
+      if (dots[1]) dots[1].classList.remove('active');
+    }
   }
 
   document.getElementById('obNextBtn').addEventListener('click', () => goToStep(2));

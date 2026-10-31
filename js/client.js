@@ -30,6 +30,23 @@
   function formatPrice(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' FCFA'; }
   function escapeHtml(str) { return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
+  // FONCTION AJOUTÉE : Nettoie automatiquement le numéro WhatsApp
+  function cleanWhatsAppNumber(phone) {
+    if (!phone) return '';
+    // 1. Supprime tout ce qui n'est pas un chiffre (espaces, +, -, etc.)
+    let clean = phone.replace(/\D/g, '');
+    
+    // 2. Si le numéro commence par 0, on le remplace par l'indicatif du Bénin (229)
+    if (clean.startsWith('0')) {
+      clean = '229' + clean.substring(1);
+    } 
+    // 3. Si le numéro commence par 2290, on enlève le 0 en trop
+    else if (clean.startsWith('2290')) {
+      clean = '229' + clean.substring(4);
+    }
+    return clean;
+  }
+
   let toastEl = null;
   function showToast(message) {
     if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'toast-succes'; document.body.appendChild(toastEl); }
@@ -64,7 +81,7 @@
       $('.shop-name').textContent = SHOP.name;
       $('.shop-slogan').textContent = vendeurData.horaires ? `Horaires : ${vendeurData.horaires}` : 'Bienvenue !';
       
-      // CORRECTION 5 : Affichage du logo
+      // Affichage du logo
       if (vendeurData.logo_url) {
         $('.logo').textContent = '';
         $('.logo').style.backgroundImage = `url('${vendeurData.logo_url}')`;
@@ -77,8 +94,9 @@
       document.documentElement.style.setProperty('--accent', SHOP.color);
       $('.shop-url').textContent = `shopina.shop/${SHOP.slug}`;
 
+      // CORRECTION ICI : Utilisation de cleanWhatsAppNumber
       const waBtn = $('.wa-btn');
-      if (waBtn) waBtn.href = `https://wa.me/${SHOP.whatsapp.replace(/\s/g, '')}`;
+      if (waBtn) waBtn.href = `https://wa.me/${cleanWhatsAppNumber(SHOP.whatsapp)}`;
 
       const produitsSnapshot = await db.collection('produits').where('vendeur_id', '==', SHOP_ID).get();
       products = [];
@@ -169,7 +187,7 @@
     const overlayAddBtn = overlayEl.querySelector('.btn-primary');
 
     if (p.photo_url) {
-      overlayImgEl.style.backgroundImage = `url('${p.photo_url}')`; overlayImgEl.style.backgroundSize = 'cover'; overlayImgEl.style.backgroundPosition = 'center'; overlayImgEl.querySelector('.ph-name').textContent = '';
+      overlayImgEl.style.backgroundImage = `url('${p.photo_url}')`; overlayImgEl.style. overlaybackgroundSize = 'cover'; overlayImgEl.style.backgroundPosition = 'center';ImgEl.querySelector('.ph-name').textContent = '';
     } else {
       overlayImgEl.style.background = p.bgColor; overlayImgEl.style.backgroundImage = 'none'; overlayImgEl.querySelector('.ph-name').textContent = p.name;
     }
@@ -279,7 +297,6 @@
     });
   }
 
-  // --- FONCTIONS D'OUVERTURE / FERMETURE DU PANIER ---
   function openCart() {
     if (drawerEl && backdropEl) {
       drawerEl.classList.add('open');
@@ -319,7 +336,9 @@
         lines.push(`TOTAL : ${formatPrice(total)}`);
         
         await db.collection('commandes').add({ vendeur_id: SHOP_ID, articles: cart, total: total, statut: 'nouvelle', created_at: firebase.firestore.FieldValue.serverTimestamp() });
-        window.location.href = `https://wa.me/${SHOP.whatsapp.replace(/\s/g, '')}?text=${encodeURIComponent(lines.join('\n'))}`;
+        
+        // CORRECTION ICI : Utilisation de cleanWhatsAppNumber
+        window.location.href = `https://wa.me/${cleanWhatsAppNumber(SHOP.whatsapp)}?text=${encodeURIComponent(lines.join('\n'))}`;
         
         cart = []; renderCart(); closeCart();
       } catch (error) { console.error(error); alert("Erreur d'enregistrement."); } 

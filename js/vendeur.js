@@ -22,10 +22,10 @@
 
   const SHOP = { name: '', slug: '', whatsapp: '', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, categories: [], email: '', password: '', logo_url: '' };
   
-  const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: ' classLéa', reglages: 'Réglages' };
+  const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: 'Léa', reglages: 'Réglages' };
 
   const leaData = {
-    video: { local: `<h2="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Le trend du changement de tenue</h3><p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p></div>` },
+    video: { local: `<h2 class="lea-content-title">🎥 Faire une vidéo TikTok/Reels</h2><div class="lea-advice-card"><h3>Le trend du changement de tenue</h3><p>Commence en pyjama ou en tenue simple. <strong>Claque des doigts</strong> et apparais avec la tenue à vendre.</p></div>` },
     whatsapp: { local: `<h2 class="lea-content-title">📱 Vendre sur WhatsApp</h2><div class="lea-advice-card"><h3>La stratégie des statuts</h3><p>Poste <strong>1 photo par jour</strong>, pas 10 d'un coup.</p></div>` },
     photos: { local: `<h2 class="lea-content-title">📸 Prendre de belles photos</h2><div class="lea-advice-card"><h3>La lumière naturelle</h3><p>Ne mets <strong>JAMAIS</strong> le flash.</p></div>` },
     prix: { local: `<h2 class="lea-content-title">💰 Fixer ses prix</h2><div class="lea-advice-card"><h3>La formule magique</h3><p>Prix d'achat + Transport + Marge (40%) = Ton prix de vente.</p></div>` }
@@ -74,7 +74,6 @@
      ============================================================ */
   function updateUIWithShopData() {
     document.querySelector('#view-dashboard .shop-name').textContent = SHOP.name;
-    document.querySelector('#view-dashboard .shop-logo').textContent = (SHOP.name.charAt(0) || 'H').toUpperCase();
     
     const sloganEl = document.getElementById('dashSlogan');
     if (sloganEl) sloganEl.textContent = SHOP.categories.length > 0 ? SHOP.categories.join(' · ') : 'Bienvenue sur ma boutique';
@@ -108,6 +107,32 @@
         });
       });
     }
+
+    // AJOUT : Mettre à jour l'aperçu du logo dans les réglages
+    const settingsLogoPreview = document.getElementById('settingsLogoPreview');
+    if (settingsLogoPreview) {
+      if (SHOP.logo_url) {
+        settingsLogoPreview.style.backgroundImage = `url('${SHOP.logo_url}')`;
+        settingsLogoPreview.textContent = '';
+      } else {
+        settingsLogoPreview.style.backgroundImage = '';
+        settingsLogoPreview.textContent = (SHOP.name.charAt(0) || 'H').toUpperCase();
+      }
+    }
+
+    // AJOUT : Mettre à jour le logo dans le header du Dashboard
+    const dashLogo = document.querySelector('#view-dashboard .shop-logo');
+    if (dashLogo) {
+      if (SHOP.logo_url) {
+        dashLogo.style.backgroundImage = `url('${SHOP.logo_url}')`;
+        dashLogo.style.backgroundSize = 'cover';
+        dashLogo.style.backgroundPosition = 'center';
+        dashLogo.textContent = '';
+      } else {
+        dashLogo.style.backgroundImage = '';
+        dashLogo.textContent = (SHOP.name.charAt(0) || 'H').toUpperCase();
+      }
+    }
   }
 
   /* ============================================================
@@ -139,7 +164,8 @@
           SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
           SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
           SHOP.categories = v.categories || ['Divers']; 
-          SHOP.logo_url = v.logo_url || ''; 
+          
+          SHOP.logo_url = v.logo_url || ''; // Chargement du logo_url
           
           updateUIWithShopData();
           document.querySelector('.bottom-nav').style.display = 'flex';
@@ -324,6 +350,55 @@
       btn.textContent = "Enregistrer les modifications"; btn.disabled = false;
     }
   });
+
+  // ============================================================
+  // AJOUT : LOGIQUE DE CHANGEMENT DE LOGO (RÉGLAGES)
+  // ============================================================
+  const btnChangeLogo = document.getElementById('btnChangeLogo');
+  const settingsLogoInput = document.getElementById('settingsLogoInput');
+  
+  if (btnChangeLogo && settingsLogoInput) {
+    btnChangeLogo.addEventListener('click', () => settingsLogoInput.click());
+    
+    settingsLogoInput.addEventListener('change', async function () {
+      const file = this.files[0];
+      if (!file) return;
+      
+      const originalText = btnChangeLogo.textContent;
+      btnChangeLogo.textContent = "Envoi...";
+      btnChangeLogo.disabled = true;
+      
+      try {
+        const compressedBlob = await compresserImage(file);
+        const formData = new FormData();
+        formData.append('file', compressedBlob);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
+        const data = await res.json();
+        
+        if (!data.secure_url) throw new Error("Upload échoué");
+        
+        SHOP.logo_url = data.secure_url;
+        
+        const user = auth.currentUser;
+        if (user) {
+          await db.collection('vendeurs').doc(user.uid).update({ logo_url: SHOP.logo_url });
+        }
+        
+        updateUIWithShopData();
+        showToast('✓ Logo mis à jour !');
+        settingsLogoInput.value = '';
+        
+      } catch (error) {
+        console.error(error);
+        alert("Erreur lors de l'envoi du logo : " + error.message);
+      } finally {
+        btnChangeLogo.textContent = originalText;
+        btnChangeLogo.disabled = false;
+      }
+    });
+  }
 
   /* ============================================================
      OVERLAY PRODUIT (CRÉATION & MODIFICATION)
@@ -598,7 +673,7 @@
   }
 
   /* ============================================================
-     FONCTION GOTOSTEP (RESTAURÉE ICI)
+     FONCTION GOTOSTEP
      ============================================================ */
   function goToStep(n) {
     const step1 = document.getElementById('obStep1');
@@ -649,7 +724,7 @@
   document.getElementById('obNextBtn').addEventListener('click', () => goToStep(2));
   document.getElementById('obPrevBtn').addEventListener('click', () => goToStep(1));
 
-  // CORRECTION 3 : Nouvelle logique d'upload du logo avec Cloudinary
+  // Logique d'upload du logo avec Cloudinary (Onboarding)
   const logoBtn = document.getElementById('obLogoBtn');
   const logoInput = document.getElementById('obLogoInput');
   const logoName = document.getElementById('obLogoName');
@@ -688,7 +763,6 @@
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(SHOP.email, SHOP.password);
       
-      // CORRECTION 4 : Ajout de logo_url dans Firestore
       await db.collection('vendeurs').doc(userCredential.user.uid).set({
         email: SHOP.email, nom_boutique: SHOP.name, slug: SHOP.slug, numero_whatsapp: SHOP.whatsapp,
         couleur_accent: SHOP.color, horaires: SHOP.hours, zone_livraison: SHOP.delivery,

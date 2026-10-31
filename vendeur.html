@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  
-<link rel="icon" type="image/jpeg" href="https://cdn.statically.io/gh/atlas290/Shopina.app/main/assets/logo-shopina.jpg">
-
+  <link rel="icon" type="image/jpeg" href="https://cdn.statically.io/gh/atlas290/Shopina.app/main/assets/logo-shopina.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#222">
   <title>Shopina — Espace vendeuse</title>
-  <link rel="icon" type="image/jpeg" href="https://cdn.statically.io/gh/atlas290/Shopina.app/main/assets/logo-shopina.jpg">
   <meta property="og:image" content="https://cdn.statically.io/gh/atlas290/Shopina.app/main/assets/logo-shopina.jpg">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/global.css">
@@ -158,17 +155,12 @@
     <div id="lea-content" class="lea-content" style="display: none;"></div>
   </div>
 
-  <!-- RÉGLAGES -->
-  <div id="view-reglages" class="app-view section">
-    <div class="products-header"><h2>Réglages</h2></div>
-    <div class="card">
-      <!-- ============ RÉGLAGES ============ -->
+  <!-- RÉGLAGES (CORRIGÉ ICI) -->
   <div id="view-reglages" class="app-view section">
     <div class="products-header">
       <h2>Réglages</h2>
     </div>
 
-    <!-- NOUVELLE CARTE À AJOUTER ICI -->
     <div class="card">
       <div class="card-title">Logo de la boutique</div>
       <div class="logo-edit-row">
@@ -177,11 +169,9 @@
         <input type="file" id="settingsLogoInput" accept="image/*" style="display:none;">
       </div>
     </div>
-    <!-- FIN DE LA NOUVELLE CARTE -->
 
     <div class="card">
       <div class="card-title">Informations</div>
-      
       <div class="settings-row"><label class="settings-label" for="setName">Nom boutique</label><input type="text" id="setName" class="settings-input"></div>
       <div class="settings-row"><label class="settings-label" for="setWhatsapp">WhatsApp</label><input type="tel" id="setWhatsapp" class="settings-input"></div>
       <div class="settings-row"><label class="settings-label" for="setHours">Horaires</label><input type="text" id="setHours" class="settings-input"></div>
@@ -189,13 +179,16 @@
       <div class="settings-row"><span class="settings-label">Slug (non modifiable)</span><span class="settings-value" id="setSlug">—</span></div>
       <div class="settings-row"><span class="settings-label">Couleur</span><span class="settings-value"><span class="color-dot" id="setColorDot"></span><span id="setColorHex"></span></span></div>
     </div>
+    
     <div class="card">
       <div class="card-title">Frais de livraison (FCFA)</div>
       <div class="settings-row"><label class="settings-label" for="setDeliveryPrice1">Zone 1</label><input type="number" id="setDeliveryPrice1" class="settings-input"></div>
       <div class="settings-row"><label class="settings-label" for="setDeliveryPrice2">Zone 2</label><input type="number" id="setDeliveryPrice2" class="settings-input"></div>
       <div class="settings-row"><label class="settings-label" for="setDeliveryPrice3">Zone 3</label><input type="number" id="setDeliveryPrice3" class="settings-input"></div>
     </div>
+    
     <div class="settings-actions" style="padding: 0 16px 16px;"><button type="button" class="btn-primary" id="btnSaveSettings">Enregistrer les modifications</button></div>
+    
     <div class="card">
       <div class="card-title">Abonnement</div>
       <div class="settings-row"><span class="settings-label">Statut</span><span class="settings-value">Essai gratuit</span></div>
@@ -214,7 +207,7 @@
     <button type="button" class="nav-btn" data-tab="reglages"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Réglages</span></button>
   </nav>
 
-  <!-- FORMULAIRE PRODUIT (AVEC ID POUR LE TITRE) -->
+  <!-- FORMULAIRE PRODUIT -->
   <div id="product-form-overlay" class="overlay">
     <div class="overlay-header">
       <h2 id="overlayTitle">Ajouter un produit</h2>
@@ -248,7 +241,6 @@
       <h2 class="catalog-title" id="cat-shop-name">Havana Shop</h2>
       <p class="catalog-subtitle" id="cat-shop-slogan">Prêt-à-porter & cosmétiques</p>
       
-      <!-- Zone où on va injecter les 2 vrais produits -->
       <div class="catalog-products" id="cat-products-container"></div>
 
       <div class="catalog-link" id="cat-shop-link">shopina.shop/havana-shop</div>
@@ -264,7 +256,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="js/vendeur.js"></script>
 </body>
 </html>

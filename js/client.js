@@ -30,21 +30,45 @@
   function formatPrice(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' FCFA'; }
   function escapeHtml(str) { return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
-  // FONCTION AJOUTÉE : Nettoie automatiquement le numéro WhatsApp
+  // FONCTION INTELLIGENTE : Gère tous les formats de numéros Béninois
   function cleanWhatsAppNumber(phone) {
     if (!phone) return '';
+    
     // 1. Supprime tout ce qui n'est pas un chiffre (espaces, +, -, etc.)
     let clean = phone.replace(/\D/g, '');
-    
-    // 2. Si le numéro commence par 0, on le remplace par l'indicatif du Bénin (229)
-    if (clean.startsWith('0')) {
-      clean = '229' + clean.substring(1);
-    } 
-    // 3. Si le numéro commence par 2290, on enlève le 0 en trop
-    else if (clean.startsWith('2290')) {
-      clean = '229' + clean.substring(4);
+
+    // 2. Si le numéro est déjà au format international complet (229...)
+    if (clean.startsWith('229')) {
+      return clean;
     }
-    return clean;
+
+    // 3. Si le numéro commence par 01 (le nouveau format standard)
+    if (clean.startsWith('01')) {
+      return '229' + clean;
+    }
+
+    // 4. Si l'utilisateur a tapé 10 chiffres sans le 229
+    if (clean.length === 10) {
+      return '229' + clean;
+    }
+
+    // 5. Si l'utilisateur a oublié le 0 du 01 (ex: 143327643 -> 0143327643)
+    if (clean.length === 9 && clean.startsWith('1')) {
+      return '2290' + clean;
+    }
+
+    // 6. Ancien format à 8 chiffres (ex: 97000000)
+    if (clean.length === 8) {
+      return '229' + clean;
+    }
+
+    // 7. Si ça commence par 0 mais pas 01 (ex: 097000000)
+    if (clean.startsWith('0')) {
+      return '229' + clean.substring(1);
+    }
+
+    // Sécurité : au pire on ajoute 229
+    return '229' + clean;
   }
 
   let toastEl = null;
@@ -94,7 +118,6 @@
       document.documentElement.style.setProperty('--accent', SHOP.color);
       $('.shop-url').textContent = `shopina.shop/${SHOP.slug}`;
 
-      // CORRECTION ICI : Utilisation de cleanWhatsAppNumber
       const waBtn = $('.wa-btn');
       if (waBtn) waBtn.href = `https://wa.me/${cleanWhatsAppNumber(SHOP.whatsapp)}`;
 
@@ -187,7 +210,7 @@
     const overlayAddBtn = overlayEl.querySelector('.btn-primary');
 
     if (p.photo_url) {
-      overlayImgEl.style.backgroundImage = `url('${p.photo_url}')`; overlayImgEl.style. overlaybackgroundSize = 'cover'; overlayImgEl.style.backgroundPosition = 'center';ImgEl.querySelector('.ph-name').textContent = '';
+      overlayImgEl.style.backgroundImage = `url('${p.photo_url}')`; overlayImgEl.style.backgroundSize = 'cover'; overlayImgEl.style.backgroundPosition = 'center'; overlayImgEl.querySelector('.ph-name').textContent = '';
     } else {
       overlayImgEl.style.background = p.bgColor; overlayImgEl.style.backgroundImage = 'none'; overlayImgEl.querySelector('.ph-name').textContent = p.name;
     }
@@ -337,7 +360,6 @@
         
         await db.collection('commandes').add({ vendeur_id: SHOP_ID, articles: cart, total: total, statut: 'nouvelle', created_at: firebase.firestore.FieldValue.serverTimestamp() });
         
-        // CORRECTION ICI : Utilisation de cleanWhatsAppNumber
         window.location.href = `https://wa.me/${cleanWhatsAppNumber(SHOP.whatsapp)}?text=${encodeURIComponent(lines.join('\n'))}`;
         
         cart = []; renderCart(); closeCart();

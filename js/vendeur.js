@@ -20,7 +20,8 @@
   const CLOUDINARY_CLOUD_NAME = 'jaifaim-app';
   const CLOUDINARY_UPLOAD_PRESET = 'plats_resto';
 
-  const SHOP = { name: '', slug: '', whatsapp: '', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, categories: [], email: '', password: '' };
+  // CORRECTION 1 : Ajout de logo_url
+  const SHOP = { name: '', slug: '', whatsapp: '', color: '#E91E63', colorSoft: '#FCE4EC', hours: '', delivery: '', deliveryPrice1: 0, deliveryPrice2: 0, deliveryPrice3: 0, categories: [], email: '', password: '', logo_url: '' };
   
   const TAB_NAMES = { dashboard: 'Dashboard', produits: 'Produits', commandes: 'Commandes', lea: 'Léa', reglages: 'Réglages' };
 
@@ -139,6 +140,9 @@
           SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
           SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
           SHOP.categories = v.categories || ['Divers']; 
+          
+          // CORRECTION 2 : Charger le logo_url à la connexion
+          SHOP.logo_url = v.logo_url || ''; 
           
           updateUIWithShopData();
           document.querySelector('.bottom-nav').style.display = 'flex';
@@ -532,11 +536,9 @@
   
   if (catalogBtn && catalogOverlay) {
     catalogBtn.addEventListener('click', async () => {
-      // 1. Remplir les infos de base
       document.getElementById('cat-shop-name').textContent = SHOP.name;
       document.getElementById('cat-shop-link').textContent = 'shopina.shop/' + SHOP.slug;
       
-      // 2. Aller chercher les 2 premiers produits
       const container = document.getElementById('cat-products-container');
       container.innerHTML = '<div style="color:white; font-size:12px;">Chargement...</div>';
       
@@ -564,7 +566,6 @@
         container.innerHTML = html;
       } catch(e) { console.error(e); }
 
-      // 3. Afficher l'overlay
       catalogOverlay.classList.add('open'); 
       document.body.style.overflow = 'hidden';
     });
@@ -583,9 +584,7 @@
       catalogDownloadBtn.textContent = "Création...";
       catalogDownloadBtn.disabled = true;
 
-      // Utilisation de html2canvas pour transformer la div en image
       html2canvas(card, { scale: 2, backgroundColor: null, useCORS: true }).then(canvas => {
-        // Créer un lien de téléchargement
         const link = document.createElement('a');
         link.download = `catalogue-${SHOP.slug}.jpg`;
         link.href = canvas.toDataURL('image/jpeg', 0.9);
@@ -604,6 +603,34 @@
   document.getElementById('obNextBtn').addEventListener('click', () => goToStep(2));
   document.getElementById('obPrevBtn').addEventListener('click', () => goToStep(1));
 
+  // CORRECTION 3 : Nouvelle logique d'upload du logo avec Cloudinary
+  const logoBtn = document.getElementById('obLogoBtn');
+  const logoInput = document.getElementById('obLogoInput');
+  const logoName = document.getElementById('obLogoName');
+  if (logoBtn && logoInput) {
+    logoBtn.addEventListener('click', () => logoInput.click());
+    logoInput.addEventListener('change', async function () {
+      if (this.files && this.files[0]) {
+        logoName.textContent = "Envoi en cours...";
+        try {
+          const compressedBlob = await compresserImage(this.files[0]);
+          const formData = new FormData(); 
+          formData.append('file', compressedBlob); 
+          formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+          
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
+          const data = await res.json();
+          if (data.secure_url) { 
+            SHOP.logo_url = data.secure_url; 
+            logoName.textContent = "✓ Logo prêt"; 
+          }
+        } catch (error) { 
+          logoName.textContent = "Erreur d'envoi"; 
+        }
+      }
+    });
+  }
+
   document.getElementById('obCreateBtn').addEventListener('click', async () => {
     SHOP.hours = document.getElementById('obHours').value.trim();
     SHOP.delivery = document.getElementById('obDelivery').value.trim();
@@ -614,11 +641,14 @@
 
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(SHOP.email, SHOP.password);
+      
+      // CORRECTION 4 : Ajout de logo_url dans Firestore
       await db.collection('vendeurs').doc(userCredential.user.uid).set({
         email: SHOP.email, nom_boutique: SHOP.name, slug: SHOP.slug, numero_whatsapp: SHOP.whatsapp,
         couleur_accent: SHOP.color, horaires: SHOP.hours, zone_livraison: SHOP.delivery,
         deliveryPrice1: SHOP.deliveryPrice1, deliveryPrice2: SHOP.deliveryPrice2, deliveryPrice3: SHOP.deliveryPrice3,
-        categories: SHOP.categories, created_at: firebase.firestore.FieldValue.serverTimestamp()
+        categories: SHOP.categories, logo_url: SHOP.logo_url || '', 
+        created_at: firebase.firestore.FieldValue.serverTimestamp()
       });
       showToast("Compte créé !");
     } catch (error) {

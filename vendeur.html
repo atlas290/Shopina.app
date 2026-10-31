@@ -162,7 +162,26 @@
   <div id="view-reglages" class="app-view section">
     <div class="products-header"><h2>Réglages</h2></div>
     <div class="card">
+      <!-- ============ RÉGLAGES ============ -->
+  <div id="view-reglages" class="app-view section">
+    <div class="products-header">
+      <h2>Réglages</h2>
+    </div>
+
+    <!-- NOUVELLE CARTE À AJOUTER ICI -->
+    <div class="card">
+      <div class="card-title">Logo de la boutique</div>
+      <div class="logo-edit-row">
+        <div class="logo-preview-edit" id="settingsLogoPreview"></div>
+        <button type="button" class="btn-secondary" id="btnChangeLogo" style="min-height:40px; padding:0 16px; font-size:13px;">Changer le logo</button>
+        <input type="file" id="settingsLogoInput" accept="image/*" style="display:none;">
+      </div>
+    </div>
+    <!-- FIN DE LA NOUVELLE CARTE -->
+
+    <div class="card">
       <div class="card-title">Informations</div>
+      
       <div class="settings-row"><label class="settings-label" for="setName">Nom boutique</label><input type="text" id="setName" class="settings-input"></div>
       <div class="settings-row"><label class="settings-label" for="setWhatsapp">WhatsApp</label><input type="tel" id="setWhatsapp" class="settings-input"></div>
       <div class="settings-row"><label class="settings-label" for="setHours">Horaires</label><input type="text" id="setHours" class="settings-input"></div>

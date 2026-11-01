@@ -1,5 +1,5 @@
 /* ============================================================
-   Shopina — accueil.css (Design Ultime v4)
+   Shopina — accueil.css (Design Ultime v4 - Version Épurée)
    ============================================================ */
 
 :root {
@@ -14,7 +14,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Pour charger Inter et Playfair Display proprement */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
 
 h1, h2, h3, .lp-brand-name {
@@ -53,20 +52,12 @@ h1, h2, h3, .lp-brand-name {
 }
 .lp-login-btn:active { background: #EAEAEA; }
 
-/* ---------------- HERO SECTION ---------------- */
+/* ---------------- HERO SECTION (CENTRÉE) ---------------- */
 .lp-hero {
-  padding: 60px 24px;
-  max-width: 1100px; margin: 0 auto;
+  padding: 80px 24px;
+  max-width: 800px; margin: 0 auto;
   display: flex; flex-direction: column; align-items: center;
   text-align: center;
-}
-
-@media (min-width: 900px) {
-  .lp-hero {
-    flex-direction: row; text-align: left; gap: 60px; padding: 100px 24px;
-  }
-  .lp-hero-content { flex: 1; }
-  .lp-hero-visual { flex: 1; display: flex; justify-content: flex-end; }
 }
 
 .lp-hero-badge {
@@ -77,24 +68,23 @@ h1, h2, h3, .lp-brand-name {
 }
 
 .lp-hero-title {
-  font-size: 42px; line-height: 1.1; font-weight: 700;
-  color: #0A0A0A; margin-bottom: 20px; letter-spacing: -1px;
+  font-size: 46px; line-height: 1.15; font-weight: 700;
+  color: #0A0A0A; margin-bottom: 24px; letter-spacing: -1px;
 }
 .lp-hero-title span { color: var(--accent); }
 
 .lp-hero-sub {
-  font-size: 16px; line-height: 1.6; color: #555;
-  margin-bottom: 32px; max-width: 480px;
+  font-size: 17px; line-height: 1.6; color: #555;
+  margin-bottom: 40px; max-width: 600px;
 }
 
-.lp-hero-actions { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-@media (min-width: 900px) { .lp-hero-actions { align-items: flex-start; } }
+.lp-hero-actions { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
 
 .lp-cta {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 100%; max-width: 320px; min-height: 54px;
+  width: 100%; max-width: 320px; min-height: 56px;
   background: #0A0A0A; color: #fff;
-  font-size: 15px; font-weight: 600;
+  font-size: 16px; font-weight: 600;
   border-radius: 8px; text-decoration: none;
   transition: transform 0.15s ease, background 0.15s ease;
 }
@@ -103,48 +93,6 @@ h1, h2, h3, .lp-brand-name {
 .lp-reassurance {
   display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
   font-size: 12px; color: #777; font-weight: 500;
-}
-@media (min-width: 900px) { .lp-reassurance { justify-content: flex-start; } }
-
-/* ---------------- PHONE MOCKUP (CSS ONLY) ---------------- */
-.lp-mockup-phone {
-  width: 280px; height: 560px; background: #fff;
-  border: 8px solid #0A0A0A; border-radius: 40px;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.1);
-  overflow: hidden; display: flex; flex-direction: column;
-  position: relative;
-}
-
-.lp-mockup-header {
-  padding: 24px 16px 16px; border-bottom: 1px solid var(--border-color);
-  display: flex; align-items: center; gap: 12px;
-}
-.lp-mockup-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--accent); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800;
-}
-.lp-mockup-name { font-size: 14px; font-weight: 700; color: #0A0A0A; }
-.lp-mockup-link { font-size: 10px; color: #888; }
-
-.lp-mockup-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
-.lp-mockup-product {
-  display: flex; align-items: center; gap: 12px;
-  padding: 8px; border: 1px solid var(--border-color); border-radius: 12px;
-}
-.lp-mockup-img { width: 50px; height: 50px; border-radius: 8px; }
-.bg-rose { background: #F8BBD0; }
-.bg-purple { background: #D1C4E9; }
-.lp-mockup-text { display: flex; flex-direction: column; }
-.lp-mockup-text strong { font-size: 13px; color: #0A0A0A; }
-.lp-mockup-text span { font-size: 11px; font-weight: 700; color: var(--accent); margin-top: 2px; }
-
-.lp-mockup-footer { padding: 16px; border-top: 1px solid var(--border-color); }
-.lp-mockup-btn {
-  width: 100%; padding: 12px; background: var(--accent);
-  color: #fff; border: none; border-radius: 8px;
-  font-size: 13px; font-weight: 700;
 }
 
 /* ---------------- SECTIONS ---------------- */
@@ -159,22 +107,22 @@ h1, h2, h3, .lp-brand-name {
 .lp-steps { display: grid; grid-template-columns: 1fr; gap: 24px; }
 @media (min-width: 768px) { .lp-steps { grid-template-columns: repeat(3, 1fr); } }
 
-.lp-step { background: var(--bg-main); padding: 32px 24px; border-radius: 16px; border: 1px solid var(--border-color); }
+.lp-step { background: var(--bg-main); padding: 32px 24px; border-radius: 16px; border: 1px solid var(--border24-color); }
 .lp-step-num {
   width: 40px; height: 40px; border-radius: 50%;
-  background: #0A0A0A; color: #fff;
+  background:px #0A0A0A; color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight: 800; margin-bottom: 20px;
+  font-size: 18px; font-weight;: 800; margin-bottom: 20px;
 }
-.lp-step h3 { font-size: 18px; font-weight: 700; color: #0A0A0A; margin-bottom: 8px; }
-.lp-step p { font-size: 14px; color: #666; line-height: 1.5; }
+.lp-step h3 { font-size: 18px; font-weight: 700; color: # margin0A0A0A; margin-bottom: 8px; }
+.lp-step p { font-size: 14px; color: #666; line-height:-bottom 1.5; }
 
 /* ---------------- AVANTAGES ---------------- */
-.lp-features { display: grid; grid-template-columns: 1fr; gap: 20px; }
+.lp-features { display: grid; grid-template-columns: 1fr; gap:: 20px; }
 @media (min-width: 768px) { .lp-features { grid-template-columns: repeat(2, 1fr); } }
 
 .lp-feature { padding: 24px; border: 1px solid var(--border-color); border-radius: 16px; background: #fff; }
-.lp-feature-icon { font-size: 24px; margin-bottom: 16px; }
+.lp-feature-icon { font-size:  16px; }
 .lp-feature h3 { font-size: 16px; font-weight: 700; color: #0A0A0A; margin-bottom: 6px; }
 .lp-feature p { font-size: 14px; color: #666; line-height: 1.5; }
 
@@ -201,7 +149,7 @@ h1, h2, h3, .lp-brand-name {
 .lp-footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border-color); }
 .lp-footer-text { font-size: 13px; color: #888; font-weight: 500; }
 
-/* ---------------- ANIMATIONS (Respect Design v4) ---------------- */
+/* ---------------- ANIMATIONS ---------------- */
 @media (prefers-reduced-motion: no-preference) {
   .lp-hero-content, .lp-step, .lp-feature, .lp-pricing {
     animation: fadeUp 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;

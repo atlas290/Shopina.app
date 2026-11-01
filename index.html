@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <script>
+    // Si le lien contient "?shop=", on redirige immédiatement vers la vitrine
+    if (window.location.search.includes('shop=')) {
+      window.location.replace('client.html' + window.location.search);
+    }
+  </script>
+  <meta charset="UTF-8">
+  <!-- le reste de ton code... -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#F9F8F6">

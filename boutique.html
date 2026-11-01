@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirection...</title>
+  <script>
+    // On récupère les paramètres de l'URL (le ?shop=...)
+    const urlParams = window.location.search;
+    // On redirige immédiatement vers client.html en gardant les paramètres
+    window.location.replace("client.html" + urlParams);
+  </script>
+</head>
+<body style="background: #FAFAFA; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif;">
+  <p>Redirection vers la boutique en cours...</p>
+</body>
+</html>

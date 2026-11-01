@@ -1,10 +1,12 @@
 /* ============================================================
-   Shopina — accueil.css (Design Ultime v4 - Version Épurée)
+   Shopina — accueil.css (Design Ultime v4 - Version Rose Foncé)
    ============================================================ */
 
 :root {
   --lp-font-heading: 'Playfair Display', -apple-system, BlinkMacSystemFont, serif;
   --lp-font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --lp-rose-fonce: #2A0813; /* Le rose très foncé élégant */
+  --lp-rose-fonce-clair: #4A0E22; /* Pour les bordures ou cartes sur fond foncé */
 }
 
 body {
@@ -52,7 +54,7 @@ h1, h2, h3, .lp-brand-name {
 }
 .lp-login-btn:active { background: #EAEAEA; }
 
-/* ---------------- HERO SECTION (CENTRÉE) ---------------- */
+/* ---------------- HERO SECTION ---------------- */
 .lp-hero {
   padding: 80px 24px;
   max-width: 800px; margin: 0 auto;
@@ -97,38 +99,54 @@ h1, h2, h3, .lp-brand-name {
 
 /* ---------------- SECTIONS ---------------- */
 .lp-section { padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
-.lp-section-alt { background: #fff; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); max-width: none; }
+
+/* La section alt devient Rose Foncé */
+.lp-section-alt { 
+  background: var(--lp-rose-fonce); 
+  color: #fff; 
+  max-width: none; 
+  border-top: none;
+}
 .lp-section-alt > * { max-width: 1100px; margin-left: auto; margin-right: auto; }
 
 .lp-section-title { font-size: 32px; font-weight: 700; color: #0A0A0A; text-align: center; margin-bottom: 12px; letter-spacing: -0.5px; }
+.lp-section-alt .lp-section-title { color: #fff; } /* Titre blanc sur fond foncé */
+
 .lp-section-sub { font-size: 15px; color: #666; text-align: center; margin-bottom: 48px; }
+.lp-section-alt .lp-section-sub { color: rgba(255, 255, 255, 0.7); } /* Sous-titre clair sur fond foncé */
 
 /* ---------------- COMMENT ÇA MARCHE ---------------- */
 .lp-steps { display: grid; grid-template-columns: 1fr; gap: 24px; }
 @media (min-width: 768px) { .lp-steps { grid-template-columns: repeat(3, 1fr); } }
 
-.lp-step { background: var(--bg-main); padding: 32px 24px; border-radius: 16px; border: 1px solid var(--border24-color); }
+/* Les cartes deviennent sombres pour s'intégrer au fond rose foncé */
+.lp-step { 
+  background: var(--lp-rose-fonce-clair); 
+  padding: 32px 24px; 
+  border-radius: 16px; 
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+}
 .lp-step-num {
   width: 40px; height: 40px; border-radius: 50%;
-  background:px #0A0A0A; color: #fff;
+  background: var(--accent); color: #fff; /* Le rond redevient rose vif pour ressortir */
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight;: 800; margin-bottom: 20px;
+  font-size: 18px; font-weight: 800; margin-bottom: 20px;
 }
-.lp-step h3 { font-size: 18px; font-weight: 700; color: # margin0A0A0A; margin-bottom: 8px; }
-.lp-step p { font-size: 14px; color: #666; line-height:-bottom 1.5; }
+.lp-step h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.lp-step p { font-size: 14px; color: rgba(255, 255, 255, 0.8); line-height: 1.5; }
 
 /* ---------------- AVANTAGES ---------------- */
-.lp-features { display: grid; grid-template-columns: 1fr; gap:: 20px; }
+.lp-features { display: grid; grid-template-columns: 1fr; gap: 20px; }
 @media (min-width: 768px) { .lp-features { grid-template-columns: repeat(2, 1fr); } }
 
 .lp-feature { padding: 24px; border: 1px solid var(--border-color); border-radius: 16px; background: #fff; }
-.lp-feature-icon { font-size:  16px; }
+.lp-feature-icon { font-size: 24px; margin-bottom: 16px; }
 .lp-feature h3 { font-size: 16px; font-weight: 700; color: #0A0A0A; margin-bottom: 6px; }
 .lp-feature p { font-size: 14px; color: #666; line-height: 1.5; }
 
 /* ---------------- TARIFS ---------------- */
 .lp-pricing {
-  max-width: 400px; margin: 0 auto; background: var(--bg-main);
+  max-width: 400px; margin: 0 auto; background: var(--lp-rose-fonce-clair);
   border: 2px solid var(--accent); border-radius: 20px;
   padding: 40px 32px; text-align: center; position: relative;
 }
@@ -138,16 +156,21 @@ h1, h2, h3, .lp-brand-name {
   padding: 6px 16px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px;
 }
 .lp-pricing-price { display: flex; align-items: baseline; justify-content: center; gap: 8px; margin: 10px 0; }
-.lp-pricing-amount { font-size: 42px; font-weight: 800; color: #0A0A0A; }
-.lp-pricing-period { font-size: 14px; color: #666; }
-.lp-pricing-then { font-size: 14px; color: #0A0A0A; margin-bottom: 24px; }
-.lp-pricing-list { list-style: none; padding: 24px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin-bottom: 32px; text-align: left; }
-.lp-pricing-list li { font-size: 14px; color: #0A0A0A; margin-bottom: 12px; font-weight: 500; }
-.lp-pricing-note { font-size: 12px; color: #888; margin-top: 16px; }
+.lp-pricing-amount { font-size: 42px; font-weight: 800; color: #fff; }
+.lp-pricing-period { font-size: 14px; color: rgba(255, 255, 255, 0.7); }
+.lp-pricing-then { font-size: 14px; color: #fff; margin-bottom: 24px; }
+.lp-pricing-list { list-style: none; padding: 24px 0; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 32px; text-align: left; }
+.lp-pricing-list li { font-size: 14px; color: #fff; margin-bottom: 12px; font-weight: 500; }
+.lp-pricing-note { font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-top: 16px; }
 
 /* ---------------- FOOTER ---------------- */
-.lp-footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border-color); }
-.lp-footer-text { font-size: 13px; color: #888; font-weight: 500; }
+.lp-footer { 
+  padding: 40px 24px; 
+  text-align: center; 
+  background: var(--lp-rose-fonce); /* Footer assorti au rose foncé */
+  border-top: 1px solid rgba(255,255,255,0.1); 
+}
+.lp-footer-text { font-size: 13px; color: rgba(255, 255, 255, 0.7); font-weight: 500; }
 
 /* ---------------- ANIMATIONS ---------------- */
 @media (prefers-reduced-motion: no-preference) {

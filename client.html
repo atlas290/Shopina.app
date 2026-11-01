@@ -8,7 +8,6 @@
   <title>Ma Boutique — Shopina</title>
   <meta name="description" content="Parcourez mes produits et passez commande directement sur WhatsApp.">
   
-  <!-- Balises pour l'aperçu WhatsApp (Vitrine Vendeuse) -->
   <meta property="og:title" content="Découvrez ma boutique sur Shopina">
   <meta property="og:description" content="Parcourez mes produits et passez commande directement sur WhatsApp !">
   <meta property="og:image" content="https://cdn.statically.io/gh/atlas290/Shopina.app/main/assets/logo-shopina.jpg">
@@ -117,6 +116,15 @@
   <!-- SCRIPTS FIREBASE -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
+  <!-- SCRIPT POUR ENLEVER L'ÉCRAN BLEU (CELUI QUI MANQUAIT) -->
+  <script>
+    setTimeout(function () {
+      var splash = document.getElementById('splash-screen');
+      if (splash) splash.remove();
+    }, 1000);
+  </script>
+
   <script src="js/client.js"></script>
 </body>
 </html>

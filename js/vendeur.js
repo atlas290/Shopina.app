@@ -33,7 +33,6 @@
 
   let currentTags = [], selectedCat = '', selectedStatus = 'available', selectedColor = { value: '#E91E63', soft: '#FCE4EC' }, currentImageBlob = null;
   
-  // Variables pour la modification
   let editingProductId = null;
   let existingPhotoUrl = null; 
 
@@ -51,9 +50,6 @@
   function simulate() { alert('Simulation — Fonctionnalité à venir'); }
   function fallbackCopy(text, callback) { try { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); callback(); } catch (e) { alert('Erreur copie'); } }
 
-  /* ============================================================
-     NAVIGATION
-     ============================================================ */
   function switchTab(tab) {
     $$('.app-view.section').forEach((s) => s.classList.remove('active'));
     const target = document.getElementById('view-' + tab);
@@ -69,16 +65,13 @@
   }
   $$('.nav-btn').forEach((btn) => { btn.addEventListener('click', () => switchTab(btn.dataset.tab)); });
 
-  /* ============================================================
-     UI MISE À JOUR
-     ============================================================ */
   function updateUIWithShopData() {
     document.querySelector('#view-dashboard .shop-name').textContent = SHOP.name;
     
     const sloganEl = document.getElementById('dashSlogan');
     if (sloganEl) sloganEl.textContent = SHOP.categories.length > 0 ? SHOP.categories.join(' · ') : 'Bienvenue sur ma boutique';
 
-    document.querySelector('#view-dashboard .link-code').textContent = 'shopina.shop/' + SHOP.slug;
+    document.querySelector('#view-dashboard .link-code').textContent = 'shopina.vercel.app/client.html?shop=' + SHOP.slug;
     
     document.getElementById('setName').value = SHOP.name;
     document.getElementById('setWhatsapp').value = SHOP.whatsapp;
@@ -108,7 +101,6 @@
       });
     }
 
-    // AJOUT : Mettre à jour l'aperçu du logo dans les réglages
     const settingsLogoPreview = document.getElementById('settingsLogoPreview');
     if (settingsLogoPreview) {
       if (SHOP.logo_url) {
@@ -120,7 +112,6 @@
       }
     }
 
-    // AJOUT : Mettre à jour le logo dans le header du Dashboard
     const dashLogo = document.querySelector('#view-dashboard .shop-logo');
     if (dashLogo) {
       if (SHOP.logo_url) {
@@ -135,9 +126,6 @@
     }
   }
 
-  /* ============================================================
-     AUTHENTIFICATION & SESSION
-     ============================================================ */
   const goToLoginBtn = document.getElementById('goToLoginBtn'), goToOnboardingBtn = document.getElementById('goToOnboardingBtn');
   const viewLogin = document.getElementById('view-login'), viewOnboarding = document.getElementById('view-onboarding');
   if (goToLoginBtn) goToLoginBtn.addEventListener('click', (e) => { e.preventDefault(); viewOnboarding.classList.remove('active'); viewLogin.classList.add('active'); });
@@ -164,8 +152,7 @@
           SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
           SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
           SHOP.categories = v.categories || ['Divers']; 
-          
-          SHOP.logo_url = v.logo_url || ''; // Chargement du logo_url
+          SHOP.logo_url = v.logo_url || ''; 
           
           updateUIWithShopData();
           document.querySelector('.bottom-nav').style.display = 'flex';
@@ -179,9 +166,6 @@
     }
   });
 
-  /* ============================================================
-     CHARGEMENT DES DONNÉES
-     ============================================================ */
   async function loadProducts() {
     const user = auth.currentUser; if (!user) return;
     const grid = document.querySelector('#view-produits .products-grid'); if (!grid) return;
@@ -295,18 +279,15 @@
     } catch (error) { console.error("Erreur stats:", error); }
   }
 
-  /* ============================================================
-     ACTIONS DASHBOARD & RÉGLAGES
-     ============================================================ */
   function copyLink() {
-    const link = 'https://shopina.vercel.app/boutique.html?shop=' + SHOP.slug; 
+    const link = 'https://shopina.vercel.app/client.html?shop=' + SHOP.slug; 
     const done = () => showToast('Lien copié !');
     const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e) { done(); } };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done).catch(fallback); else fallback();
   }
 
   async function shareLink() {
-    const link = 'https://shopina.vercel.app/boutique.html?shop=' + SHOP.slug;
+    const link = 'https://shopina.vercel.app/client.html?shop=' + SHOP.slug;
     if (navigator.share) {
       try { await navigator.share({ title: 'Découvrez ' + SHOP.name + ' sur Shopina', text: 'Retrouvez tous mes produits en ligne et commandez directement sur WhatsApp !', url: link }); } catch (error) {}
     } else { copyLink(); showToast('Lien copié !'); }
@@ -351,9 +332,6 @@
     }
   });
 
-  // ============================================================
-  // AJOUT : LOGIQUE DE CHANGEMENT DE LOGO (RÉGLAGES)
-  // ============================================================
   const btnChangeLogo = document.getElementById('btnChangeLogo');
   const settingsLogoInput = document.getElementById('settingsLogoInput');
   
@@ -400,9 +378,6 @@
     });
   }
 
-  /* ============================================================
-     OVERLAY PRODUIT (CRÉATION & MODIFICATION)
-     ============================================================ */
   function openProductOverlay(id = null) { 
     editingProductId = id;
     document.getElementById('product-form-overlay').classList.add('open'); 
@@ -598,9 +573,6 @@
     finally { saveBtn.textContent = originalText; saveBtn.disabled = false; }
   });
 
-/* ============================================================
-     OVERLAY CATALOGUE (GÉNÉRATION D'IMAGE)
-     ============================================================ */
   const catalogBtn = document.getElementById('catalogBtn');
   const catalogOverlay = document.getElementById('catalog-image-overlay');
   const catalogCloseBtn = document.getElementById('catalogCloseBtn');
@@ -609,7 +581,7 @@
   if (catalogBtn && catalogOverlay) {
     catalogBtn.addEventListener('click', async () => {
       document.getElementById('cat-shop-name').textContent = SHOP.name;
-      document.getElementById('cat-shop-link').textContent = 'shopina.shop/' + SHOP.slug;
+      document.getElementById('cat-shop-link').textContent = 'shopina.vercel.app/client.html?shop=' + SHOP.slug;
       
       const container = document.getElementById('cat-products-container');
       container.innerHTML = '<div style="color:white; font-size:12px;">Chargement...</div>';
@@ -672,9 +644,6 @@
     });
   }
 
-  /* ============================================================
-     FONCTION GOTOSTEP
-     ============================================================ */
   function goToStep(n) {
     const step1 = document.getElementById('obStep1');
     const step2 = document.getElementById('obStep2');
@@ -724,7 +693,6 @@
   document.getElementById('obNextBtn').addEventListener('click', () => goToStep(2));
   document.getElementById('obPrevBtn').addEventListener('click', () => goToStep(1));
 
-  // Logique d'upload du logo avec Cloudinary (Onboarding)
   const logoBtn = document.getElementById('obLogoBtn');
   const logoInput = document.getElementById('obLogoInput');
   const logoName = document.getElementById('obLogoName');

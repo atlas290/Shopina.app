@@ -325,6 +325,10 @@
       drawerEl.classList.add('open');
       backdropEl.classList.add('open');
       document.body.style.overflow = 'hidden';
+      
+      // On cache la barre flottante quand le panier est ouvert
+      const floatingBar = document.getElementById('floating-cart-bar');
+      if (floatingBar) floatingBar.classList.remove('visible');
     }
   }
 
@@ -333,9 +337,12 @@
       drawerEl.classList.remove('open');
       backdropEl.classList.remove('open');
       document.body.style.overflow = '';
+
+      // On réaffiche la barre flottante quand on ferme le panier (s'il y a des articles)
+      const floatingBar = document.getElementById('floating-cart-bar');
+      if (floatingBar && cart.length > 0) floatingBar.classList.add('visible');
     }
   }
-
   const cartBtn = document.querySelector('.cart-btn');
   if (cartBtn) cartBtn.addEventListener('click', openCart);
 

@@ -803,3 +803,69 @@
 body {
   padding-bottom: 80px;
 }
+
+/* ============================================================
+   BARRE DE PANIER FLOTTANTE (Fixed Bottom Bar)
+   ============================================================ */
+
+.floating-cart-bar {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%) translateY(100px); /* Caché par défaut vers le bas */
+  width: calc(100% - 32px);
+  max-width: 448px;
+  background: #0A0A0A; /* Fond noir profond */
+  color: #FFFFFF;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Quand on ajoute la classe .visible via JS, la barre remonte */
+.floating-cart-bar.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.floating-cart-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.floating-cart-count {
+  font-size: 11px;
+  font-weight: 500;
+  color: #A0A0A0;
+}
+
+.floating-cart-total {
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.floating-cart-btn {
+  background: var(--accent); /* Le rose Shopina */
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.floating-cart-btn:active {
+  opacity: 0.8;
+}

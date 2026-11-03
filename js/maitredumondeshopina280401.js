@@ -64,7 +64,7 @@
     }
   });
 
-  // Charger la liste des vendeuses
+ // Charger la liste des vendeuses
   async function loadVendors() {
     const listEl = $('#vendors-list');
     listEl.innerHTML = '<div style="text-align:center; padding:20px;">Chargement des données...</div>';
@@ -90,14 +90,25 @@
         const numSafe = escapeHtml(v.numero_whatsapp || 'Pas de numéro');
         const slugSafe = escapeHtml(v.slug || '—');
 
+        // On prépare le lien vers la boutique
+        const shopUrl = `client.html?shop=${slugSafe}`;
+
         listEl.innerHTML += `
-          <div class="vendor-card">
-            <div>
-              <div class="vendor-name">${nomSafe}</div>
-              <div class="vendor-info">${emailSafe} · ${numSafe}</div>
-              <div class="vendor-info" style="font-size: 11px; margin-top: 4px;">Slug : shopina.shop/${slugSafe}</div>
+          <div class="vendor-card" style="flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; margin-bottom: 12px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color);">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div class="vendor-name" style="font-weight: bold; font-size: 16px;">${nomSafe}</div>
+                <div class="vendor-info" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">${emailSafe} · ${numSafe}</div>
+                <div class="vendor-info" style="font-size: 11px; margin-top: 4px;">Slug : shopina.shop/${slugSafe}</div>
+              </div>
+              <div class="vendor-badge" style="background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">Vendeuse</div>
             </div>
-            <div class="vendor-badge">Vendeuse</div>
+            
+            <!-- BOUTONS D'ACTION -->
+            <div style="display: flex; gap: 8px; width: 100%; margin-top: 8px;">
+              <a href="${shopUrl}" target="_blank" class="btn-secondary" style="flex: 1; text-decoration: none; padding: 8px; font-size: 13px; text-align: center; border-radius: 6px;">Voir la vitrine</a>
+              <button onclick="voirProduits('${doc.id}')" class="btn-secondary" style="flex: 1; padding: 8px; font-size: 13px; cursor: pointer; border-radius: 6px;">Voir les produits</button>
+            </div>
           </div>
         `;
       });
@@ -108,4 +119,26 @@
     }
   }
 
+  // NOUVELLE FONCTION : Voir les produits d'une vendeuse
+  window.voirProduits = async function(vendeurId) {
+    try {
+      const snapshot = await db.collection('produits').where('vendeur_id', '==', vendeurId).get();
+      if (snapshot.empty) {
+        alert("Cette vendeuse n'a pas encore ajouté de produits.");
+        return;
+      }
+      
+      let message = "Produits en ligne :\n\n";
+      snapshot.forEach(doc => {
+        const p = doc.data();
+        message += `• ${p.nom} - ${p.prix} FCFA (${p.statut})\n`;
+      });
+      
+      alert(message);
+    } catch (error) {
+      console.error(error);
+      alert("Erreur lors de la récupération des produits.");
+    }
+  };
+  
 })();

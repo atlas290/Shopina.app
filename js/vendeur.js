@@ -780,6 +780,12 @@
     const textEl = document.getElementById('subDaysText');
     const statusEl = document.getElementById('subStatusText');
     const barEl = document.getElementById('subProgressBar');
+    
+    // Nouveaux éléments pour la bannière
+    const banner = document.getElementById('abonnementAlertBanner');
+    const alertMsg = document.getElementById('alertMessage');
+    const btnAlertPayer = document.getElementById('btnAlertPayer');
+
     if (!textEl || !statusEl || !barEl) return;
 
     let dateFin = new Date();
@@ -787,13 +793,14 @@
     if (vendeuseData && vendeuseData.date_fin_abonnement) {
       dateFin = vendeuseData.date_fin_abonnement.toDate();
     } else {
-      dateFin.setDate(dateFin.getDate() + 30);
+      dateFin.setDate(dateFin.getDate() + 30); // Simulation pour anciens comptes
     }
 
     const aujourdhui = new Date();
     const diffTemps = dateFin - aujourdhui;
     const joursRestants = Math.ceil(diffTemps / (1000 * 60 * 60 * 24));
 
+    // --- LOGIQUE D'AFFICHAGE ---
     if (joursRestants > 0) {
       textEl.textContent = joursRestants + " jours restants";
       statusEl.textContent = joursRestants <= 7 ? "⚠️ Expire bientôt" : "Essai gratuit";
@@ -802,11 +809,42 @@
       let pourcentage = (joursRestants / 30) * 100;
       if (pourcentage > 100) pourcentage = 100;
       barEl.style.width = pourcentage + "%";
+
+      // Bannière d'avertissement si <= 7 jours
+      if (banner) {
+        if (joursRestants <= 7) {
+          banner.style.display = "block";
+          if (alertMsg) alertMsg.textContent = `⚠️ Attention, il ne vous reste que ${joursRestants} jours d'abonnement.`;
+        } else {
+          banner.style.display = "none"; // Cachée si tout va bien
+        }
+      }
+
     } else {
+      // Abonnement expiré
       textEl.textContent = "Expiré";
       textEl.style.color = "red";
       statusEl.textContent = "Action requise";
       barEl.style.width = "0%";
+
+      // Bannière rouge d'expiration
+      if (banner) {
+        banner.style.display = "block";
+        banner.style.background = "#FFEBEE";
+        banner.style.borderColor = "#EF9A9A";
+        banner.style.color = "#C62828";
+        if (alertMsg) alertMsg.textContent = "❌ Votre abonnement a expiré. Vos clientes ne peuvent plus commander.";
+        if (btnAlertPayer) btnAlertPayer.style.background = "#C62828";
+      }
+    }
+
+    // On relie le bouton de la bannière au même paiement
+    if (btnAlertPayer && !btnAlertPayer.dataset.listenerAdded) {
+      btnAlertPayer.addEventListener('click', () => {
+        const btnPayer = document.getElementById('btnPayerAbo');
+        if (btnPayer) btnPayer.click();
+      });
+      btnAlertPayer.dataset.listenerAdded = "true";
     }
   }
 

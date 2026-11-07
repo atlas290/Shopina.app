@@ -768,9 +768,44 @@
   });
 
    const btnPayerAbo = document.getElementById('btnPayerAbo');
+  
   if (btnPayerAbo) {
-    btnPayerAbo.addEventListener('click', () => {
-      alert("Le système de paiement (PaiementPro/Kkiapay) sera connecté ici !");
+    btnPayerAbo.addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) return alert("Vous devez être connectée.");
+
+      const originalText = btnPayerAbo.textContent;
+      btnPayerAbo.textContent = "Redirection...";
+      btnPayerAbo.disabled = true;
+
+      try {
+        // Ton ID Marchand public est maintenant intégré
+        let paiementPro = new PaiementPro('PP-F92897'); 
+        
+        paiementPro.amount = 2000; 
+        paiementPro.channel = 'MOBILE_MONEY'; 
+        paiementPro.referenceNumber = 'ABO-' + user.uid + '-' + Date.now(); 
+        
+        paiementPro.customerEmail = SHOP.email || 'client@shopina.com';
+        paiementPro.customerLastname = SHOP.name || 'Vendeuse';
+        paiementPro.customerPhoneNumber = SHOP.whatsapp || '00000000';
+        paiementPro.description = 'Abonnement Shopina - 30 jours';
+
+        await paiementPro.getUrlPayment();
+
+        if (paiementPro.success) {
+          window.location.href = paiementPro.url;
+        } else {
+          alert("Erreur lors de la création du paiement.");
+          btnPayerAbo.textContent = originalText;
+          btnPayerAbo.disabled = false;
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Erreur réseau.");
+        btnPayerAbo.textContent = originalText;
+        btnPayerAbo.disabled = false;
+      }
     });
   }
    // ============================================================

@@ -23,6 +23,9 @@
   let currentProduct = null;
   let selectedVariant = null;
   let activeFilter = 'Tout';
+  let isShopSuspended = false;
+
+
 
   const $  = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
@@ -96,6 +99,23 @@
       const vendeurDoc = vendeurSnapshot.docs[0];
       SHOP_ID = vendeurDoc.id;
       const vendeurData = vendeurDoc.data();
+
+      // VÉRIFICATION DE L'ABONNEMENT (Boutique en pause ?)
+      if (vendeurData.date_fin_abonnement) {
+        const dateFin = vendeurData.date_fin_abonnement.toDate();
+        const aujourdhui = new Date();
+        if (dateFin < aujourdhui) {
+          isShopSuspended = true;
+        }
+      }
+
+      // Si la boutique est en pause, on affiche une bannière
+      if (isShopSuspended) {
+        const banner = document.createElement('div');
+        banner.style.cssText = "background: #FFF3E0; border-bottom: 1px solid #FFB74D; color: #E65100; padding: 12px 16px; text-align: center; font-size: 13px; font-weight: 600; line-height: 1.4; z-index: 999;";
+        banner.innerHTML = "⚠️ Cette boutique est temporairement en pause. Contactez la vendeuse sur WhatsApp pour commander.";
+        document.body.prepend(banner); // Ajoute la bannière tout en haut
+      }
       
       SHOP.name = vendeurData.nom_boutique;
       SHOP.slug = vendeurData.slug;
@@ -176,7 +196,7 @@
           <div class="product-body">
             <div class="product-name">${escapeHtml(p.name)}</div>
             <div class="product-price">${formatPrice(p.price)}</div>
-            ${sold ? '<button class="add-btn" disabled>Épuisé</button>' : '<button class="add-btn">Ajouter</button>'}
+         ${isShopSuspended ? '<button class="add-btn" disabled style="background:#f0f0f0; color:#999;">En pause</button>' : (sold ? '<button class="add-btn" disabled>Épuisé</button>' : '<button class="add-btn">Ajouter</button>')}
           </div>
         </article>
       `;
@@ -195,12 +215,14 @@
   }
 
   function quickAdd(id) {
+     if (isShopSuspended) return;
     const p = products.find(item => item.id === id); if (!p || p.soldout) return;
     const variant = p.variants.length > 0 ? p.variants[0] : "";
     if (addToCart(p, variant)) { bumpCartIcon(); showToast('✓ Ajouté !'); renderGrid(); } else { showToast('Déjà dans le panier'); }
   }
 
   function openDetail(id) {
+     if (isShopSuspended) return;
     const p = products.find(item => item.id === id); if (!p || p.soldout) return;
     currentProduct = p; selectedVariant = null;
     
@@ -236,6 +258,7 @@
     if (variantBtn) { $$('#product-overlay .variant').forEach((b) => b.classList.toggle('selected', b === variantBtn)); selectedVariant = variantBtn.dataset.variant; overlayEl.querySelector('.btn-primary').disabled = false; }
     const addBtn = e.target.closest('#product-overlay .btn-primary');
     if (addBtn && !addBtn.disabled && currentProduct) {
+      if (isShopSuspended) return; 
       const hasVariants = currentProduct.variants.length > 0;
       if (hasVariants && !selectedVariant) return;
       addToCart(currentProduct, hasVariants ? selectedVariant : "");

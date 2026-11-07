@@ -781,7 +781,7 @@
       try {
         // Ton ID Marchand public est maintenant intégré
         let paiementPro = new PaiementPro('PP-F92897'); 
-       paiementPro.environment = 'sandbox';   
+      // paiementPro.environment = 'sandbox';   
 
 
      paiementPro.amount = 2000; 

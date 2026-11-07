@@ -98,7 +98,13 @@
 
   <!-- DASHBOARD -->
   <div id="view-dashboard" class="app-view section">
-    <div class="shop-header">
+<!-- BANNIÈRE D'ALERTE ABONNEMENT (Cachée par défaut) -->
+    <div id="abonnementAlertBanner" style="display: none; background: #FFF3E0; border: 1px solid #FFB74D; color: #E65100; padding: 12px 16px; margin: 16px; border-radius: 8px; font-size: 13px; font-weight: 600; line-height: 1.4;">
+      <span id="alertMessage">⚠️ Votre abonnement expire bientôt !</span>
+      <button type="button" id="btnAlertPayer" style="display: block; margin-top: 8px; background: #E65100; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 700; width: 100%; cursor: pointer;">Renouveler maintenant</button>
+    </div>
+    
+<div class="shop-header">
       <div class="shop-logo">H</div>
       <div>
         <div class="shop-name">Havana Shop</div>

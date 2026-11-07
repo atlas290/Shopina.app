@@ -155,6 +155,7 @@
           SHOP.logo_url = v.logo_url || ''; 
           
           updateUIWithShopData();
+           calculerAbonnement(v);
           document.querySelector('.bottom-nav').style.display = 'flex';
           switchTab('dashboard');
         }
@@ -762,6 +763,44 @@
 
   document.getElementById('btnManageSub').addEventListener('click', simulate);
 
+   // ============================================================
+  // CALCUL DE L'ABONNEMENT (Zéro bug pour les anciens comptes)
+  // ============================================================
+  function calculerAbonnement(vendeuseData) {
+    const textEl = document.getElementById('subDaysText');
+    const statusEl = document.getElementById('subStatusText');
+    const barEl = document.getElementById('subProgressBar');
+    if (!textEl || !statusEl || !barEl) return;
+
+    let dateFin = new Date();
+    
+    if (vendeuseData && vendeuseData.date_fin_abonnement) {
+      dateFin = vendeuseData.date_fin_abonnement.toDate();
+    } else {
+      dateFin.setDate(dateFin.getDate() + 30);
+    }
+
+    const aujourdhui = new Date();
+    const diffTemps = dateFin - aujourdhui;
+    const joursRestants = Math.ceil(diffTemps / (1000 * 60 * 60 * 24));
+
+    if (joursRestants > 0) {
+      textEl.textContent = joursRestants + " jours restants";
+      statusEl.textContent = joursRestants <= 7 ? "⚠️ Expire bientôt" : "Essai gratuit";
+      statusEl.style.color = joursRestants <= 7 ? "#FF9800" : "inherit";
+      
+      let pourcentage = (joursRestants / 30) * 100;
+      if (pourcentage > 100) pourcentage = 100;
+      barEl.style.width = pourcentage + "%";
+    } else {
+      textEl.textContent = "Expiré";
+      textEl.style.color = "red";
+      statusEl.textContent = "Action requise";
+      barEl.style.width = "0%";
+    }
+  }
+
+   
   function init() { document.querySelector('.bottom-nav').style.display = 'none'; }
   init();
 })();

@@ -761,8 +761,18 @@
   }
   $$('.lea-category-card').forEach(card => card.addEventListener('click', () => openLeaCategory(card.dataset.cat)));
 
-  document.getElementById('btnManageSub').addEventListener('click', simulate);
+  // On relie le bouton des réglages à la même action que celui du dashboard
+  document.getElementById('btnManageSub').addEventListener('click', () => {
+    const btnPayer = document.getElementById('btnPayerAbo');
+    if (btnPayer) btnPayer.click();
+  });
 
+   const btnPayerAbo = document.getElementById('btnPayerAbo');
+  if (btnPayerAbo) {
+    btnPayerAbo.addEventListener('click', () => {
+      alert("Le système de paiement (PaiementPro/Kkiapay) sera connecté ici !");
+    });
+  }
    // ============================================================
   // CALCUL DE L'ABONNEMENT (Zéro bug pour les anciens comptes)
   // ============================================================

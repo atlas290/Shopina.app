@@ -781,9 +781,12 @@
       try {
         // Ton ID Marchand public est maintenant intégré
         let paiementPro = new PaiementPro('PP-F92897'); 
+       paiementPro.environment = 'sandbox';   
+
+
         
         paiementPro.amount = 2000; 
-        paiementPro.channel = 'MOBILE_MONEY'; 
+        paiementPro.channel = 'CARD'; 
         paiementPro.referenceNumber = 'ABO-' + user.uid + '-' + Date.now(); 
         
         paiementPro.customerEmail = SHOP.email || 'client@shopina.com';

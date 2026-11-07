@@ -122,10 +122,13 @@
     </div>
     <div class="card">
       <div class="card-title">Statut abonnement</div>
-      <div class="subscription-row"><span>Essai gratuit (30 jours)</span><span style="color:var(--accent);">30 jours restants</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+      <div class="subscription-row">
+        <span id="subStatusText">Essai gratuit</span>
+        <span id="subDaysText" style="color:var(--accent);">Calcul...</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="subProgressBar" style="width:100%"></div></div>
       <p style="font-size:14px; font-weight:700; margin:10px 0 12px; color:var(--text-main);">Ensuite : 2 000 FCFA / mois</p>
-      <button type="button" class="btn-secondary">Voir les forfaits</button>
+      <button type="button" class="btn-primary" id="btnPayerAbo" style="background:#0A0A0A; color:#fff; border:none;">Payer mon abonnement</button>
     </div>
   </div>
 

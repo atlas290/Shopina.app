@@ -785,7 +785,7 @@
 
 
      paiementPro.amount = 2000; 
-        paiementPro.channel = 'CARD'; 
+        paiementPro.channel = 'MOBILE_MONEY'; 
         paiementPro.countryCurrencyCode = 952; // Ajouté pour le Franc CFA
         paiementPro.referenceNumber = 'ABO-' + user.uid + '-' + Date.now(); 
         

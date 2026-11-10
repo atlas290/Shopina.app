@@ -1,12 +1,12 @@
 /* ============================================================
    Shopina — accueil.css
-   Landing page publique - Thème Luxe (Dark Mode)
+   Correction des bugs, thème adaptatif, police système
    ============================================================ */
 
-/* On force le fond sombre pour toute la page d'accueil */
 body {
-  background: #0A0A0A;
-  color: #FFFFFF;
+  /* Utilisation des variables pour le mode clair/sombre automatique */
+  background: var(--bg-main);
+  color: var(--text-main);
 }
 
 /* ---------------- HEADER ---------------- */
@@ -14,10 +14,10 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(10, 10, 10, 0.85); /* Fond noir semi-transparent */
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
   padding: 16px 24px;
   padding-top: calc(16px + env(safe-area-inset-top));
 }
@@ -26,7 +26,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
   max-width: 900px;
   margin: 0 auto;
 }
@@ -35,7 +34,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #FFFFFF;
+  color: var(--text-main);
   text-decoration: none;
 }
 
@@ -54,9 +53,9 @@ body {
 
 .lp-brand-name {
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.5px;
-  font-family: var(--font-heading); /* Police élégante */
+  /* Police système uniforme */
 }
 
 .lp-login-btn {
@@ -66,23 +65,21 @@ body {
   min-height: 40px;
   padding: 0 20px;
   border-radius: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: transparent;
-  color: #FFFFFF;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
-  transition: background 0.2s ease;
 }
-.lp-login-btn:active { background: rgba(255, 255, 255, 0.1); }
 
-/* ---------------- HERO (LUXE) ---------------- */
+/* ---------------- HERO ---------------- */
 .lp-hero {
   padding: 60px 24px 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 48px;
+  gap: 40px;
   max-width: 900px;
   margin: 0 auto;
   text-align: center;
@@ -92,7 +89,7 @@ body {
   .lp-hero {
     flex-direction: row;
     text-align: left;
-    padding: 100px 24px;
+    padding: 80px 24px;
     gap: 60px;
   }
   .lp-hero-content { flex: 1; }
@@ -103,43 +100,32 @@ body {
   display: inline-block;
   font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
   color: var(--accent);
-  background: rgba(233, 30, 99, 0.1); /* Rose très léger */
-  border: 1px solid rgba(233, 30, 99, 0.3);
+  background: var(--accent-soft);
   padding: 6px 16px;
   border-radius: 20px;
   margin-bottom: 24px;
 }
 
 .lp-hero-title {
-  font-family: var(--font-heading); /* Police type Magazine */
-  font-size: 42px;
-  line-height: 1.1;
-  font-weight: 500; /* Plus fin pour le luxe */
-  color: #FFFFFF;
+  font-size: 40px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--text-main);
   letter-spacing: -1px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .lp-hero-title span {
   color: var(--accent);
-  font-style: italic;
 }
 
 .lp-hero-sub {
   font-size: 16px;
   line-height: 1.6;
-  color: #A0A0A0;
+  color: var(--text-muted);
   margin-bottom: 32px;
   max-width: 480px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-@media (min-width: 768px) {
-  .lp-hero-sub { margin-left: 0; }
 }
 
 .lp-cta {
@@ -150,56 +136,51 @@ body {
   max-width: 320px;
   min-height: 56px;
   padding: 0 24px;
-  border-radius: 30px; /* Bouton très arrondi */
+  border-radius: 30px;
   background: var(--accent);
   color: #fff;
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-  box-shadow: 0 8px 24px rgba(233, 30, 99, 0.25); /* Ombre colorée */
+  box-shadow: 0 8px 24px rgba(233, 30, 99, 0.25);
 }
-.lp-cta:active { transform: scale(0.98); opacity: 0.9; }
 
 .lp-reassurance {
   font-size: 12px;
-  color: #777;
+  color: var(--text-muted);
   margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
 }
-@media (min-width: 768px) { .lp-reassurance { justify-content: flex-start; } }
 
-/* ---------------- MOCKUP TÉLÉPHONE (L'IMAGE) ---------------- */
+/* ---------------- MOCKUP TÉLÉPHONE (CORRIGÉ) ---------------- */
 .lp-phone-mockup {
   width: 100%;
-  max-width: 300px;
+  max-width: 280px;
   margin: 0 auto;
   position: relative;
 }
 
-/* Le cadre noir du téléphone */
 .lp-phone-mockup::before {
   content: '';
   position: absolute;
-  inset: -12px; /* L'épaisseur de la bordure */
-  background: #1A1A1A;
-  border-radius: 44px; /* Coins très arrondis */
-  border: 2px solid #333;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 0 0 2px #000;
+  inset: -10px;
+  background: var(--bg-card); /* S'adapte au thème */
+  border-radius: 40px;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
   z-index: 1;
 }
 
-/* L'écran du téléphone */
 .lp-phone-screen {
   position: relative;
   z-index: 2;
-  border-radius: 32px;
+  border-radius: 30px;
   overflow: hidden;
-  background: #000;
-  aspect-ratio: 9 / 19.5; /* Format iPhone */
+  background: var(--bg-main);
+  aspect-ratio: 9 / 19;
 }
 
 .lp-hero-image {
@@ -207,71 +188,83 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: top;
-  display: block;
 }
 
-/* ---------------- SECTIONS & TYPOGRAPHIE ---------------- */
+/* ---------------- SECTIONS ---------------- */
 .lp-section {
-  padding: 80px 24px;
+  padding: 60px 24px;
   max-width: 900px;
   margin: 0 auto;
 }
 
 .lp-section-alt {
-  background: #111111; /* Fond légèrement plus clair pour détacher la section */
-  border-top: 1px solid #222;
-  border-bottom: 1px solid #222;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   max-width: none;
 }
 
 .lp-section-title {
-  font-family: var(--font-heading);
-  font-size: 32px;
-  font-weight: 500;
-  color: #FFFFFF;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-main);
   text-align: center;
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
+  margin-bottom: 8px;
 }
 
 .lp-section-sub {
   font-size: 14px;
-  color: #A0A0A0;
+  color: var(--text-muted);
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
 
-/* ---------------- CARROUSEL (BASE PROPRE) ---------------- */
+/* ---------------- CARROUSEL 3D (COVER FLOW) ---------------- */
+.lp-carousel-container {
+  perspective: 1000px; /* Crée l'effet de profondeur 3D */
+  overflow: hidden;
+  padding: 20px 0 40px;
+}
+
 .lp-carousel {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 40px;
-  padding-left: 24px;
-  padding-right: 24px;
-  margin-left: -24px;
-  margin-right: -24px;
+  padding: 0 24px;
 }
+
 .lp-carousel::-webkit-scrollbar { display: none; }
 
 .lp-carousel-card {
-  flex: 0 0 85%;
-  max-width: 300px;
+  flex: 0 0 80%;
+  max-width: 280px;
   scroll-snap-align: center;
-  background: #1A1A1A;
-  border: 1px solid #333;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  
+  /* L'effet 3D au repos */
+  transform: scale(0.9) rotateY(5deg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0.7;
+}
+
+/* La carte au centre (active) est droite et grande */
+.lp-carousel-card:first-child {
+  transform: scale(1) rotateY(0deg);
+  opacity: 1;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
 
 .lp-carousel-text {
-  padding: 24px 20px;
-  background: #1A1A1A;
+  padding: 20px;
+  background: var(--bg-card);
   flex: 1;
 }
 
@@ -286,28 +279,27 @@ body {
   justify-content: center;
   font-size: 14px;
   font-weight: 800;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .lp-carousel-text h3 {
-  font-family: var(--font-heading);
-  font-size: 18px;
-  font-weight: 500;
-  color: #FFFFFF;
-  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 6px;
 }
 
 .lp-carousel-text p {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #A0A0A0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
 }
 
 .lp-carousel-img {
   width: 100%;
-  height: 250px;
+  height: 220px; /* Hauteur fixe pour que l'image ne prenne pas tout l'écran */
   overflow: hidden;
-  background: #000;
+  background: var(--bg-main);
 }
 
 .lp-carousel-img img {
@@ -317,7 +309,40 @@ body {
   object-position: top;
 }
 
-/* ---------------- AVIS (BULLES SOMBRES) ---------------- */
+/* ---------------- AVANTAGES (REVENUS EN CARTES) ---------------- */
+.lp-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur mobile */
+  gap: 16px;
+}
+
+.lp-feature {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.lp-feature-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.lp-feature h3 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.lp-feature p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ---------------- AVIS ---------------- */
 .lp-testimonials {
   display: flex;
   flex-direction: column;
@@ -327,73 +352,80 @@ body {
 }
 
 .lp-chat-bubble {
-  background: #1A1A1A;
-  border: 1px solid #333;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 4px 20px 20px 20px;
-  padding: 24px;
+  padding: 20px;
 }
 
 .lp-chat-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 12px;
-  border-bottom: 1px dashed #444;
-  padding-bottom: 12px;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 10px;
 }
 
-.lp-chat-header strong { font-size: 15px; color: #FFF; font-weight: 700; }
+.lp-chat-header strong { font-size: 15px; color: var(--text-main); font-weight: 800; }
 .lp-chat-header span { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; }
-.lp-chat-text { font-size: 14px; line-height: 1.6; color: #DDD; font-style: italic; margin: 0; }
+.lp-chat-text { font-size: 14px; line-height: 1.6; color: var(--text-main); font-style: italic; margin: 0; }
 
-/* ---------------- TARIFS ---------------- */
+/* ---------------- TARIFS (COMPACT) ---------------- */
 .lp-pricing {
-  background: #1A1A1A;
+  background: var(--bg-card);
   border: 2px solid var(--accent);
-  border-radius: 24px;
-  padding: 40px 32px;
+  border-radius: 20px;
+  padding: 24px 20px; /* Réduit par rapport à avant */
   text-align: center;
-  max-width: 400px;
+  max-width: 340px; /* Plus étroit */
   margin: 0 auto;
   position: relative;
 }
 
 .lp-pricing-badge {
   position: absolute;
-  top: -14px;
+  top: -12px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--accent);
   color: #fff;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  padding: 6px 20px;
-  border-radius: 20px;
+  padding: 4px 14px;
+  border-radius: 12px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  white-space: nowrap;
 }
 
-.lp-pricing-price { display: flex; align-items: baseline; justify-content: center; gap: 6px; margin: 16px 0; }
-.lp-pricing-amount { font-size: 42px; font-weight: 800; color: #FFF; }
-.lp-pricing-period { font-size: 14px; color: #A0A0A0; font-weight: 600; }
-.lp-pricing-then { font-size: 14px; color: #A0A0A0; margin-bottom: 32px; }
-.lp-pricing-then strong { color: #FFF; font-weight: 800; }
+.lp-pricing-price { 
+  display: flex; 
+  align-items: baseline; 
+  justify-content: center; 
+  gap: 6px; 
+  margin: 12px 0; 
+}
+.lp-pricing-amount { font-size: 36px; font-weight: 800; white-space: nowrap; }
+.lp-pricing-period { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.lp-pricing-then { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+.lp-pricing-then strong { color: var(--text-main); font-weight: 800; }
 
-.lp-pricing-list { list-style: none; text-align: left; padding: 24px 0; margin-bottom: 32px; border-top: 1px solid #333; border-bottom: 1px solid #333; }
-.lp-pricing-list li { font-size: 14px; color: #DDD; line-height: 2; }
-.lp-pricing-note { font-size: 12px; color: #777; margin-top: 20px; }
+.lp-pricing-list { 
+  list-style: none; 
+  text-align: left; 
+  padding: 16px 0; 
+  margin-bottom: 16px; 
+  border-top: 1px solid var(--border-color); 
+  border-bottom: 1px solid var(--border-color); 
+}
+.lp-pricing-list li { font-size: 13px; color: var(--text-main); line-height: 1.6; padding: 2px 0; }
+.lp-pricing-note { font-size: 11px; color: var(--text-muted); margin-top: 12px; }
 
 /* ---------------- FOOTER ---------------- */
 .lp-footer {
-  background: #0A0A0A;
-  border-top: 1px solid #222;
-  padding: 32px 24px;
-  padding-bottom: calc(32px + env(safe-area-inset-bottom));
+  background: var(--bg-main);
+  border-top: 1px solid var(--border-color);
+  padding: 24px;
   text-align: center;
 }
-.lp-footer-text { font-size: 12px; color: #666; }
-
-/* Responsive pour le carrousel */
-@media (min-width: 600px) {
-  .lp-carousel-card { flex: 0 0 45%; }
-}
+.lp-footer-text { font-size: 12px; color: var(--text-muted); }

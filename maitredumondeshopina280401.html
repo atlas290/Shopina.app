@@ -12,14 +12,49 @@
   <link rel="stylesheet" href="css/global.css">
   <style>
     body { background: var(--bg-main); font-family: var(--font-main); color: var(--text-main); padding: 20px; }
+    
+    /* HEADER */
     .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
     .admin-title { font-size: 20px; font-weight: 800; }
+    
+    /* LOGIN */
     .login-box { max-width: 400px; margin: 100px auto; background: var(--bg-card); padding: 24px; border-radius: var(--radius); border: 1px solid var(--border-color); }
     .login-box input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: var(--radius); background: var(--bg-main); color: var(--text-main); }
-    .vendor-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    
+    /* NOUVEAU : STATISTIQUES GLOBALES */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-box-value { font-size: 24px; font-weight: 800; color: var(--accent); }
+    .stat-box-label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-top: 4px; }
+
+    /* CARTES VENDEUSES */
+    .vendor-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; }
+    .vendor-header { display: flex; justify-content: space-between; align-items: flex-start; }
     .vendor-name { font-weight: 800; font-size: 16px; }
     .vendor-info { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-    .vendor-badge { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+    
+    /* NOUVEAU : BADGES DE STATUT */
+    .vendor-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+    .badge-active { background: #E8F5E9; color: #2E7D32; }
+    .badge-expired { background: #FFEBEE; color: #C62828; }
+
+    /* NOUVEAU : ACTIONS VENDEURS */
+    .vendor-actions { display: flex; gap: 8px; margin-top: 8px; border-top: 1px solid var(--border-color); padding-top: 12px; }
+    .btn-action { flex: 1; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: center; text-decoration: none; cursor: pointer; border: none; }
+    .btn-action-view { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-action-renew { background: var(--accent); color: white; }
+    
     .hidden { display: none; }
   </style>
 </head>
@@ -40,10 +75,23 @@
       <button class="btn-secondary" id="btnLogoutAdmin" style="padding: 8px 16px; min-height: 40px;">Déconnexion</button>
     </div>
 
-    <div style="margin-bottom: 16px; font-size: 14px; color: var(--text-muted);">
-      Total vendeuses inscrites : <strong id="totalVendors" style="color: var(--text-main);">0</strong>
+    <!-- NOUVEAU : GRILLE DE STATS -->
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-box-value" id="stat-vendors">0</div>
+        <div class="stat-box-label">Vendeuses</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-value" id="stat-products">0</div>
+        <div class="stat-box-label">Produits</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-value" id="stat-orders">0</div>
+        <div class="stat-box-label">Commandes</div>
+      </div>
     </div>
 
+    <!-- LISTE DES VENDEUSES -->
     <div id="vendors-list"></div>
   </div>
 

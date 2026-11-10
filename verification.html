@@ -35,12 +35,7 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Récupérer les paramètres de l'URL renvoyés par PaiementPro
-    const urlParams = new URLSearchParams(window.location.search);
-    const reference = urlParams.get('reference') || urlParams.get('referenceNumber');
-    const transactionId = urlParams.get('transaction_id') || urlParams.get('id');
-
-    async function verifierPaiement() {
+   async function verifierPaiement() {
       const user = auth.currentUser;
       
       if (!user) {
@@ -49,34 +44,27 @@
         return;
       }
 
-      if (!reference && !transactionId) {
+      // On récupère la référence du paiement
+      const urlParams = new URLSearchParams(window.location.search);
+      const reference = urlParams.get('reference') || urlParams.get('referenceNumber') || urlParams.get('transaction_id');
+      
+      if (!reference) {
         alert("Référence de paiement introuvable.");
         window.location.href = "vendeur.html";
         return;
       }
 
       try {
-        // Appel à l'API de PaiementPro pour vérifier la transaction
-        // On utilise l'API Password fourni dans le tableau de bord
-        const idMarchand = 'PP-F92897';
-        const apiPassword = '04781'; 
-        const refToCheck = reference || transactionId;
+        // APPEL À NOTRE API SÉCURISÉE VERCEL (qui gère le mot de passe en coulisses)
+        const response = await fetch(`/api/verify-payment?reference=${reference}`);
+        const data = await response.json();
 
-        // Requête de vérification (selon la documentation standard PaiementPro)
-        const response = await fetch(`https://www.paiementpro.net/webservice/onlinepayment/check/${idMarchand}/${apiPassword}/${refToCheck}`);
-        
-        // Si l'API retourne un texte ou du JSON, on gère
-        const textResponse = await response.text();
-        
-        // On considère que si la réponse contient "SUCCESS" ou "success", c'est validé.
-        // (On adaptera selon la vraie réponse de l'API si besoin)
-        if (textResponse.toLowerCase().includes('success') || textResponse.toLowerCase().includes('payé') || response.ok) {
-          
+        if (data.success) {
           // CALCUL DES 30 JOURS
           const dateFin = new Date();
           dateFin.setDate(dateFin.getDate() + 30);
 
-          // Mise à jour de la base de données Firebase
+          // Mise à jour de Firebase
           await db.collection('vendeurs').doc(user.uid).update({
             date_fin_abonnement: firebase.firestore.Timestamp.fromDate(dateFin)
           });
@@ -84,16 +72,15 @@
           alert("✅ Paiement confirmé ! Votre abonnement est actif pour 30 jours.");
           window.location.href = "vendeur.html";
         } else {
-          alert("❌ Le paiement n'a pas été validé. Si vous avez été débité, contactez le support.");
+          alert("❌ Le paiement n'a pas été validé par la banque. Si vous avez été débité, contactez le support.");
           window.location.href = "vendeur.html";
         }
       } catch (error) {
         console.error("Erreur:", error);
-        alert("Erreur de vérification. Contactez le support.");
+        alert("Erreur technique de vérification.");
         window.location.href = "vendeur.html";
       }
     }
-
     // On attend que Firebase charge l'utilisateur
     auth.onAuthStateChanged((user) => {
       if (user) {

@@ -1,21 +1,25 @@
 /* ============================================================
    Shopina — accueil.css
-   Landing page publique (mobile-first)
+   Landing page publique - Thème Luxe (Dark Mode)
    ============================================================ */
 
+/* On force le fond sombre pour toute la page d'accueil */
 body {
-  background: var(--bg-main);
+  background: #0A0A0A;
+  color: #FFFFFF;
 }
 
 /* ---------------- HEADER ---------------- */
 .lp-header {
   position: sticky;
   top: 0;
-  z-index: 20;
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border-color);
-  padding: 10px 16px;
-  padding-top: calc(10px + env(safe-area-inset-top));
+  z-index: 100;
+  background: rgba(10, 10, 10, 0.85); /* Fond noir semi-transparent */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 24px;
+  padding-top: calc(16px + env(safe-area-inset-top));
 }
 
 .lp-header-inner {
@@ -23,19 +27,255 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  max-width: 640px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
 .lp-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--text-main);
+  gap: 10px;
+  color: #FFFFFF;
   text-decoration: none;
 }
 
 .lp-brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.lp-brand-name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  font-family: var(--font-heading); /* Police élégante */
+}
+
+.lp-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 20px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.lp-login-btn:active { background: rgba(255, 255, 255, 0.1); }
+
+/* ---------------- HERO (LUXE) ---------------- */
+.lp-hero {
+  padding: 60px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .lp-hero {
+    flex-direction: row;
+    text-align: left;
+    padding: 100px 24px;
+    gap: 60px;
+  }
+  .lp-hero-content { flex: 1; }
+  .lp-phone-mockup { flex: 1; display: flex; justify-content: flex-end; }
+}
+
+.lp-hero-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  background: rgba(233, 30, 99, 0.1); /* Rose très léger */
+  border: 1px solid rgba(233, 30, 99, 0.3);
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+.lp-hero-title {
+  font-family: var(--font-heading); /* Police type Magazine */
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 500; /* Plus fin pour le luxe */
+  color: #FFFFFF;
+  letter-spacing: -1px;
+  margin-bottom: 24px;
+}
+
+.lp-hero-title span {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.lp-hero-sub {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #A0A0A0;
+  margin-bottom: 32px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .lp-hero-sub { margin-left: 0; }
+}
+
+.lp-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 320px;
+  min-height: 56px;
+  padding: 0 24px;
+  border-radius: 30px; /* Bouton très arrondi */
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  box-shadow: 0 8px 24px rgba(233, 30, 99, 0.25); /* Ombre colorée */
+}
+.lp-cta:active { transform: scale(0.98); opacity: 0.9; }
+
+.lp-reassurance {
+  font-size: 12px;
+  color: #777;
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+@media (min-width: 768px) { .lp-reassurance { justify-content: flex-start; } }
+
+/* ---------------- MOCKUP TÉLÉPHONE (L'IMAGE) ---------------- */
+.lp-phone-mockup {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Le cadre noir du téléphone */
+.lp-phone-mockup::before {
+  content: '';
+  position: absolute;
+  inset: -12px; /* L'épaisseur de la bordure */
+  background: #1A1A1A;
+  border-radius: 44px; /* Coins très arrondis */
+  border: 2px solid #333;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 0 0 2px #000;
+  z-index: 1;
+}
+
+/* L'écran du téléphone */
+.lp-phone-screen {
+  position: relative;
+  z-index: 2;
+  border-radius: 32px;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 9 / 19.5; /* Format iPhone */
+}
+
+.lp-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+
+/* ---------------- SECTIONS & TYPOGRAPHIE ---------------- */
+.lp-section {
+  padding: 80px 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.lp-section-alt {
+  background: #111111; /* Fond légèrement plus clair pour détacher la section */
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #222;
+  max-width: none;
+}
+
+.lp-section-title {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 500;
+  color: #FFFFFF;
+  text-align: center;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.lp-section-sub {
+  font-size: 14px;
+  color: #A0A0A0;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+/* ---------------- CARROUSEL (BASE PROPRE) ---------------- */
+.lp-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 40px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-left: -24px;
+  margin-right: -24px;
+}
+.lp-carousel::-webkit-scrollbar { display: none; }
+
+.lp-carousel-card {
+  flex: 0 0 85%;
+  max-width: 300px;
+  scroll-snap-align: center;
+  background: #1A1A1A;
+  border: 1px solid #333;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.lp-carousel-text {
+  padding: 24px 20px;
+  background: #1A1A1A;
+  flex: 1;
+}
+
+.lp-step-num {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -44,228 +284,30 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
-}
-
-.lp-brand-name {
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-}
-
-.lp-login-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  padding: 0 14px;
-  border-radius: 20px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-card);
-  color: var(--text-main);
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.15s ease;
-}
-
-.lp-login-btn:active {
-  background: var(--bg-main);
-}
-
-/* ---------------- HERO (AVEC IMAGE) ---------------- */
-.lp-hero {
-  padding: 32px 20px 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 32px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-@media (min-width: 768px) {
-  .lp-hero {
-    flex-direction: row;
-    text-align: left;
-    padding: 60px 20px;
-  }
-  .lp-hero-content {
-    flex: 1;
-  }
-  .lp-hero-image-wrapper {
-    flex: 1;
-    justify-content: flex-end;
-  }
-}
-
-.lp-hero-content {
-  text-align: center;
-}
-
-@media (min-width: 768px) {
-  .lp-hero-content { text-align: left; }
-}
-
-.lp-hero-badge {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  padding: 5px 12px;
-  border-radius: 14px;
   margin-bottom: 16px;
 }
 
-.lp-hero-title {
-  font-size: 32px;
-  line-height: 1.15;
-  font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: -0.5px;
-  margin-bottom: 14px;
-}
-
-.lp-hero-title span {
-  color: var(--accent);
-}
-
-.lp-hero-sub {
-  font-size: 15px;
-  line-height: 1.55;
-  color: var(--text-muted);
-  margin-bottom: 24px;
-  max-width: 420px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.lp-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 340px;
-  min-height: 52px;
-  margin: 0 auto;
-  padding: 0 22px;
-  border-radius: var(--radius);
-  background: var(--accent);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 700;
-  text-decoration: none;
-  text-align: center;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.lp-cta:active {
-  transform: scale(0.98);
-  opacity: 0.92;
-}
-
-.lp-reassurance {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 12px;
-  line-height: 1.5;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-
-@media (min-width: 768px) {
-  .lp-reassurance { justify-content: flex-start; }
-}
-
-/* IMAGE DU HÉROS */
-.lp-hero-image-wrapper {
-  width: 100%;
-  max-width: 320px;
-  display: flex;
-  justify-content: center;
-}
-
-.lp-hero-image {
-  width: 100%;
-  height: auto;
-  border-radius: 24px;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
-  border: 4px solid var(--bg-card); /* Effet de contour téléphone */
-}
-
-/* ---------------- SECTIONS ---------------- */
-.lp-section {
-  padding: 40px 20px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.lp-section-alt {
-  background: var(--bg-card);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-  max-width: none;
-}
-
-.lp-section-title {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: -0.3px;
-  text-align: center;
+.lp-carousel-text h3 {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 500;
+  color: #FFFFFF;
   margin-bottom: 8px;
 }
 
-.lp-section-sub {
+.lp-carousel-text p {
   font-size: 14px;
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: 32px;
-  line-height: 1.5;
-}
-
-/* ---------------- CARROUSEL (COMMENT ÇA MARCHE) ---------------- */
-.lp-carousel {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 24px; /* Espace pour l'ombre */
-  padding-left: 20px;
-  padding-right: 20px;
-  /* On annule le padding du parent pour que ça glisse sur toute la largeur */
-  margin-left: -20px;
-  margin-right: -20px;
-}
-
-/* Cache la barre de défilement */
-.lp-carousel::-webkit-scrollbar { display: none; }
-.lp-carousel { -ms-overflow-style: none; scrollbar-width: none; }
-
-.lp-carousel-card {
-  flex: 0 0 85%; /* Prend 85% de la largeur sur mobile */
-  max-width: 300px;
-  scroll-snap-align: center;
-  background: var(--bg-main);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
+  line-height: 1.6;
+  color: #A0A0A0;
 }
 
 .lp-carousel-img {
   width: 100%;
-  aspect-ratio: 9 / 16; /* Format téléphone */
+  height: 250px;
   overflow: hidden;
-  background: #E0E0E0;
+  background: #000;
 }
 
 .lp-carousel-img img {
@@ -275,80 +317,7 @@ body {
   object-position: top;
 }
 
-.lp-carousel-text {
-  padding: 16px;
-  background: var(--bg-card);
-  flex: 1;
-  position: relative;
-}
-
-.lp-carousel-text .lp-step-num {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 800;
-  margin-bottom: 10px;
-}
-
-.lp-carousel-text h3 {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--text-main);
-  margin-bottom: 6px;
-}
-
-.lp-carousel-text p {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
-/* ---------------- AVANTAGES ---------------- */
-.lp-features {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.lp-feature {
-  background: var(--bg-main);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  padding: 16px 14px;
-}
-
-.lp-feature-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--accent-soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  margin-bottom: 12px;
-}
-
-.lp-feature h3 {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--text-main);
-  margin-bottom: 4px;
-}
-
-.lp-feature p {
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
-/* ---------------- AVIS (BULLES DE MESSAGE) ---------------- */
+/* ---------------- AVIS (BULLES SOMBRES) ---------------- */
 .lp-testimonials {
   display: flex;
   flex-direction: column;
@@ -358,150 +327,73 @@ body {
 }
 
 .lp-chat-bubble {
-  background: var(--bg-main);
-  border: 1px solid var(--border-color);
-  border-radius: 4px 16px 16px 16px; /* Effet bulle de message */
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  position: relative;
+  background: #1A1A1A;
+  border: 1px solid #333;
+  border-radius: 4px 20px 20px 20px;
+  padding: 24px;
 }
 
 .lp-chat-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 8px;
-  border-bottom: 1px dashed var(--border-color);
-  padding-bottom: 8px;
+  margin-bottom: 12px;
+  border-bottom: 1px dashed #444;
+  padding-bottom: 12px;
 }
 
-.lp-chat-header strong {
-  font-size: 15px;
-  color: var(--text-main);
-  font-weight: 800;
-}
-
-.lp-chat-header span {
-  font-size: 11px;
-  color: var(--accent);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.lp-chat-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-main);
-  font-style: italic;
-  margin: 0;
-}
+.lp-chat-header strong { font-size: 15px; color: #FFF; font-weight: 700; }
+.lp-chat-header span { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; }
+.lp-chat-text { font-size: 14px; line-height: 1.6; color: #DDD; font-style: italic; margin: 0; }
 
 /* ---------------- TARIFS ---------------- */
 .lp-pricing {
-  background: var(--bg-card);
+  background: #1A1A1A;
   border: 2px solid var(--accent);
-  border-radius: var(--radius);
-  padding: 24px 20px;
+  border-radius: 24px;
+  padding: 40px 32px;
   text-align: center;
-  max-width: 380px;
+  max-width: 400px;
   margin: 0 auto;
   position: relative;
 }
 
 .lp-pricing-badge {
   position: absolute;
-  top: -12px;
+  top: -14px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--accent);
   color: #fff;
   font-size: 11px;
   font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 6px 20px;
+  border-radius: 20px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
-.lp-pricing-price {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 6px;
-  margin: 8px 0 4px;
-}
+.lp-pricing-price { display: flex; align-items: baseline; justify-content: center; gap: 6px; margin: 16px 0; }
+.lp-pricing-amount { font-size: 42px; font-weight: 800; color: #FFF; }
+.lp-pricing-period { font-size: 14px; color: #A0A0A0; font-weight: 600; }
+.lp-pricing-then { font-size: 14px; color: #A0A0A0; margin-bottom: 32px; }
+.lp-pricing-then strong { color: #FFF; font-weight: 800; }
 
-.lp-pricing-amount {
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: -1px;
-}
-
-.lp-pricing-period {
-  font-size: 13px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-.lp-pricing-then {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-}
-
-.lp-pricing-then strong {
-  color: var(--text-main);
-  font-weight: 800;
-}
-
-.lp-pricing-list {
-  list-style: none;
-  text-align: left;
-  padding: 16px 0;
-  margin-bottom: 20px;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.lp-pricing-list li {
-  font-size: 13px;
-  color: var(--text-main);
-  line-height: 1.6;
-  padding: 4px 0;
-}
-
-.lp-pricing-note {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 12px;
-}
+.lp-pricing-list { list-style: none; text-align: left; padding: 24px 0; margin-bottom: 32px; border-top: 1px solid #333; border-bottom: 1px solid #333; }
+.lp-pricing-list li { font-size: 14px; color: #DDD; line-height: 2; }
+.lp-pricing-note { font-size: 12px; color: #777; margin-top: 20px; }
 
 /* ---------------- FOOTER ---------------- */
 .lp-footer {
-  background: var(--bg-card);
-  border-top: 1px solid var(--border-color);
-  padding: 24px 20px;
-  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  background: #0A0A0A;
+  border-top: 1px solid #222;
+  padding: 32px 24px;
+  padding-bottom: calc(32px + env(safe-area-inset-bottom));
   text-align: center;
 }
+.lp-footer-text { font-size: 12px; color: #666; }
 
-.lp-footer-text {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-/* ---------------- RESPONSIVE ---------------- */
+/* Responsive pour le carrousel */
 @media (min-width: 600px) {
-  .lp-features {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .lp-section-title { font-size: 28px; }
-  .lp-hero-title { font-size: 40px; }
-  .lp-carousel-card { flex: 0 0 45%; } /* 2 cartes visibles sur tablette */
-}
-
-@media (min-width: 900px) {
-  .lp-carousel-card { flex: 0 0 30%; } /* 3 cartes visibles sur desktop */
+  .lp-carousel-card { flex: 0 0 45%; }
 }

@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <!-- SCRIPT DE REDIRECTION : NE PAS TOUCHER, PROTÈGE LES ANCIENS LIENS -->
   <script>
-    // Si le lien contient "?shop=", on redirige immédiatement vers la vitrine
     if (window.location.search.includes('shop=')) {
       window.location.replace('client.html' + window.location.search);
     }
   </script>
-  <meta charset="UTF-8">
-  <!-- le reste de ton code... -->
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#F9F8F6">
   <title>Shopina — Ta boutique en ligne sur WhatsApp</title>
   <meta name="google-site-verification" content="GrciLl0vr4eNi_jHOPbBp3T7UWH2sLDaUTgsWqBG_s8" />
   <meta name="description" content="Crée ta vitrine en 2 minutes. Mets ton lien dans ta bio TikTok, et laisse tes clientes commander directement sur ton WhatsApp.">
-<!-- Balises pour l'aperçu WhatsApp (Accueil) -->
+  
+  <!-- Balises pour l'aperçu WhatsApp -->
   <meta property="og:title" content="Shopina — Ta boutique en ligne sur WhatsApp">
   <meta property="og:description" content="Crée ta vitrine en 2 minutes. Mets ton lien dans ta bio TikTok et reçois tes commandes direct.">
   <meta property="og:image" content="https://cdn.statically.io/gh/atlas290/Shopina.app/main/assets/logo-shopina.jpg">
   <meta property="og:type" content="website">
+  
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/accueil.css">
@@ -38,50 +39,115 @@
   </header>
 
   <main>
-    <!-- ============ HERO SECTION (CENTRÉE) ============ -->
+    <!-- ============ HERO SECTION ============ -->
     <section class="lp-hero">
-      <span class="lp-hero-badge">Pensé pour vous</span>
-      
-      <h1 class="lp-hero-title">
-        Bienvenue chez Shopina.<br>
-        <span>Ta boutique en ligne, sans prise de tête.</span>
-      </h1>
-      
-      <p class="lp-hero-sub">
-        Crée ta vitrine en 2 minutes, mets ton lien dans ta bio TikTok ou WhatsApp, et reçois les commandes de tes clientes directement formatées en message sur ton whatsapp.
-      </p>
-      
-      <div class="lp-hero-actions">
-        <a class="lp-cta" href="vendeur.html">Créer ma boutique gratuitement</a>
-        <p class="lp-reassurance">
-          <span>✓ 30 jours gratuits</span>
-          <span>✓ Sans carte bancaire</span>
-          <span>✓ Prêt en 2 minutes</span>
+      <div class="lp-hero-content">
+        <span class="lp-hero-badge">Pensé pour vous</span>
+        
+        <h1 class="lp-hero-title">
+          Ta boutique en ligne.<br>
+          <span>Sans prise de tête.</span>
+        </h1>
+        
+        <p class="lp-hero-sub">
+          Fini d'envoyer 50 photos et de répéter les prix. Crée ta vitrine, mets ton lien en bio, et reçois les commandes déjà formatées sur ton WhatsApp.
         </p>
+        
+        <div class="lp-hero-actions">
+          <a class="lp-cta" href="vendeur.html">Créer ma boutique gratuitement</a>
+          <p class="lp-reassurance">
+            <span>✓ 30 jours gratuits</span>
+            <span>✓ Sans carte bancaire</span>
+            <span>✓ Prêt en 2 minutes</span>
+          </p>
+        </div>
+      </div>
+      
+      <!-- IMAGE DU HÉROS (La vitrine finale côté client) -->
+      <div class="lp-hero-image-wrapper">
+        <img src="assets/capture-hero.png" alt="Exemple de vitrine Shopina" class="lp-hero-image">
       </div>
     </section>
 
-    <!-- ============ COMMENT ÇA MARCHE ============ -->
+    <!-- ============ COMMENT ÇA MARCHE (CARROUSEL) ============ -->
     <section class="lp-section lp-section-alt">
       <h2 class="lp-section-title">Comment ça marche ?</h2>
-      <p class="lp-section-sub">Pas besoin d'être informaticienne. C'est plus simple que de poster une story.</p>
+      <p class="lp-section-sub">Glissez pour découvrir les étapes. Aussi simple que de poster une story.</p>
 
-      <div class="lp-steps">
-        <div class="lp-step">
-          <div class="lp-step-num">1</div>
-          <h3>Crée ta vitrine</h3>
-          <p>Ajoute ton logo, tes horaires, et choisis ta couleur préférée.</p>
+      <div class="lp-carousel">
+        
+        <!-- Étape 1 -->
+        <div class="lp-carousel-card">
+          <div class="lp-carousel-img">
+            <img src="assets/capture-etape1.png" alt="Création du compte">
+          </div>
+          <div class="lp-carousel-text">
+            <div class="lp-step-num">1</div>
+            <h3>Crée ton compte</h3>
+            <p>En 2 minutes, avec ton nom et ton numéro WhatsApp.</p>
+          </div>
         </div>
-        <div class="lp-step">
-          <div class="lp-step-num">2</div>
-          <h3>Ajoute tes produits</h3>
-          <p>Prends tes photos, mets tes prix, et choisis tes variantes (tailles, teintes...).</p>
+
+        <!-- Étape 2 -->
+        <div class="lp-carousel-card">
+          <div class="lp-carousel-img">
+            <img src="assets/capture-etape2.png" alt="Personnalisation">
+          </div>
+          <div class="lp-carousel-text">
+            <div class="lp-step-num">2</div>
+            <h3>Personnalise</h3>
+            <p>Choisis ta couleur, ajoute ton logo, et tes horaires.</p>
+          </div>
         </div>
-        <div class="lp-step">
-          <div class="lp-step-num">3</div>
-          <h3>Poste ton lien</h3>
-          <p>Mets ton lien Shopina dans ta bio TikTok ou en statut WhatsApp.</p>
+
+        <!-- Étape 3 -->
+        <div class="lp-carousel-card">
+          <div class="lp-carousel-img">
+            <img src="assets/capture-etape3.png" alt="Espace vendeuse prêt">
+          </div>
+          <div class="lp-carousel-text">
+            <div class="lp-step-num">3</div>
+            <h3>Ton espace est prêt</h3>
+            <p>Ton tableau de bord est vide, il ne reste plus qu'à le remplir.</p>
+          </div>
         </div>
+
+        <!-- Étape 4 -->
+        <div class="lp-carousel-card">
+          <div class="lp-carousel-img">
+            <img src="assets/capture-etape4.png" alt="Ajout d'un produit">
+          </div>
+          <div class="lp-carousel-text">
+            <div class="lp-step-num">4</div>
+            <h3>Ajoute un produit</h3>
+            <p>Une photo, un prix, et le tour est joué.</p>
+          </div>
+        </div>
+
+        <!-- Étape 5 -->
+        <div class="lp-carousel-card">
+          <div class="lp-carousel-img">
+            <img src="assets/capture-etape5.png" alt="Gestion des variantes">
+          </div>
+          <div class="lp-carousel-text">
+            <div class="lp-step-num">5</div>
+            <h3>Gère tes stocks</h3>
+            <p>Ajoute les tailles (S, M, L) et les variantes de tes produits.</p>
+          </div>
+        </div>
+
+        <!-- Étape 6 -->
+        <div class="lp-carousel-card">
+          <div class="lp-carousel-img">
+            <img src="assets/capture-etape6.png" alt="Partage du lien">
+          </div>
+          <div class="lp-carousel-text">
+            <div class="lp-step-num">6</div>
+            <h3>Partage ton lien</h3>
+            <p>Ta vitrine est prête ! Mets ton lien en bio et attends les commandes.</p>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -113,57 +179,43 @@
       </div>
     </section>
 
-    <!-- ============ PREUVE SOCIALE (AVIS) ============ -->
-    <section class="lp-section">
+    <!-- ============ PREUVE SOCIALE (AVIS STYLE BULLE) ============ -->
+    <section class="lp-section lp-section-alt">
       <h2 class="lp-section-title">Elles ont déjà franchi le pas</h2>
       <p class="lp-section-sub">Rejoins les vendeuses qui vendent plus facilement avec Shopina.</p>
 
       <div class="lp-testimonials">
         <!-- Avis 1 -->
-        <div class="lp-testimonial-card">
-          <div class="lp-stars">★★★★★</div>
-          <p class="lp-testimonial-text">"Avant, je passais mes journées à envoyer des photos et à répéter les prix. Maintenant, j'envoie juste mon lien Shopina. C'est le jour et la nuit."</p>
-          <div class="lp-testimonial-author">
-            <div class="lp-author-avatar" style="background: #E91E63;">F</div>
-            <div class="lp-author-info">
-              <strong>Fatou</strong>
-              <span>Vendeuse de cosmétiques · Cotonou</span>
-            </div>
+        <div class="lp-chat-bubble">
+          <div class="lp-chat-header">
+            <strong>Wax & Style</strong>
+            <span>Prêt-à-porter</span>
           </div>
+          <p class="lp-chat-text">"Je mets juste mon lien Shopina dans ma bio TikTok. Mes clientes voient tout de suite les prix et les photos. Fini les 'c'est combien ?' du matin au soir."</p>
         </div>
 
         <!-- Avis 2 -->
-        <div class="lp-testimonial-card">
-          <div class="lp-stars">★★★★★</div>
-          <p class="lp-testimonial-text">"Mes clientes sur TikTok cliquent sur le lien dans ma bio et voient tous mes modèles. La commande arrive déjà prête sur WhatsApp avec le total. Je gagne un temps fou."</p>
-          <div class="lp-testimonial-author">
-            <div class="lp-author-avatar" style="background: #2196F3;">M</div>
-            <div class="lp-author-info">
-              <strong>Mariam</strong>
-              <span>Prêt-à-porter · Calavi</span>
-            </div>
+        <div class="lp-chat-bubble">
+          <div class="lp-chat-header">
+            <strong>Beauté by Léa</strong>
+            <span>Cosmétiques</span>
           </div>
+          <p class="lp-chat-text">"Le client choisit ses produits, clique sur commander et ça m'envoie un message WhatsApp déjà tout prêt avec le total. J'ai juste à confirmer la livraison."</p>
         </div>
 
         <!-- Avis 3 -->
-        <div class="lp-testimonial-card">
-          <div class="lp-stars">★★★★★</div>
-          <p class="lp-testimonial-text">"Le fait que ça fasse très pro rassure mes clients. Ils n'ont plus peur d'acheter, car ils voient un vrai site avec mes produits et mes prix."</p>
-          <div class="lp-testimonial-author">
-            <div class="lp-author-avatar" style="background: #4CAF50;">S</div>
-            <div class="lp-author-info">
-              <strong>Sessi</strong>
-              <span>Accessoires & Sacs · Porto-Novo</span>
-            </div>
+        <div class="lp-chat-bubble">
+          <div class="lp-chat-header">
+            <strong>Sessi Shop</strong>
+            <span>Accessoires</span>
           </div>
+          <p class="lp-chat-text">"J'ai créé ma vitrine en 5 minutes avec mes propres couleurs. C'est vraiment simple, même sans être une pro de l'informatique."</p>
         </div>
       </div>
     </section>
-    
-
 
     <!-- ============ TARIFS ============ -->
-    <section class="lp-section lp-section-alt">
+    <section class="lp-section">
       <h2 class="lp-section-title">Un prix simple.</h2>
       <p class="lp-section-sub">Pas de commission cachée. Un abonnement simple.</p>
 
@@ -191,7 +243,7 @@
 
   <!-- ============ FOOTER ============ -->
   <footer class="lp-footer">
-    <p class="lp-footer-text">© 2024 Shopina. vends comme un pro 🫵🏽.</p>
+    <p class="lp-footer-text">© 2024 Shopina. Vends comme un pro 🫵🏽.</p>
   </footer>
 
 </body>

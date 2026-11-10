@@ -794,7 +794,7 @@
         paiementPro.customerLastname = SHOP.name || 'Shopina';
         paiementPro.customerPhoneNumber = SHOP.whatsapp || '00000000';
         paiementPro.description = 'Abonnement Shopina - 30 jours';
-
+        paiementPro.returnURL = 'https://shopina.vercel.app/verification.html';
         await paiementPro.getUrlPayment();
 
         if (paiementPro.success) {

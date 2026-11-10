@@ -218,6 +218,46 @@
   <footer class="lp-footer">
     <p class="lp-footer-text">© 2024 Shopina. Vends comme un pro 🫵🏽.</p>
   </footer>
+<!-- SCRIPT POUR L'ANIMATION 3D DU CARROUSEL -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const carousel = document.querySelector('.lp-carousel');
+      const cards = document.querySelectorAll('.lp-carousel-card');
 
+      if (!carousel || cards.length === 0) return;
+
+      function updateCarousel() {
+        const carouselCenter = carousel.getBoundingClientRect().left + (carousel.offsetWidth / 2);
+        
+        cards.forEach(card => {
+          const cardRect = card.getBoundingClientRect();
+          const cardCenter = cardRect.left + (cardRect.width / 2);
+          
+          // Calcule la distance par rapport au centre (0 = centré, 1 = très loin)
+          let distance = (cardCenter - carouselCenter) / (carousel.offsetWidth / 2);
+          distance = Math.max(-1, Math.min(1, distance)); // Limite entre -1 et 1
+          
+          // Applique la rotation (45deg max sur les côtés) et la réduction de taille
+          const rotation = distance * 45; 
+          const scale = 1 - (Math.abs(distance) * 0.15);
+          const opacity = 1 - (Math.abs(distance) * 0.4);
+
+          card.style.transform = `perspective(1000px) rotateY(${rotation}deg) scale(${scale})`;
+          card.style.opacity = opacity;
+          card.style.zIndex = 100 - Math.round(Math.abs(distance) * 100);
+        });
+      }
+
+      // Mettre à jour l'animation quand on fait défiler
+      carousel.addEventListener('scroll', () => {
+        window.requestAnimationFrame(updateCarousel);
+      });
+
+      // Initialiser au chargement
+      updateCarousel();
+      // Recalculer si on tourne le téléphone
+      window.addEventListener('resize', updateCarousel);
+    });
+  </script>
 </body>
 </html>

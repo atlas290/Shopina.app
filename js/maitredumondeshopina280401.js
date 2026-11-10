@@ -53,18 +53,45 @@
         auth.signOut();
         return;
       }
-      // C'est bien l'admin : on affiche le dashboard et on charge les données
+      // C'est bien l'admin
       $('#login-section').classList.add('hidden');
       $('#dashboard-section').classList.remove('hidden');
+      
+      // On charge les statistiques globales ET la liste
+      loadStats();
       loadVendors();
+      
     } else {
-      // Pas connecté : on affiche le login
+      // Pas connecté
       $('#login-section').classList.remove('hidden');
       $('#dashboard-section').classList.add('hidden');
     }
   });
 
- // Charger la liste des vendeuses
+  // ============================================================
+  // NOUVELLE FONCTION : Charger les statistiques globales
+  // ============================================================
+  async function loadStats() {
+    try {
+      // On lance les 3 requêtes en parallèle pour aller plus vite
+      const [vendeursSnap, produitsSnap, commandesSnap] = await Promise.all([
+        db.collection('vendeurs').get(),
+        db.collection('produits').get(),
+        db.collection('commandes').get()
+      ]);
+
+      $('#stat-vendors').textContent = vendeursSnap.size;
+      $('#stat-products').textContent = produitsSnap.size;
+      $('#stat-orders').textContent = commandesSnap.size;
+
+    } catch (error) {
+      console.error("Erreur stats:", error);
+    }
+  }
+
+  // ============================================================
+  // CHARGER LA LISTE DES VENDEUSES
+  // ============================================================
   async function loadVendors() {
     const listEl = $('#vendors-list');
     listEl.innerHTML = '<div style="text-align:center; padding:20px;">Chargement des données...</div>';
@@ -72,8 +99,6 @@
     try {
       const snapshot = await db.collection('vendeurs').get();
       
-      // Mise à jour du compteur
-      $('#totalVendors').textContent = snapshot.size;
       listEl.innerHTML = '';
 
       if (snapshot.empty) {
@@ -81,7 +106,6 @@
         return;
       }
 
-      // Affichage de chaque vendeuse
       snapshot.forEach(doc => {
         const v = doc.data();
         
@@ -93,21 +117,33 @@
         // On prépare le lien vers la boutique
         const shopUrl = `client.html?shop=${slugSafe}`;
 
+        // --- CALCUL DU STATUT ---
+        let isExpired = false;
+        if (v.date_fin_abonnement) {
+          const dateFin = v.date_fin_abonnement.toDate();
+          if (dateFin < new Date()) {
+            isExpired = true;
+          }
+        }
+        
+        const badgeClass = isExpired ? 'badge-expired' : 'badge-active';
+        const badgeText = isExpired ? 'Expiré' : 'Actif';
+
         listEl.innerHTML += `
-          <div class="vendor-card" style="flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; margin-bottom: 12px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color);">
-            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+          <div class="vendor-card">
+            <div class="vendor-header">
               <div>
-                <div class="vendor-name" style="font-weight: bold; font-size: 16px;">${nomSafe}</div>
-                <div class="vendor-info" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">${emailSafe} · ${numSafe}</div>
+                <div class="vendor-name">${nomSafe}</div>
+                <div class="vendor-info">${emailSafe} · ${numSafe}</div>
                 <div class="vendor-info" style="font-size: 11px; margin-top: 4px;">Slug : shopina.shop/${slugSafe}</div>
               </div>
-              <div class="vendor-badge" style="background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">Vendeuse</div>
+              <div class="vendor-badge ${badgeClass}">${badgeText}</div>
             </div>
             
-            <!-- BOUTONS D'ACTION -->
-            <div style="display: flex; gap: 8px; width: 100%; margin-top: 8px;">
-              <a href="${shopUrl}" target="_blank" class="btn-secondary" style="flex: 1; text-decoration: none; padding: 8px; font-size: 13px; text-align: center; border-radius: 6px;">Voir la vitrine</a>
-              <button onclick="voirProduits('${doc.id}')" class="btn-secondary" style="flex: 1; padding: 8px; font-size: 13px; cursor: pointer; border-radius: 6px;">Voir les produits</button>
+            <div">
+ class="vendor-actions              <a href="${shopUrl}" target="_blank" class="btn-action btn-action-view">Voir vitrine</a>
+              <button onclick="voirProduits('${doc.id}')" class="btn-action btn-action-view">Voir produits</button>
+              <button onclick="prolongerAbonnement('${doc.id}')" class="btn-action btn-action-renew">Prolonger +30j</button>
             </div>
           </div>
         `;
@@ -119,7 +155,9 @@
     }
   }
 
-  // NOUVELLE FONCTION : Voir les produits d'une vendeuse
+  // ============================================================
+  // VOIR LES PRODUITS D'UNE VENDEUSE
+  // ============================================================
   window.voirProduits = async function(vendeurId) {
     try {
       const snapshot = await db.collection('produits').where('vendeur_id', '==', vendeurId).get();
@@ -140,5 +178,48 @@
       alert("Erreur lors de la récupération des produits.");
     }
   };
-  
+
+  // ============================================================
+  // NOUVELLE FONCTION : Prolonger l'abonnement manuellement
+  // ============================================================
+  window.prolongerAbonnement = async function(vendeurId) {
+    const confirmation = confirm("Voulez-vous ajouter 30 jours d'abonnement à cette vendeuse ?");
+    if (!confirmation) return;
+
+    try {
+      const docRef = db.collection('vendeurs').doc(vendeurId);
+      const doc = await docRef.get();
+      
+      if (!doc.exists) return alert("Vendeuse introuvable.");
+
+      const data = doc.data();
+      let baseDate = new Date(); // Date de base : aujourd'hui
+
+      // Si elle a déjà un abonnement en cours (dans le futur), on ajoute 30 jours à cette date future
+      if (data.date_fin_abonnement) {
+        const currentFin = data.date_fin_abonnement.toDate();
+        if (currentFin > baseDate) {
+          baseDate = currentFin;
+        }
+      }
+
+      // On ajoute 30 jours
+      baseDate.setDate(baseDate.getDate() + 30);
+
+      // Mise à jour dans Firebase
+      await docRef.update({
+        date_fin_abonnement: firebase.firestore.Timestamp.fromDate(baseDate)
+      });
+
+      alert("✅ Abonnement prolongé de 30 jours avec succès !");
+      
+      // On recharge la liste pour voir le badge passer au vert
+      loadVendors();
+
+    } catch (error) {
+      console.error(error);
+      alert("Erreur lors de la prolongation : " + error.message);
+    }
+  };
+
 })();

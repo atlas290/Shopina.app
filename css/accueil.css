@@ -219,10 +219,11 @@ body {
   margin-bottom: 40px;
 }
 
-/* ---------------- CARROUSEL (AJOUTÉ ICI) ---------------- */
+/* ---------------- CARROUSEL (S'ADAPTE À L'IMAGE) ---------------- */
 .lp-carousel-container {
   width: 100%;
   overflow: hidden;
+  padding: 20px 0;
 }
 
 .lp-carousel {
@@ -238,64 +239,69 @@ body {
 .lp-carousel::-webkit-scrollbar { display: none; }
 
 .lp-carousel-card {
-  flex: 0 0 85%;
-  max-width: 300px;
+  flex: 0 0 85%; /* Prend 85% de la largeur sur mobile */
+  max-width: 320px;
   scroll-snap-align: center;
-  background: var(--bg-main);
+  background: var(--bg-card); /* Respecte le thème clair/sombre */
   border: 1px solid var(--border-color);
   border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  /* On ne force pas la hauteur, la carte s'adapte à l'image */
+  height: fit-content; 
+}
+
+.lp-carousel-img {
+  width: 100%;
+  /* L'image prend sa taille naturelle sans être coupée */
+  height: auto;
+  max-height: 400px; /* Sécurité pour éviter une carte trop haute */
+  overflow: hidden;
+  background: var(--bg-main); /* Respecte le thème */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lp-carousel-img img {
+  width: 100%;
+  height: auto;
+  object-fit: contain; /* L'image s'affiche en entier sans zoom */
 }
 
 .lp-carousel-text {
-  padding: 20px;
+  padding: 16px;
   background: var(--bg-card);
-  flex: 1;
 }
 
-.lp-step-num {
-  width: 32px;
-  height: 32px;
+.lp-carousel-text .lp-step-num {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: var(--accent);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .lp-carousel-text h3 {
   font-size: 16px;
   font-weight: 800;
   color: var(--text-main);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .lp-carousel-text p {
   font-size: 13px;
   line-height: 1.5;
   color: var(--text-muted);
-}
-
-.lp-carousel-img {
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
-  background: var(--bg-main);
-  order: -1; /* Met l'image en haut de la carte */
-}
-
-.lp-carousel-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
+  margin: 0;
 }
 
 /* ---------------- AVANTAGES (REVENUS EN CARTES) ---------------- */

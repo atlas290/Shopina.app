@@ -219,7 +219,7 @@ body {
   margin-bottom: 40px;
 }
 
-/* ---------------- CARROUSEL (CORRIGÉ) ---------------- */
+/* ---------------- CARROUSEL (SANS HAUTEUR MAX, 100% HORIZONTAL) ---------------- */
 .lp-carousel-container {
   width: 100%;
   overflow: hidden;
@@ -228,7 +228,8 @@ body {
 .lp-carousel {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap; /* Force les cartes à rester sur une seule ligne */
+  flex-wrap: nowrap; /* Empêche ABSOLUMENT le passage à la ligne */
+  align-items: flex-start; /* Les cartes ne s'étirent pas pour avoir la même hauteur */
   gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -240,9 +241,8 @@ body {
 .lp-carousel::-webkit-scrollbar { display: none; }
 
 .lp-carousel-card {
-  /* On force une largeur fixe pour chaque carte */
-  flex: 0 0 85vw;
-  max-width: 300px;
+  flex: 0 0 85%; /* Largeur fixe pour le défilement */
+  max-width: 320px;
   scroll-snap-align: center;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -251,29 +251,25 @@ body {
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  /* PAS DE HAUTEUR FIXE ICI : la carte s'adapte à son contenu */
 }
 
 .lp-carousel-img {
   width: 100%;
-  /* On limite la hauteur pour que les cartes aient une taille correcte */
-  height: 220px; 
-  background: var(--bg-main);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  /* PAS DE HAUTEUR FIXE ICI : l'image garde sa hauteur naturelle */
+  display: block; 
 }
 
 .lp-carousel-img img {
   width: 100%;
-  height: 100%;
-  /* object-fit: contain permet de voir l'image EN ENTIER même si elle est rognée */
-  object-fit: contain; 
+  height: auto; /* L'IMAGE GARDE SON RATIO ET SA HAUTEUR EXACTE */
+  display: block;
 }
 
 .lp-carousel-text {
   padding: 16px;
   background: var(--bg-card);
+  /* Le texte suit l'image, quelle que soit la hauteur de l'image */
 }
 
 .lp-carousel-text .lp-step-num {

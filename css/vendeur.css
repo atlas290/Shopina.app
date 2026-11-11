@@ -301,3 +301,83 @@ body { overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
   background-position: center;
   flex: 0 0 64px;
 }
+
+/* ============================================================
+   LÉA - ZONE DE CHAT (NOUVEAU)
+   ============================================================ */
+.lea-chat-container {
+  margin: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.lea-chat-messages {
+  padding: 16px;
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lea-message {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.lea-message--bot {
+  background: var(--bg-main);
+  color: var(--text-main);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.lea-message--user {
+  background: var(--accent);
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.lea-chat-input-wrapper {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-main);
+}
+
+.lea-chat-input-wrapper input {
+  flex: 1;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill); /* Bords arrondis */
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-size: 13px;
+}
+
+.lea-chat-input-wrapper input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.lea-chat-input-wrapper button {
+  padding: 0 20px;
+  min-height: 44px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}

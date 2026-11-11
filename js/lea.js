@@ -39,18 +39,31 @@
     chatMessages.appendChild(loadingDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    // 3. Simuler la réponse de l'IA après 1,5 seconde (pour tester l'interface)
-    // C'est ici qu'on mettra la vraie API plus tard.
-    setTimeout(() => {
+    // 3. Appeler l'API sécurisée Vercel
+    fetch('/api/lea-ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: texte })
+    })
+    .then(response => response.json())
+    .then(data => {
       // Supprimer le message d'attente
       const loading = document.getElementById('lea-loading-msg');
       if (loading) loading.remove();
 
-      // Afficher une fausse réponse pour l'instant
-      ajouterMessage("C'est une excellente question ! Pour l'instant, je teste juste mon interface. Bientôt, je pourrai te donner de vrais conseils adaptés à ta boutique.", 'bot');
-    }, 1500);
+      if (data.reply) {
+        ajouterMessage(data.reply, 'bot');
+      } else {
+        ajouterMessage("Oups, j'ai eu un petit souci. Réessaie dans un instant !", 'bot');
+      }
+    })
+    .catch(error => {
+      console.error("Erreur:", error);
+      const loading = document.getElementById('lea-loading-msg');
+      if (loading) loading.remove();
+      ajouterMessage("Je n'arrive pas à me connecter. Vérifie ta connexion internet.", 'bot');
+    });
   }
-
   // Événements
   chatSend.addEventListener('click', envoyerMessage);
   

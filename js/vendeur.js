@@ -16,7 +16,12 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-
+// Force la session à s'effacer quand on ferme le navigateur
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    .catch(function(error) {
+      console.error("Erreur de persistance de session :", error);
+    });
+   
   const CLOUDINARY_CLOUD_NAME = 'jaifaim-app';
   const CLOUDINARY_UPLOAD_PRESET = 'plats_resto';
 
@@ -131,13 +136,38 @@
   if (goToLoginBtn) goToLoginBtn.addEventListener('click', (e) => { e.preventDefault(); viewOnboarding.classList.remove('active'); viewLogin.classList.add('active'); });
   if (goToOnboardingBtn) goToOnboardingBtn.addEventListener('click', (e) => { e.preventDefault(); viewLogin.classList.remove('active'); viewOnboarding.classList.add('active'); });
 
+  
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
   if (loginSubmitBtn) {
     loginSubmitBtn.addEventListener('click', async () => {
-      const email = document.getElementById('loginEmail').value.trim(), password = document.getElementById('loginPassword').value.trim();
-      if (!email || !password) return alert('Remplissez tous les champs.');
-      try { await auth.signInWithEmailAndPassword(email, password); } catch (error) { alert('Email ou mot de passe incorrect.'); }
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      if (!email || !password) return alert('Remplissez les champs.');
+
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+
+        // 1. VÉRIFICATION : L'email est-il validé ?
+        if (!userCredential.user.emailVerified) {
+          alert("Veuillez vérifier votre adresse email avant de vous connecter. Vérifiez votre boîte mail.");
+          await auth.signOut();
+          return;
+        }
+
+        // 2. MÉMORISER L'EMAIL pour la prochaine fois
+        localStorage.setItem('shopina_email', email);
+
+      } catch (error) { 
+        alert('Email ou mot de passe incorrect.'); 
+      }
     });
+  }
+
+  // 3. PRÉ-REMPLIR L'EMAIL au chargement de la page
+  const savedEmail = localStorage.getItem('shopina_email');
+  if (savedEmail) {
+    const emailInput = document.getElementById('loginEmail');
+    if (emailInput) emailInput.value = savedEmail;
   }
 
   document.getElementById('btnLogout').addEventListener('click', () => { auth.signOut().then(() => { window.location.reload(); }); });
@@ -731,7 +761,7 @@
 
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(SHOP.email, SHOP.password);
-      
+      await userCredential.user.sendEmailVerification();
       await db.collection('vendeurs').doc(userCredential.user.uid).set({
         email: SHOP.email, nom_boutique: SHOP.name, slug: SHOP.slug, numero_whatsapp: SHOP.whatsapp,
         couleur_accent: SHOP.color, horaires: SHOP.hours, zone_livraison: SHOP.delivery,

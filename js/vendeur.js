@@ -178,6 +178,14 @@
         const doc = await db.collection('vendeurs').doc(user.uid).get();
         if (doc.exists) {
           const v = doc.data();
+           // BUG FIX : Donner une date de fin aux anciens comptes
+          if (!v.date_fin_abonnement) {
+            const nouvelleDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+            await db.collection('vendeurs').doc(user.uid).update({
+              date_fin_abonnement: firebase.firestore.Timestamp.fromDate(nouvelleDate)
+            });
+            v.date_fin_abonnement = firebase.firestore.Timestamp.fromDate(nouvelleDate);
+          }
           SHOP.email = v.email; SHOP.name = v.nom_boutique; SHOP.slug = v.slug; SHOP.whatsapp = v.numero_whatsapp;
           SHOP.color = v.couleur_accent; SHOP.colorSoft = '#FCE4EC'; SHOP.hours = v.horaires; SHOP.delivery = v.zone_livraison;
           SHOP.deliveryPrice1 = v.deliveryPrice1 || 0; SHOP.deliveryPrice2 = v.deliveryPrice2 || 0; SHOP.deliveryPrice3 = v.deliveryPrice3 || 0;
@@ -862,9 +870,9 @@
     if (vendeuseData && vendeuseData.date_fin_abonnement) {
       dateFin = vendeuseData.date_fin_abonnement.toDate();
     } else {
-      dateFin.setDate(dateFin.getDate() + 30); // Simulation pour anciens comptes
+      // Sécurité : si la date manque, on affiche 0 jours pour éviter la boucle infinie
+      dateFin = new Date(); 
     }
-
     const aujourdhui = new Date();
     const diffTemps = dateFin - aujourdhui;
     const joursRestants = Math.ceil(diffTemps / (1000 * 60 * 60 * 24));

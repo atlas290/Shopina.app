@@ -147,12 +147,7 @@
       try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
 
-        // 1. VÉRIFICATION : L'email est-il validé ?
-        if (!userCredential.user.emailVerified) {
-          alert("Veuillez vérifier votre adresse email avant de vous connecter. Vérifiez votre boîte mail.");
-          await auth.signOut();
-          return;
-        }
+     
 
         // 2. MÉMORISER L'EMAIL pour la prochaine fois
         localStorage.setItem('shopina_email', email);
@@ -769,7 +764,7 @@
 
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(SHOP.email, SHOP.password);
-      await userCredential.user.sendEmailVerification();
+      
       await db.collection('vendeurs').doc(userCredential.user.uid).set({
         email: SHOP.email, nom_boutique: SHOP.name, slug: SHOP.slug, numero_whatsapp: SHOP.whatsapp,
         couleur_accent: SHOP.color, horaires: SHOP.hours, zone_livraison: SHOP.delivery,
